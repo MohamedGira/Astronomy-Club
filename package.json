@@ -1,0 +1,23 @@
+{
+  "name": "astronomy-server",
+  "version": "1.0.0",
+  "description": "server side of Astronomy Club website",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helmy162/AstronomyClub.git"
+  },
+  "author": "Mohamed Gira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/helmy162/AstronomyClub/issues"
+  },
+  "homepage": "https://github.com/helmy162/AstronomyClub#readme",
+  "dependencies": {
+    "mongoose": "^7.0.2"
+  }
+}
