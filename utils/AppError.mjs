@@ -72,7 +72,7 @@ return err
 }
  */
 
-export class AppError extends Error{
+export const AppError = class AppError extends Error{
     constructor(statusCode,message){
         super(message)
         this.statusCode=statusCode
