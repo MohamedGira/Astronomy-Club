@@ -30,7 +30,7 @@ app.use(cors({origin:""}))
 
 
 
-app.all('*',(req,res)=>{
+app.all('*',(req,res,next)=>{
     return next(new AppError(404,`cant find this route :${req.path},${req.method}`))
 })
 

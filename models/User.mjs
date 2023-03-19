@@ -1,8 +1,9 @@
 import mongoose from'mongoose'
 import evalidator from'validator'
 import bcrypt  from'bcrypt'
-import * as UserType from'./UserType.mjs'
+import { UserRole } from './UserType.mjs';
 import phoneUtils  from'google-libphonenumber' ;
+import { AppError } from '../utils/AppError.mjs';
 const phoneUtil=phoneUtils.PhoneNumberUtil.getInstance()
 
 
@@ -50,15 +51,27 @@ const userScema=mongoose.Schema(
                 message:'invalid phone number'
             }
         },
-        role:{ type: mongoose.Schema.Types.ObjectId, ref: 'UserType' ,default:'6417697b843a6c0bf935c86e'}
+        role:{ type: mongoose.Schema.Types.ObjectId,
+             ref: 'UserType' ,
+             default:'6417697b843a6c0bf935c86e',
+            }
     }
 )
 
 
-//encrypt password before storing it to the database
+//check that role foriegn key is valid
 userScema.pre('save',async function(next){
-    this.password = await bcrypt.hash(this.password,3);
-    next()
+    const data =await UserRole.find({_id:this.role})
+    if (data.length==0)
+        return next( new AppError(400,'invalid role id'))    
+        next()
 })
+    
+    
+//encrypt password before storing it to the database
+    userScema.pre('save',async function(next){
+        this.password = await bcrypt.hash(this.password,3);
+        next()
+    })
 
 export const User=mongoose.model('User',userScema)
