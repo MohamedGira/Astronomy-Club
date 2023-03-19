@@ -13,7 +13,7 @@ const userScema=mongoose.Schema(
         username:{
             type:String,
             required:[true,'username is required'],
-            minLength:[5,'username is too short']  
+            minLength:[2,'username is too short']  
         },
         password:{
             type:String,
@@ -26,7 +26,7 @@ const userScema=mongoose.Schema(
             unique:[true,'This email is already in use'],
             validate:{
                 validator:function(){
-                    return evalidator.isEmail(this);
+                    return evalidator.isEmail(this.email);
                 },
             message:"Invalid email format"
             }
@@ -36,13 +36,13 @@ const userScema=mongoose.Schema(
         },
         phoneNumber:{
             type:String,
-            minLength:[10,'invalid phone number'],
-            maxLength:[12,'invalid phone number'],
+            minLength:[10,'invalid phone number,tshort'],
+            maxLength:[13,'invalid phone number,tlong'],
             unique:[true,'This phone number is already in use'],
             validate:{
                 validator:function(){
                     try{
-                    phoneUtil.isValidNumberForRegion(phoneUtil.parse(this, 'EG'), 'EG')
+                    phoneUtil.isValidNumberForRegion(phoneUtil.parse(this.phoneNumber, 'EG'), 'EG')
                     }catch(e){
                         return false;
                     }
@@ -50,7 +50,7 @@ const userScema=mongoose.Schema(
                 message:'invalid phone number'
             }
         },
-        UserType:{ type: mongoose.Schema.Types.ObjectId, ref: 'UserType' }
+        role:{ type: mongoose.Schema.Types.ObjectId, ref: 'UserType' ,default:'6417697b843a6c0bf935c86e'}
     }
 )
 
@@ -60,3 +60,5 @@ userScema.pre('save',async function(next){
     this.password = await bcrypt.hash(this.password,3);
     next()
 })
+
+export const User=mongoose.model('User',userScema)
