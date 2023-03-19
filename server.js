@@ -1,5 +1,3 @@
 import { Compressor } from "./utils/ImageCompression/compressor.mjs";
+import { connectDb } from "./models/DbConnection.js";
 
-const compressor=new Compressor();
-
-console.log(await compressor.compressImage('./SamplePNGImage_10mbmb.png'))
