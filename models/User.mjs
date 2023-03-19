@@ -1,26 +1,27 @@
-const mongoose=require('mongoose')
-const evalidator=require('validator')
-const bcrypt= require('bcrypt')
-const UserType=require('./UserType')
-const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+import mongoose from'mongoose'
+import evalidator from'validator'
+import bcrypt  from'bcrypt'
+import * as UserType from'./UserType.mjs'
+import phoneUtils  from'google-libphonenumber' ;
+const phoneUtil=phoneUtils.PhoneNumberUtil.getInstance()
 
-console.log()
+
 
 
 const userScema=mongoose.Schema(
     {
         username:{
-            Type:String,
+            type:String,
             required:[true,'username is required'],
             minLength:[5,'username is too short']  
         },
         password:{
-            Type:String,
+            type:String,
             required:[true,'password is required'],
             minLength:[5,'password is too short']  
         },
         email:{
-            Type:String,
+            type:String,
             required:[true,'Email is required'],
             unique:[true,'This email is already in use'],
             validate:{
@@ -35,7 +36,7 @@ const userScema=mongoose.Schema(
             contentType: String
         },
         phoneNumber:{
-            Type:String,
+            type:String,
             minLength:[10,'invalid phone number'],
             maxLength:[12,'invalid phone number'],
             unique:[true,'This phone number is already in use'],

@@ -72,7 +72,7 @@ return err
 }
  */
 
-class AppError extends Error{
+export class AppError extends Error{
     constructor(statusCode,message){
         super(message)
         this.statusCode=statusCode
@@ -81,4 +81,3 @@ class AppError extends Error{
         Error.captureStackTrace(this,this.constructor)
     }
 }
-module.exports=AppError

@@ -8,7 +8,7 @@ import util from 'util';
 
 
 
-class Compressor{
+export class Compressor{
     constructor(){
         this.MaximumSize=80;
     }
@@ -18,7 +18,7 @@ class Compressor{
     return fileSizeInKiloBytes;
     }
     
-    async compressImage(source){
+    async compressImage(source,destination=undefined){
     var inputImgSize=this.getImageSize(source)
     if(inputImgSize==0){
         throw Error('0 file size!')
@@ -30,11 +30,11 @@ class Compressor{
     
     ratio=this.MaximumSize/inputImgSize
     const file = await imagemin([source], {
-        destination: './output/',
+        destination: destination,
         plugins: [
             imageminMozjpeg({quality:Math.max(ratio*100,5)}),
             imageminPngquant({
-                quality: [.1,math.max(ratio,.3)]
+                quality: [.1,Math.max(ratio,.3)]
             })
         ]
     });
