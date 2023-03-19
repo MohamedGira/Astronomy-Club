@@ -1,7 +1,7 @@
 {
-  "name": "astronomy-server",
+  "name": "astronomy-club",
   "version": "1.0.0",
-  "description": "server side of Astronomy Club website",
+  "description": "the server-side of Astronomy Club",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,15 +9,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/helmy162/AstronomyClub.git"
+    "url": "git+https://github.com/MohamedGira/Astronomy-Club.git"
   },
   "author": "Mohamed Gira",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/helmy162/AstronomyClub/issues"
+    "url": "https://github.com/MohamedGira/Astronomy-Club/issues"
   },
-  "homepage": "https://github.com/helmy162/AstronomyClub#readme",
+  "homepage": "https://github.com/MohamedGira/Astronomy-Club#readme",
   "dependencies": {
-    "mongoose": "^7.0.2"
+    "bcrypt": "^5.1.0",
+    "compress-images": "^2.0.5",
+    "google-libphonenumber": "^3.2.32",
+    "imagemin": "^8.0.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "mongoose": "^7.0.2",
+    "validator": "^13.9.0"
   }
 }
