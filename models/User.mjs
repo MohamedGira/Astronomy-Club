@@ -32,8 +32,7 @@ const userScema=mongoose.Schema(
             }
         },
         profileImage:{
-            data: Buffer,
-            contentType: String
+            type:String,
         },
         phoneNumber:{
             type:String,
