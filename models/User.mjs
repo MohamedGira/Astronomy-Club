@@ -1,9 +1,10 @@
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import evalidator from "validator";
-import bcrypt from "bcrypt";
 import { UserRole } from "./UserType.mjs";
 import phoneUtils from "google-libphonenumber";
 import { AppError } from "../utils/AppError.mjs";
+
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
 
 const userScema = mongoose.Schema({
@@ -25,7 +26,7 @@ const userScema = mongoose.Schema({
       message: "password is too long",
     },
   },
-  passwordConfirm:{
+  passwordConfirm: {
     type: String,
     required: [true, "password confirmation is required"],
   },
@@ -69,22 +70,30 @@ const userScema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "UserType",
     default: "6417697b843a6c0bf935c86e",
-  }
-  
+  },
+  confirmed: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+  confirmationToken: {
+    type: String,
+  },
 });
 
 //check that passwords match
 userScema.pre("save", function (next) {
-  if (this.password!=this.passwordConfirm) return next(new AppError(400, "passwords doesn't match"));
-  this.passwordConfirm=undefined
+  if (this.password != this.passwordConfirm)
+    return next(new AppError(400, "passwords doesn't match"));
+  this.passwordConfirm = undefined;
   next();
 });
-
 
 //check that role foriegn key is valid
 userScema.pre("save", async function (next) {
   const data = await UserRole.find({ _id: this.role });
-  if (data.length == 0) return next(new AppError(400, "invalid role id"));
+  if (data.length == 0)
+    return next(new AppError(400, "invalid role id"));
   next();
 });
 

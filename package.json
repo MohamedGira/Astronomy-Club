@@ -28,7 +28,10 @@
     "imagemin": "^8.0.1",
     "imagemin-mozjpeg": "^10.0.0",
     "imagemin-pngquant": "^9.0.2",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.2",
+    "nodemailer": "^6.9.1",
+    "nodemailer-juice": "^1.0.1",
     "validator": "^13.9.0"
   },
   "type": "module"
