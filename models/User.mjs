@@ -25,6 +25,7 @@ const userScema = mongoose.Schema({
       },
       message: "password is too long",
     },
+    select:false
   },
   passwordConfirm: {
     type: String,
