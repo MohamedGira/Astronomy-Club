@@ -6,7 +6,6 @@ import express from 'express';
 import dotenv from "dotenv";
 import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
-import { catchAsync } from "./utils/catchAsync.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
 
 process.on('uncaughtException',err=>{
