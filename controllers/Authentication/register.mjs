@@ -6,20 +6,14 @@ import { fileURLToPath } from "url";
 import { User } from "../../models/User.mjs";
 import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
-import { MailSender } from "../../utils/mailSender.mjs";
+import { emailer } from "../../utils/mailSender.mjs";
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const emailer = new MailSender(
-  process.env.SMTP_HOST,
-  process.env.SMTP_PORT,
-  false,
-  process.env.APP_EMAIL,
-  process.env.APP_PASSWORD
-);
+
 
 export const registerUser = async (req, res, next) => {
     const user = new User({

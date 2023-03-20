@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer'
 import inLineCss from 'nodemailer-juice';
 import { AppError } from './AppError.mjs';
+import dotenv from "dotenv";
+dotenv.config();
 
 
 export const MailSender = class MailSender{
@@ -50,5 +52,11 @@ export const MailSender = class MailSender{
     }
 }
 
-
+export const emailer = new MailSender(
+  process.env.SMTP_HOST,
+  process.env.SMTP_PORT,
+  false,
+  process.env.APP_EMAIL,
+  process.env.APP_PASSWORD
+);
 /* */
