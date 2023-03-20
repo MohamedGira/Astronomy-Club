@@ -4,6 +4,8 @@ import evalidator from "validator";
 import { UserRole } from "./UserType.mjs";
 import phoneUtils from "google-libphonenumber";
 import { AppError } from "../utils/AppError.mjs";
+import dotenv from "dotenv";
+dotenv.config()
 
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
 
@@ -100,7 +102,7 @@ userScema.pre("save", async function (next) {
 
 //encrypt password before storing it to the database
 userScema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(this.password, 3);
+  this.password = await bcrypt.hash(this.password, parseInt(process.env.HASH_SALT));
   next();
 });
 
