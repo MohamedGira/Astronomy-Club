@@ -13,6 +13,7 @@ const userScema = mongoose.Schema({
     minLength: [2, "username is too short"],
     maxLength: [300, "username is too long"],
   },
+
   password: {
     type: String,
     required: [true, "password is required"],
@@ -23,6 +24,10 @@ const userScema = mongoose.Schema({
       },
       message: "password is too long",
     },
+  },
+  passwordConfirm:{
+    type: String,
+    required: [true, "password confirmation is required"],
   },
   email: {
     type: String,
@@ -35,9 +40,11 @@ const userScema = mongoose.Schema({
       message: "Invalid email format",
     },
   },
+
   profileImage: {
     type: String,
   },
+
   phoneNumber: {
     type: String,
     minLength: [10, "invalid phone number,tshort"],
@@ -57,12 +64,22 @@ const userScema = mongoose.Schema({
       message: "invalid phone number",
     },
   },
+
   role: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "UserType",
     default: "6417697b843a6c0bf935c86e",
-  },
+  }
+  
 });
+
+//check that passwords match
+userScema.pre("save", function (next) {
+  if (this.password!=this.passwordConfirm) return next(new AppError(400, "passwords doesn't match"));
+  this.passwordConfirm=undefined
+  next();
+});
+
 
 //check that role foriegn key is valid
 userScema.pre("save", async function (next) {
