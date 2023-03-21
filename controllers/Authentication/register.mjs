@@ -75,7 +75,7 @@ export const confirmRegisteration = async (req, res, next) => {
         if (err) {
             //expired token
             await User.findByIdAndDelete(user._id);
-            return next(new AppError(201, "request expired, register again"));
+            return next(new AppError(401, "request expired, register again"));
         } else {
             //token is valid
             await User.findOneAndUpdate(

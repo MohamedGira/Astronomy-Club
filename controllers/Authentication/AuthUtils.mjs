@@ -9,7 +9,7 @@ export const isLoggedIn = (req, res, next) => {
         throw err;
       }
       if (decodedvalues.username)
-        return next(new AppError(400, "a user is already logged in to this device"));
+        return next(new AppError(401, "a user is already logged in to this device"));
       else return next();
     });
   }

@@ -7,6 +7,7 @@ import * as regisrationController from "../controllers/Authentication/register.m
 import * as resetPasswordController from "../controllers/Authentication/resetPassword.mjs";
 
 export const AuthRouter=express.Router()
+
 AuthRouter.route('/register').post(isLoggedIn,catchAsync(regisrationController.registerUser))
 AuthRouter.route('/confirmRegistration').get(catchAsync(regisrationController.confirmRegisteration))
 

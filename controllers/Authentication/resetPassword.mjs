@@ -57,7 +57,7 @@ export const changePassword = async (req, res, next) => {
         process.env.RESET_JWT_KEY,
         async (err, decodedvalues) => {
         if (err) 
-            return next(new AppError(201, "request Expired"));
+            return next(new AppError(401, "token Expired"));
 
         const user = await User.findOne({email: decodedvalues.email}).select('+password');
 
