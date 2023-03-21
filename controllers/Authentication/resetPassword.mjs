@@ -39,6 +39,7 @@ export const resetPassword = async (req, res, next) => {
     .toString()
     .replace("{myJWT}", resetToken)
     .replace("{expiration_time}", consts.PASSWORD_RESET_TIMEOUT_MINS)
+    .replace("{targetUrl}",req.protocol + '://' + req.get('host'))
     );
 
     return res.status(200).json({

@@ -43,6 +43,7 @@ export const registerUser = async (req, res, next) => {
             .toString()
             .replace("{myJWT}", confirmationToken)
             .replace("{expiration_time}", consts.REGISTRATION_TIMEOUT_MINS)
+            .replace("{targetUrl}",req.protocol + '://' + req.get('host'))
         );
     }catch(err){
         //email wasn't sent, something went wrong, user is deleted
