@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { User } from "../../models/User.mjs";
-import { resetfrontStr } from "../../utils/templates/templatesCombined"
+import { resetfrontStr } from "../../utils/templates/templatesCombined.mjs"
 import * as consts from "../../utils/consts.mjs";
 import { readFileSync } from "fs";
 dotenv.config();

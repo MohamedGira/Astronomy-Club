@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
-app.use(express.static())
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)

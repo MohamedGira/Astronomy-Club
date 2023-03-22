@@ -7,7 +7,7 @@ import { User } from "../../models/User.mjs";
 import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
-import { confirmfrontStr } from"../../utils/templates/templatesCombined"
+import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
