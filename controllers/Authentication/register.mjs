@@ -7,7 +7,7 @@ import { User } from "../../models/User.mjs";
 import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
-
+import { confirmfrontStr } from"../../utils/templates/templatesCombined"
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,9 +38,8 @@ export const registerUser = async (req, res, next) => {
     try{
         await emailer.sendHTMLMail(
             req.body.email,
-            "Reset Password",
-            readFileSync(__dirname + "\\..\\..\\utils\\templates\\confirm_registration.html")
-            .toString()
+            "Confirm Registration",
+            confirmfrontStr
             .replace("{myJWT}", confirmationToken)
             .replace("{expiration_time}", consts.REGISTRATION_TIMEOUT_MINS)
             .replace("{targetUrl}",req.protocol + '://' + req.get('host'))
@@ -49,7 +48,7 @@ export const registerUser = async (req, res, next) => {
         console.log(err)
         //email wasn't sent, something went wrong, user is deleted
         await User.findOneAndDelete({email:user.email})
-        next(new AppError(err.statusCode,'somthing went wrong :( try again'));
+        return next(new AppError(err.statusCode,'somthing went wrong :( try again'));
     }
 
     return res.status(200).json({

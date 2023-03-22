@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { User } from "../../models/User.mjs";
-import bcrypt from "bcrypt";
+import { resetfrontStr } from "../../utils/templates/templatesCombined"
 import * as consts from "../../utils/consts.mjs";
 import { readFileSync } from "fs";
 dotenv.config();
@@ -35,8 +35,7 @@ export const resetPassword = async (req, res, next) => {
     await emailer.sendHTMLMail(
     email,
     "Reset Password",
-    readFileSync(__dirname + "\\..\\..\\utils\\templates\\reset_password.html")
-    .toString()
+    resetfrontStr
     .replace("{myJWT}", resetToken)
     .replace("{expiration_time}", consts.PASSWORD_RESET_TIMEOUT_MINS)
     .replace("{targetUrl}",req.protocol + '://' + req.get('host'))
