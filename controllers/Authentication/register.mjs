@@ -46,6 +46,7 @@ export const registerUser = async (req, res, next) => {
             .replace("{targetUrl}",req.protocol + '://' + req.get('host'))
         );
     }catch(err){
+        console.log(err)
         //email wasn't sent, something went wrong, user is deleted
         await User.findOneAndDelete({email:user.email})
         next(new AppError(err.statusCode,'somthing went wrong :( try again'));
