@@ -10,8 +10,7 @@ export const login = async (req, res, next) => {
     if (!email||!password)
         return next(new AppError(400, "enter username and password"));
 
-    const user = await User.findOne({ email: email }).select('+password');
-    console.log(user)
+    const user = await User.findOne({ email: email }).select('+password').populate('role').exec();
     if (!user||! await bcrypt.compare(password, user.password)) 
         return next(new AppError(400, "invalid email or password"));
     
@@ -19,9 +18,9 @@ export const login = async (req, res, next) => {
     if (!user.confirmed) 
         return next(new AppError(401, "This account isn't confirmed, check your email"));
     
-
+    
     const token = jwt.sign(
-    { id: user._id, role: user.role, username: user.username },
+    { id: user._id, role: user.role.role, username: user.username ,email:user.email},
     process.env.JWT_KEY,
     { expiresIn: consts.LOGIN_TIMEOUT_SECS }
     );
