@@ -5,10 +5,11 @@ import imageminPngquant from 'imagemin-pngquant';
 import fs from 'fs';
 import imageminMozjpeg from 'imagemin-mozjpeg';
 import util from 'util';
+import exp from 'constants';
 
 
 
-export class Compressor{
+class Compressor{
     constructor(){
         this.MaximumSize=80;
     }
@@ -43,3 +44,33 @@ export class Compressor{
 }
 }
 
+class BufferCompressor extends Compressor{
+    constructor(){
+        super()
+    }
+    getbufferSize(imgbuffer){
+        return Buffer.byteLength(imgbuffer)/1024;
+    }
+        
+    async compressImageBuffer(buffer){
+    var inputImgSize=this.getbufferSize(buffer)
+    if(inputImgSize==0){
+        throw Error('0 file size!')
+    }
+    if(inputImgSize<=this.MaximumSize){
+        return buffer
+    }
+    var ratio=1;
+    
+    ratio=this.MaximumSize/inputImgSize
+    const file = await imagemin.buffer(buffer, {
+        plugins: [
+            imageminMozjpeg(),
+            imageminPngquant()
+        ]
+    });
+    return file;
+    }
+}
+export const compressor=new Compressor()
+export const bufferCompressor=new BufferCompressor()

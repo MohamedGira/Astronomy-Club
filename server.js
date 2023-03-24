@@ -8,11 +8,15 @@ import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorized } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
-import { Location } from "./models/Events/subSchemas/Location.mjs";
-import { GatheringPoint, GatheringPointSchema } from "./models/Events/subSchemas/gatheringPoint.mjs";
-import {Event}  from "./models/Events/Event.mjs"
 import { EventRouter } from "./Routers/Event.mjs";
+import fileUpload from "express-fileupload";
+import { saveImage } from "./utils/image/saveImage.mjs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { catchAsync } from "./utils/catchAsync.mjs";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
     console.log('Uncaught Exception')
@@ -23,16 +27,35 @@ const app = express()
 await connectDb()
 dotenv.config()
 
-    
+   
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 app.use(cors({origin:""}))
+app.use(
+    fileUpload({
+        limits: {
+            fileSize: 150000000,
+        },
+        abortOnLimit: true,
+    })
+);
+
 
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
+app.use(express.static('upload'))
+//test image saving
+app.post('/upload',catchAsync(
+    async (req,res,next)=>{
+        if(req.files){
+            await saveImage(req.files.image,__dirname+'/upload/')
+            return res.status(200).json({message:'success'})
+        }
+        return res.status(500).json({message:'fail'})
+    }
+))
 //testing authorizer functionality
-
 app.get('/vishome',isAuthorized('visitor'),(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })

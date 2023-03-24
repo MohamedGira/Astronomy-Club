@@ -1,6 +1,12 @@
 import { Event } from "../../../models/Events/Event.mjs";
-import { LocationSchema } from "../../../models/Events/subSchemas/Location.mjs";
-LocationSchema
+import path from "path";
+
+import { writeFile, writeFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { AppError } from "../../../utils/AppError.mjs";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+import {saveImage} from '../../../utils/image/saveImage.mjs'
 /*  
     Title:String,
     Type:{
@@ -18,7 +24,26 @@ LocationSchema
     checkpoints:[CheckpointSchema],
     gatheringPoints:[GatheringPointSchema] */
 
+
+
+
 export const createEvent= async (req,res,next)=>{
+    const banner=undefined
+    const eventImages=[]
+    const speakersImages=[]
+    if (req.files){
+    banner=req.files.banner
+    for(key in req.files){
+        if (/event-image/.test(key)){
+            const evimg=await saveImage(req.files.key,relativeUploadPath)
+            eventImages.append(evimg)
+        }
+        else if (/speaker-image/.test(key)){
+            const spimg=await saveImage(req.files.key,relativeUploadPath)
+            speakersImages.append(spimg)
+        }
+    }
+    }
     const event=await Event.create({
         title:req.body.title,
         type:req.body.type,
