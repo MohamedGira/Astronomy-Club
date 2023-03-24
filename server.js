@@ -8,10 +8,8 @@ import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorized } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
-import { Location } from "./models/Events/subSchemas/Location.mjs";
-import { GatheringPoint, GatheringPointSchema } from "./models/Events/subSchemas/gatheringPoint.mjs";
-import {Event}  from "./models/Events/Event.mjs"
 import { EventRouter } from "./Routers/Event.mjs";
+import fileUpload from "express-fileupload";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -28,11 +26,22 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 app.use(cors({origin:""}))
+app.use(
+    fileUpload({
+        limits: {
+            fileSize: 10000000,
+        },
+        abortOnLimit: true,
+    })
+);
+
 
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
-//testing authorizer functionality
+app.use(express.static('upload'))
 
+
+//testing authorizer functionality
 app.get('/vishome',isAuthorized('visitor'),(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })
