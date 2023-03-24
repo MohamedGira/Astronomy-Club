@@ -1,20 +1,25 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util'
+import { User } from '../../../models/Users/User.mjs';
 import { AppError } from '../../../utils/AppError.mjs';
 
 
-export const isAuthorized = (role) => {
+export const isAuthorized = (...roles) => {
     return async (req, res, next) => {
         const token = req.cookies.jwt;
-        const verifypromisfied = promisify(jwt.verify);
+
         try {
-            const decodedValues = await verifypromisfied(token, process.env.JWT_KEY)
-            if (decodedValues.role !== role)
-                return next(new AppError(401, "unauthorized access to this endpoint"));
+            const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)
+            //meh
+            if(!await User.findById(decodedValues.id))
+                return next(new AppError(401, "no user exists with this id"));
+                
+            if (!roles.includes(decodedValues.role))
+                return next(new AppError(403, "unauthorized access to this endpoint"));
             next()
         }
         catch (err) {
-            return next(new AppError(401, "unauthorized access to this endpoint, no signed in account"))
+            return next(new AppError(403, "unauthorized access to this endpoint, no signed in account"))
         }
     }
 }
