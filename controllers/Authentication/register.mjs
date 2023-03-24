@@ -7,12 +7,33 @@ import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
+import { bufferCompressor} from "../../utils/image/ImageCompression/compressor.mjs";
+import { writeFile } from "fs";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
+async function saveImage(image){
+//uploaded file is not image
+if (image && !/^image/.test(image.mimetype))    
+    return next(new AppError('400','the provided file\'s extension is not a supported image type'))
+
+const imgdir=__dirname.replace(/\\/g,'/') + '/../../upload/'
+const imgname= `${Date.now()}${parseInt(Math.random()*1000).toString()}${image.mimetype.replace('image/','.')}`
+
+//compressing the image
+const compressedImg=await bufferCompressor.compressImageBuffer(image.data)
+
+//saving the compressed image
+writeFile(imgdir+imgname,compressedImg, "binary", (err) => {
+if (err)
+    return next(new AppError(500,err.message))
+//image saved successfully,
+
+})
+}
 
 export const registerUser = async (req, res, next) => {
     const user = new User({
@@ -30,8 +51,14 @@ export const registerUser = async (req, res, next) => {
     });
     user.confirmationToken = confirmationToken;
     
+    //user uploaded profileImage     
+    if (req.files)
+    {
+    const  image  = req.files.profileImage;
+    const img=await saveImage(image)
+    user.profileImage=img
+    }
     await user.save();    //user is saved successfully
-
 
     //sending an email for the user
     try{
