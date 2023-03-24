@@ -11,6 +11,8 @@ import { isAuthorized } from "./controllers/Authentication/authorizationMw.mjs/A
 import { Location } from "./models/Events/subSchemas/Location.mjs";
 import { GatheringPoint, GatheringPointSchema } from "./models/Events/subSchemas/gatheringPoint.mjs";
 import {Event}  from "./models/Events/Event.mjs"
+import { EventRouter } from "./Routers/Event.mjs";
+
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
     console.log('Uncaught Exception')
@@ -27,9 +29,8 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 app.use(cors({origin:""}))
 
-
 app.use('/api/v1/auth/',AuthRouter)
-
+app.use('/api/v1/events/',EventRouter)
 //testing authorizer functionality
 
 app.get('/vishome',isAuthorized('visitor'),(req,res,next)=>{
@@ -48,7 +49,7 @@ app.use(ErrorHandler)
 
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
 
-
+    
 
 
 
