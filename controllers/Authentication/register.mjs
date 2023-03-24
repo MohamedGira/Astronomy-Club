@@ -27,6 +27,7 @@ const imgname= `${Date.now()}${parseInt(Math.random()*1000).toString()}${image.m
 const compressedImg=await bufferCompressor.compressImageBuffer(image.data)
 
 //saving the compressed image
+//will consome time, you can make it async //if its impossible to to get writing error
 writeFileSync(imgdir+imgname,compressedImg, "binary")
 return imgname
 
@@ -53,7 +54,7 @@ export const registerUser = async (req, res, next) => {
     {
     const  image  = req.files.profileImage;
     const img=await saveImage(image)
-    user.profileImage=img
+    user.profileImage=img 
     }
     await user.save();    //user is saved successfully
 
