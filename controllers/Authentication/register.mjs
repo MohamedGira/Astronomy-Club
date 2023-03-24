@@ -1,9 +1,8 @@
 import path from "path";
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
-import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
-import { User } from "../../models/User.mjs";
+import { User } from "../../models/Users/User.mjs";
 import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";

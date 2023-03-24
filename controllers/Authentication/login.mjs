@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
-import { User } from "../../models/User.mjs";
+import { User } from "../../models/Users/User.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import * as consts from "../../utils/consts.mjs";
 

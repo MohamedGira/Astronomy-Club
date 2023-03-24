@@ -8,8 +8,9 @@ import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorized } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
-import { User } from "./models/User.mjs";
-
+import { Location } from "./models/Events/subSchemas/Location.mjs";
+import { GatheringPoint, GatheringPointSchema } from "./models/Events/subSchemas/gatheringPoint.mjs";
+import {Event}  from "./models/Events/Event.mjs"
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
     console.log('Uncaught Exception')
@@ -45,7 +46,11 @@ app.all('*',(req,res,next)=>{
 app.use(ErrorHandler)
 
 
-const server= app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
+const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
+
+
+
+
 
 //saftey net
 process.on('unhandledRejection',err=>{

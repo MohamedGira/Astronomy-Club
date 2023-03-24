@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
-import { User } from "../../models/User.mjs";
+import { User } from "../../models/Users/User.mjs";
 import { resetfrontStr } from "../../utils/templates/templatesCombined.mjs"
 import * as consts from "../../utils/consts.mjs";
 import { readFileSync } from "fs";

@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 import evalidator from "validator";
 import { UserRole } from "./UserType.mjs";
 import phoneUtils from "google-libphonenumber";
-import { AppError } from "../utils/AppError.mjs";
+
 import dotenv from "dotenv";
+import { AppError } from "../../utils/AppError.mjs";
 dotenv.config()
 
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
