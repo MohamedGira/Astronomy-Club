@@ -7,7 +7,11 @@ import { emailer } from "../../utils/mailSender.mjs";
 import { User } from "../../models/Users/User.mjs";
 import { resetfrontStr } from "../../utils/templates/templatesCombined.mjs"
 import * as consts from "../../utils/consts.mjs";
-import { readFileSync } from "fs";
+import { appendFile, readFileSync } from "fs";
+import bcrypt from "bcrypt";
+import { promisify } from "util";
+import { catchAsync } from "../../utils/catchAsync.mjs";
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -47,6 +51,7 @@ export const resetPassword = async (req, res, next) => {
     
   };
 
+//called from the email
 export const changePassword = async (req, res, next) => {
     const newPassword = req.body.password;
     const confirm_newPassword = req.body.confirm_password;
@@ -82,3 +87,36 @@ export const changePassword = async (req, res, next) => {
         }
     );
 };
+
+//called from within
+export const updatePassword =catchAsync (async (req, res, next) => {
+    
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+    const confirmPassword = req.body.confirmPassword;
+    var token = req.cookies.jwt;
+    if(!token)
+        return next(new AppError(401, "no signed in user"))
+    const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)
+    const user=await User.findById(decodedValues.id).select('+password').populate('role').exec();
+    if(!user)
+        next(new AppError('401','invalid user id'))
+    if(! await bcrypt.compare(oldPassword, user.password))
+        next(new AppError('401','invalid old password'))
+    user.password=newPassword
+    user.passwordConfirm=confirmPassword
+    await user.save()
+    
+    token =  jwt.sign(
+        { id: user._id, role: user.role.role, username: user.username ,email:user.email},
+        process.env.JWT_KEY,
+        { expiresIn: consts.LOGIN_TIMEOUT_SECS }
+        );  
+    return res
+    .cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
+    .status(200)
+    .json({
+            message: "password changed successfully",
+        user: user._id,
+    });
+})
