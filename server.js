@@ -14,6 +14,9 @@ import { saveImage } from "./utils/image/saveImage.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { catchAsync } from "./utils/catchAsync.mjs";
+import { TicketRouter } from "./Routers/Ticket.mjs";
+import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
+import { isLoggedIn, protect } from "./controllers/Authentication/AuthUtils.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,9 +45,11 @@ app.use(
 );
 
 
+app.use(express.static('upload'))
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
-app.use(express.static('upload'))
+app.use('/api/v1/tickets/',TicketRouter)
+
 //test image saving
 app.post('/upload',catchAsync(
     async (req,res,next)=>{
@@ -55,6 +60,9 @@ app.post('/upload',catchAsync(
         return res.status(500).json({message:'fail'})
     }
 ))
+//test image saving
+app.patch('/updatePassword',protect,    updatePassword
+)
 //testing authorizer functionality
 app.get('/vishome',isAuthorized('visitor'),(req,res,next)=>{
     return res.status(200).json({home:'home'})
