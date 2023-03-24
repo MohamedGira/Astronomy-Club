@@ -1,37 +1,24 @@
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
-import { fileURLToPath } from "url";
 import { User } from "../../models/Users/User.mjs";
 import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
-import { bufferCompressor} from "../../utils/image/ImageCompression/compressor.mjs";
-import { writeFile, writeFileSync } from "fs";
+import {saveImage} from '../../utils/image/saveImage.mjs'
+
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { writeFile, writeFileSync } from "fs";
+import { bufferCompressor} from "../../utils/image/ImageCompression/compressor.mjs";
 
+const relativeUploadPath='/../../upload/images/'
 
-async function saveImage(image){
-//uploaded file is not image
-if (image && !/^image/.test(image.mimetype))    
-    throw new AppError('400','the provided file\'s extension is not a supported image type')
-
-const imgdir=__dirname.replace(/\\/g,'/') + '/../../upload/images/'
-const imgname= `${Date.now()}${parseInt(Math.random()*1000).toString()}${image.mimetype.replace('image/','.')}`
-
-//compressing the image
-const compressedImg=await bufferCompressor.compressImageBuffer(image.data)
-
-//saving the compressed image
-//will consome time, you can make it async //if its impossible to to get writing error
-writeFileSync(imgdir+imgname,compressedImg, "binary")
-return imgname
-
-}
 
 export const registerUser = async (req, res, next) => {
     const user = new User({
@@ -53,7 +40,7 @@ export const registerUser = async (req, res, next) => {
     if (req.files)
     {
     const  image  = req.files.profileImage;
-    const img=await saveImage(image)
+    const img=await saveImage(image,__dirname+relativeUploadPath)
     user.profileImage=img 
     }
     await user.save();    //user is saved successfully
