@@ -30,17 +30,20 @@ export const createEvent= async (req,res,next)=>{
         visibility:true,
         date:req.body.date,
         location:{
-            landmark:req.body.landmark,
+            landmark:req.body.location.landmark,
             location:{
-            coordinates:[req.body.latitude,req.body.longitude]
+            coordinates:req.body.location.location.coordinates
             }
         },
         checkpoints:req.body.checkpoints,
         gatheringPoints:req.body.gatheringPoints
     })
 
-    console.log(event)
-    return res.status(200);
+    
+    return res.status(200).json({
+        message:"event created successfully",
+        event
+    });
 
 }
 
