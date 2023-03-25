@@ -1,12 +1,13 @@
-import { Event } from "../../../models/Events/Event.mjs";
+import { Event } from "../../models/Events/Event.mjs";
 import path from "path";
 
 import { writeFile, writeFileSync } from "fs";
 import { fileURLToPath } from "url";
-import { AppError } from "../../../utils/AppError.mjs";
+import { AppError } from "../../utils/AppError.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import {saveImage} from '../../../utils/image/saveImage.mjs'
+import {saveImage} from '../../utils/image/saveImage.mjs'
+import { catchAsync } from "../../utils/catchAsync.mjs";
 /*  
     Title:String,
     Type:{
@@ -18,7 +19,7 @@ import {saveImage} from '../../../utils/image/saveImage.mjs'
     images:[String],
     capacity:Number,
     price:Number,
-    visibility:Boolean,
+    isVisible:Boolean,
     date:Date,
     location:LocationSchema,
     checkpoints:[CheckpointSchema],
@@ -27,7 +28,7 @@ import {saveImage} from '../../../utils/image/saveImage.mjs'
 
 
 
-export const createEvent= async (req,res,next)=>{
+export const createEvent=catchAsync( async (req,res,next)=>{
     const banner=undefined
     const eventImages=[]
     const speakersImages=[]
@@ -52,7 +53,7 @@ export const createEvent= async (req,res,next)=>{
         images:["not Implemented yet"],
         capacity:req.body.capacity,
         price:req.body.price,
-        visibility:true,
+        isVisible:true,
         date:req.body.date,
         location:{
             landmark:req.body.location.landmark,
@@ -70,5 +71,5 @@ export const createEvent= async (req,res,next)=>{
         event
     });
 
-}
+})
 

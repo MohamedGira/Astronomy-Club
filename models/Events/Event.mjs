@@ -28,7 +28,7 @@ export const EventSchema = new mongoose.Schema({
         type:Number,
         required:true,
     },
-    visibility:Boolean,
+    isVisible:Boolean,
     date:{
         type:Date,
         required:true,

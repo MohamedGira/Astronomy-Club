@@ -24,3 +24,18 @@ export const isAuthorized = (...roles) => {
     }
 }
 
+export const isAuthorizedPlain = async(req,...roles) => {    
+        const token = req.cookies.jwt;
+        
+        try {
+            const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)                
+            console.log(decodedValues)
+            if (roles.includes(decodedValues.role))
+                return true
+            return false
+        }
+        catch (err) {
+            return false
+        }
+}
+

@@ -49,7 +49,7 @@ ticketSchema.pre("save", async function (next) {
   //YAGNI
   if (!user.confirmed)
     return next(new AppError(400, "user is not confirmed"));
-  if (!event.visibility)
+  if (!event.isVisible)
     return next(new AppError(400, "you can't make a reservation for this event"));
   
   const ticketCount=await Ticket.find({event:this.event}).count()

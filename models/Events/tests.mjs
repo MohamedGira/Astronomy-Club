@@ -14,7 +14,7 @@ const ec=await Event.create({
     "images":["link","link","link"],
     "capacity":50,
     "price":20,
-    "visibility":true,
+    "isVisible":true,
     "date":Date.now(),
     "location":{
         "landmark":"hi",
@@ -86,7 +86,7 @@ const ev={
     "images":["link","link","link"],
     "capacity":50,
     "price":20,
-    "visibility":true,
+    "isVisible":true,
     "date":"2023-03-24T13:14:17.238Z",
     "location":{
         "landmark":"hi",
