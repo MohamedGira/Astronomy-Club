@@ -6,6 +6,11 @@ import {speakerSchema} from './Speaker.mjs'
 export const CheckpointSchema = new mongoose.Schema({
     name:{type:String,required:true},
     description:{type:String,required:true},
+    event:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Event',
+        required:true
+    },
     startsAt:{
         type:Date,
         required:true
@@ -32,3 +37,4 @@ CheckpointSchema.pre('save',function(next){
         return next(new AppError('400','check point is not of type speaker however,there\'s speaker was provided'))
     next()
 })
+export const Checkpoint= mongoose.model('CheckPoint',CheckpointSchema)

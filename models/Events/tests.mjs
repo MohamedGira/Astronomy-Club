@@ -145,3 +145,15 @@ const ev={
         }
     ]
 }
+
+//updatecheckpoint
+
+const b={
+    "name":"a",
+    "description":"b",
+    "location":{
+    "landmark":"arena",
+    "location":{"coordinates":[20,20]
+    }
+    }
+}
