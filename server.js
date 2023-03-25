@@ -17,6 +17,7 @@ import { catchAsync } from "./utils/catchAsync.mjs";
 import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
 import { isLoggedIn, protect } from "./controllers/Authentication/AuthUtils.mjs";
+import { UserRouter } from "./Routers/User.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,6 +50,7 @@ app.use(express.static('upload'))
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/tickets/',TicketRouter)
+app.use('/api/v1/users/',UserRouter)
 
 //test image saving
 app.post('/upload',catchAsync(
