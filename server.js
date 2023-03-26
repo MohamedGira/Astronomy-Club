@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
-import { isAuthorized } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 import { EventRouter } from "./Routers/Event.mjs";
 import fileUpload from "express-fileupload";
 import { saveImage } from "./utils/image/saveImage.mjs";
@@ -53,7 +53,7 @@ app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/users/',UserRouter)
-app.get('/delall',isAuthorized('admin'),async(req,res,next)=>{
+app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
     await Speaker.deleteMany({})
     await Checkpoint.deleteMany({})
@@ -73,10 +73,10 @@ app.post('/upload',catchAsync(
 app.patch('/updatePassword',protect,    updatePassword
 )
 //testing authorizer functionality
-app.get('/vishome',isAuthorized('visitor'),(req,res,next)=>{
+app.get('/vishome',isAuthorizedMw('visitor'),(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })
-app.get('/adhome',isAuthorized('admin'),(req,res,next)=>{
+app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })
  

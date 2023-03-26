@@ -4,7 +4,7 @@ import { User } from '../../../models/Users/User.mjs';
 import { AppError } from '../../../utils/AppError.mjs';
 
 
-export const isAuthorized = (...roles) => {
+export const isAuthorizedMw = (...roles) => {
     return async (req, res, next) => {
         const token = req.cookies.jwt;
 
@@ -24,7 +24,7 @@ export const isAuthorized = (...roles) => {
     }
 }
 
-export const isAuthorizedPlain = async(req,...roles) => {    
+export const isAuthorized = async(req,...roles) => {    
         const token = req.cookies.jwt;
         
         try {
