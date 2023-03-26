@@ -1,5 +1,5 @@
 import express from "express";
-import { getCheckpoints } from "../controllers/Event/checkpoints/getChechpoints.mjs";
+import { getCheckpoints } from "../controllers/Event/checkpoints/getCheckpoints.mjs";
 import { addCheckpoint, deleteCheckpoint, getCheckpoint, updateCheckpoint } from "../controllers/Event/checkpoints/CRUDCheckpoint.mjs";
 import { createEvent } from "../controllers/Event/createEvent.mjs";
 import { getEvent } from "../controllers/Event/getEvent.mjs";

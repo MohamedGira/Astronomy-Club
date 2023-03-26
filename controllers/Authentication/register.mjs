@@ -22,7 +22,7 @@ const relativeUploadPath='/../../upload/images/'
 
 
 export const registerUser = async (req, res, next) => {
-    filtereduser=filterObj(req.body,User.schema.paths)
+    const filtereduser=filterObj(req.body,User.schema.paths)
     const user = new User(filtereduser);
     
     //creating confirmation JWT
