@@ -29,7 +29,6 @@ export const isAuthorizedPlain = async(req,...roles) => {
         
         try {
             const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)                
-            console.log(decodedValues)
             if (roles.includes(decodedValues.role))
                 return true
             return false
