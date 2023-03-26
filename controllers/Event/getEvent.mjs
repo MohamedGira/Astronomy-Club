@@ -1,7 +1,7 @@
 import { Event } from "../../models/Events/Event.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { isAuthorizedPlain } from "../Authentication/authorizationMw.mjs/Authorizer.mjs";
-import { getCheckpointsbyId } from "./checkpoints/getChechpoints.mjs";
+import { getCheckpointsbyId } from "./checkpoints/getCheckpoints.mjs";
 
 
 export const getEvent= catchAsync( async (req,res,next)=>{
