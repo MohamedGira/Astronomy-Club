@@ -8,6 +8,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import {saveImage} from '../../utils/image/saveImage.mjs'
 import { catchAsync } from "../../utils/catchAsync.mjs";
+import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
+import { createCheckpoint } from "./checkpoints/CRUDCheckpoint.mjs";
+import { Checkpoint } from "../../models/Events/subSchemas/checkpoint.mjs";
 /*  
     Title:String,
     Type:{
@@ -29,41 +32,27 @@ import { catchAsync } from "../../utils/catchAsync.mjs";
 
 
 export const createEvent=catchAsync( async (req,res,next)=>{
-    const banner=undefined
-    const eventImages=[]
-    const speakersImages=[]
-    if (req.files){
-    banner=req.files.banner
-    for(key in req.files){
-        if (/event-image/.test(key)){
-            const evimg=await saveImage(req.files.key,relativeUploadPath)
-            eventImages.append(evimg)
+    const bannerFieldname=req.body.banner||''
+    const imgsArrName=req.body.images||[]
+
+    
+    
+    const body=jsonifyObj(req.body)
+    const filteredEvent=filterObj(body,Event.schema.paths)
+    const event=await Event.create(filteredEvent)
+    if(body.checkpoints){
+        //checkpoints exists
+        try{
+        for (let checkpoint in req.body.checkpoints){
+            await createCheckpoint(req.body.checkpoints[checkpoint],event._id,req.files)
         }
-        else if (/speaker-image/.test(key)){
-            const spimg=await saveImage(req.files.key,relativeUploadPath)
-            speakersImages.append(spimg)
+        }
+        catch(err){
+            const del=await Event.findByIdAndDelete(event._id)
+            console.log(`couldn\'t create event ${del.title}`)
+            throw(err)
         }
     }
-    }
-    const event=await Event.create({
-        title:req.body.title,
-        type:req.body.type,
-        description:req.body.description,
-        banner:"not Implemented yet",
-        images:["not Implemented yet"],
-        capacity:req.body.capacity,
-        price:req.body.price,
-        isVisible:true,
-        date:req.body.date,
-        location:{
-            landmark:req.body.location.landmark,
-            location:{
-            coordinates:req.body.location.location.coordinates
-            }
-        },
-        checkpoints:req.body.checkpoints,
-        gatheringPoints:req.body.gatheringPoints
-    })
 
     
     return res.status(200).json({
