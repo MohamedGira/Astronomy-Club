@@ -4,12 +4,13 @@ import { User } from '../../models/Users/User.mjs';
 import { AppError } from '../../utils/AppError.mjs';
 import { catchAsync } from '../../utils/catchAsync.mjs';
 
-export const isLoggedIn = (req, res, next) => {
+export const isLoggedInMw = (req, res, next) => {
     const token = req.cookies.jwt;
     if (!token) return next();
     return jwt.verify(token, process.env.JWT_KEY, (err, decodedvalues) => {
       if (err) {
-        throw err;
+        //jwt expired
+        return next()
       }
       if (decodedvalues.username)
         return next(new AppError(401, "a user is already logged in to this device"));

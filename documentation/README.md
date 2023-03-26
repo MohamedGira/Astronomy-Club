@@ -25,6 +25,7 @@ body:
     email:'',
     username:'',
     password:'',
+    passwordConfirm:'',
     profileImage:'', //optional
     phoneNumber:'',  //optional
 }
@@ -44,7 +45,7 @@ body:
 
 ---
 
-### Registration Confirmaion (HTML in email)
+### Registration Confirmaion (HTML in email) 
 ```api/v1/auth/confirmRegistration```
 
 request:get

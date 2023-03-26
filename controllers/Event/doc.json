@@ -7,7 +7,7 @@ Event= {
     images:[Image],
     capacity:Number,
     price:Number,
-    visibility:Boolean,
+    isVisible:Boolean,
     date:Date_time,
     location:{
         landmark:String,
@@ -55,7 +55,7 @@ fullobject=
     images:['uplaoad image','uplaoad image','uplaoad image'],
     capacity:50,
     price:20,
-    visibility:true,
+    isVisible:true,
     date:Date.now(),
     location:{
         landmark:'hi',

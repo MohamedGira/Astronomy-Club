@@ -16,19 +16,14 @@ dotenv.config();
 
 import { writeFile, writeFileSync } from "fs";
 import { bufferCompressor} from "../../utils/image/ImageCompression/compressor.mjs";
+import { filterObj } from "../../utils/objOp.mjs";
 
 const relativeUploadPath='/../../upload/images/'
 
 
 export const registerUser = async (req, res, next) => {
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm,
-        email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
-        username: req.body.username,
-    });
+    const filtereduser=filterObj(req.body,User.schema.paths)
+    const user = new User(filtereduser);
     
     //creating confirmation JWT
     const confirmationToken = jwt.sign({}, process.env.CONFIRMATION_JWT_KEY, {

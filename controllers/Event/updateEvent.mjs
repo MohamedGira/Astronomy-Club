@@ -1,9 +1,11 @@
-import { Event, EventSchema } from "../../../models/Events/Event.mjs";
-import { LocationSchema } from "../../../models/Events/subSchemas/Location.mjs";
-LocationSchema
+import { Event } from "../../models/Events/Event.mjs"
+import { catchAsync } from "../../utils/catchAsync.mjs"
 
 
-export const updateEvent= async (req,res,next)=>{
+
+
+
+export const updateEvent= catchAsync( async (req,res,next)=>{
     const id=req.params.id
     const update={}
     for( var key in Event.schema.paths){
@@ -18,3 +20,4 @@ export const updateEvent= async (req,res,next)=>{
     })
 }
 
+)
