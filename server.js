@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
+import { frontEndRedirector } from "./Routers/frontEndRedirector.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use(cors({origin:['https://astronomy-club.vercel.app','*']}))
 
 
+app.use(frontEndRedirector)
 app.use('/api/v1/auth/',AuthRouter)
 
 app.all('*',(req,res,next)=>{

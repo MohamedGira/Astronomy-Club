@@ -1,3 +1,1 @@
-
-        process.exit(1)
-    })
+/api/v1/auth/

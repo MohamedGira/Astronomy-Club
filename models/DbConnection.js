@@ -5,7 +5,8 @@ dotenv.config()
 /* const localDB=''
 const DB=''
 if (process.env.NODE_ENV=='localdevelopment')
-     localDB = "mongodb://127.0.0.1:27017/Astronomy" */
+*/
+//const DB = "mongodb://127.0.0.1:27017/Astronomy" 
 const DB= `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSCDE}@cluster0.sq0pkrl.mongodb.net/astronomy?retryWrites=true&w=majority`
 //console.log(DB)
 mongoose.set('strictQuery', false);
