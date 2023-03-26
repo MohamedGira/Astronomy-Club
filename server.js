@@ -22,7 +22,7 @@ dotenv.config()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
-app.use(cors({origin:""}))
+app.use(cors({origin:['https://astronomy-club.vercel.app','*']}))
 
 
 app.use('/api/v1/auth/',AuthRouter)
