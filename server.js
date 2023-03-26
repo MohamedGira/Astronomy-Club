@@ -15,7 +15,7 @@ import { fileURLToPath } from "url";
 import { catchAsync } from "./utils/catchAsync.mjs";
 import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
-import { isLoggedIn, protect } from "./controllers/Authentication/AuthUtils.mjs";
+import { isLoggedInMw, protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
 import { Event } from "./models/Events/Event.mjs";
 import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
