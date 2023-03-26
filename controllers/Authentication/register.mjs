@@ -1,29 +1,48 @@
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { User } from "../../models/User.mjs";
+import { User } from "../../models/Users/User.mjs";
 import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
+import {saveImage} from '../../utils/image/saveImage.mjs'
+
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { writeFile, writeFileSync } from "fs";
+import { bufferCompressor} from "../../utils/image/ImageCompression/compressor.mjs";
+import { filterObj } from "../../utils/objOp.mjs";
+
+const relativeUploadPath='/../../upload/images/'
 
 
+export const registerMember = async (req, res, next) => {
+    const filtereduser=filterObj(req.body,User.schema.paths,['role'])
+    const user = new User(filtereduser);
+    
+
+    //user uploaded profileImage     
+    if (req.files)
+    {
+    const  image  = req.files.profileImage;
+    const img=await saveImage(image,__dirname+relativeUploadPath)
+    user.profileImage=img 
+    }
+    await user.save();    //user is saved successfully
+
+    return res.status(200).json({
+        message: "user created successfully, wait for admin to verify your registration",
+    });
+};
 
 export const registerUser = async (req, res, next) => {
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm,
-        email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
-        username: req.body.username,
-    });
+    const filtereduser=filterObj(req.body,User.schema.paths,['role'])
+    const user = new User(filtereduser);
     
     //creating confirmation JWT
     const confirmationToken = jwt.sign({}, process.env.CONFIRMATION_JWT_KEY, {
@@ -31,8 +50,14 @@ export const registerUser = async (req, res, next) => {
     });
     user.confirmationToken = confirmationToken;
     
+    //user uploaded profileImage     
+    if (req.files)
+    {
+    const  image  = req.files.profileImage;
+    const img=await saveImage(image,__dirname+relativeUploadPath)
+    user.profileImage=img 
+    }
     await user.save();    //user is saved successfully
-
 
     //sending an email for the user
     try{

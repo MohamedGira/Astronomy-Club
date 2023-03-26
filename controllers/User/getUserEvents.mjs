@@ -1,0 +1,1 @@
+//returns user tickets => which has event id =>front end will make a link to the event so that user can se event detail

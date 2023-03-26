@@ -8,6 +8,6 @@ export const logout = (req, res, next) => {
 
     jwt.verify(token, process.env.JWT_KEY, (err, decodedvalues) => {
       if (err) return next(new AppError(401, "invalid token"));
-      res.cookie("jwt", "", { maxAge: "1" }).redirect("/");
+      res.cookie("jwt", "", { maxAge: "1" }).status(200).json({message:"logged out"});
     });
 };

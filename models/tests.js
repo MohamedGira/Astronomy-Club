@@ -48,3 +48,4 @@ app.get('/',async(req,res,next)=>{
         message:'user created succesfully'
     })
 })
+
