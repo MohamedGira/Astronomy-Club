@@ -1,6 +1,7 @@
 import { Event } from "../../models/Events/Event.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { isAuthorizedPlain } from "../Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { getCheckpointsbyId } from "./checkpoints/getChechpoints.mjs";
 
 
 export const getEvent= catchAsync( async (req,res,next)=>{
@@ -16,6 +17,8 @@ export const getEvent= catchAsync( async (req,res,next)=>{
         return res.status(404).json({
             message:"couldn't find this event",
         });
+
+    event._doc.checkpoints=await getCheckpointsbyId(id)
     
     return res.status(200).json({
         message:"sucess",
