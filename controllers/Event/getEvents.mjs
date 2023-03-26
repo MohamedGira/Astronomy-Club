@@ -3,17 +3,21 @@ import { Speaker } from "../../models/Events/subSchemas/Speaker.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { isAuthorized } from "../Authentication/authorizationMw.mjs/Authorizer.mjs";
 
-export const getEvents= catchAsync( async (req,res,next)=>{
-    const id=req.params.id
-    let events;
-    if (await isAuthorized(req,'admin'))
-        events= await Event.find()
+export const getEventsQuery=async (fullaccess)=>{
+    if (fullaccess)
+        return Event.find()
     else
-        events=await Event.find({isVisible:{$ne:false}})
-    
+        return Event.find({isVisible:{$ne:false}})
+
+}
+
+export const getEvents= catchAsync( async (req,res,next)=>{
+
+    let events= await getEventsQuery(await isAuthorized(req,'admin'))
+
     if(!events)
         return res.status(404).json({
-            message:"couldn't found this event",
+            message:"couldn't find this event",
         });
 
     return res.status(200).json({

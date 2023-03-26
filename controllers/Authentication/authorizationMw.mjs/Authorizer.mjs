@@ -25,6 +25,8 @@ export const isAuthorizedMw = (...roles) => {
 }
 
 export const isAuthorized = async(req,...roles) => {    
+        if (!req.cookies)
+            return false
         const token = req.cookies.jwt;
         
         try {
