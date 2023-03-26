@@ -1,4 +1,3 @@
-
 import { ErrorHandler } from "./controllers/ErrorContrller.mjs";
 import { connectDb } from "./models/DbConnection.js";
 import cookieParser from "cookie-parser";
@@ -18,6 +17,9 @@ import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
 import { isLoggedIn, protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
+import { Event } from "./models/Events/Event.mjs";
+import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
+import { Checkpoint } from "./models/Events/subSchemas/checkpoint.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,7 +53,12 @@ app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/users/',UserRouter)
-
+app.get('/delall',isAuthorized('admin'),async(req,res,next)=>{
+    await Event.deleteMany({})
+    await Speaker.deleteMany({})
+    await Checkpoint.deleteMany({})
+    return res.json({ok:'ok'})
+})
 //test image saving
 app.post('/upload',catchAsync(
     async (req,res,next)=>{
