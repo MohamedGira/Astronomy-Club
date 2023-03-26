@@ -2,7 +2,6 @@ import express from "express";
 import {catchAsync} from "../utils/catchAsync.mjs";
 import {login} from "../controllers/Authentication/login.mjs";
 import {logout} from "../controllers/Authentication/logout.mjs";
-import { isLoggedIn } from "../controllers/Authentication/AuthUtils.mjs";
 import * as regisrationController from "../controllers/Authentication/register.mjs";
 import * as resetPasswordController from "../controllers/Authentication/resetPassword.mjs";
 import { AuthRouter } from "./Auth.mjs";
