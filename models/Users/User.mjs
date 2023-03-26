@@ -11,11 +11,17 @@ dotenv.config()
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
 
 const userScema = mongoose.Schema({
-  username: {
+  firstName: {
     type: String,
-    required: [true, "username is required"],
-    minLength: [2, "username is too short"],
-    maxLength: [300, "username is too long"],
+    required: [true, "first is required"],
+    minLength: [2, "first is too short"],
+    maxLength: [300, "first is too long"],
+  },
+  lastName: {
+    type: String,
+    required: [true, "last is required"],
+    minLength: [2, "last is too short"],
+    maxLength: [300, "last is too long"],
   },
 
   password: {

@@ -108,7 +108,7 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     await user.save()
     
     token =  jwt.sign(
-        { id: user._id, role: user.role.role, username: user.username ,email:user.email},
+        { id: user._id, role: user.role.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
         process.env.JWT_KEY,
         { expiresIn: consts.LOGIN_TIMEOUT_SECS }
         );  

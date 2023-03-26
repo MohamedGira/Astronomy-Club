@@ -21,8 +21,27 @@ import { filterObj } from "../../utils/objOp.mjs";
 const relativeUploadPath='/../../upload/images/'
 
 
+export const registerMember = async (req, res, next) => {
+    const filtereduser=filterObj(req.body,User.schema.paths,['role'])
+    const user = new User(filtereduser);
+    
+
+    //user uploaded profileImage     
+    if (req.files)
+    {
+    const  image  = req.files.profileImage;
+    const img=await saveImage(image,__dirname+relativeUploadPath)
+    user.profileImage=img 
+    }
+    await user.save();    //user is saved successfully
+
+    return res.status(200).json({
+        message: "user created successfully, wait for admin to verify your registration",
+    });
+};
+
 export const registerUser = async (req, res, next) => {
-    const filtereduser=filterObj(req.body,User.schema.paths)
+    const filtereduser=filterObj(req.body,User.schema.paths,['role'])
     const user = new User(filtereduser);
     
     //creating confirmation JWT

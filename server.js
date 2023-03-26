@@ -49,7 +49,7 @@ app.use(
 
 
 app.use(express.static('upload'))
-app.use('/api/v1/auth/',AuthRouter)
+app.use('/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/users/',UserRouter)

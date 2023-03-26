@@ -20,7 +20,37 @@ export const login = async (req, res, next) => {
     
     
     const token = jwt.sign(
-    { id: user._id, role: user.role.role, username: user.username ,email:user.email},
+    { id: user._id, role: user.role.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
+    process.env.JWT_KEY,
+    { expiresIn: consts.LOGIN_TIMEOUT_SECS }
+    );
+
+    return res
+    .cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
+    .status(200)
+    .json({
+        message: "signed in",
+        user: user._id,
+    });
+};
+
+export const loginMember = async (req, res, next) => { 
+    const email = req.body.email;
+    const password = req.body.password;
+    if (!email||!password)
+        return next(new AppError(400, "enter username and password"));
+
+    const user = await User.findOne({ email: email }).select('+password').populate('role').exec();
+    if (!user||! await bcrypt.compare(password, user.password)) 
+        return next(new AppError(400, "invalid email or password"));
+    
+
+    if (!user.confirmed) 
+        return next(new AppError(401, "This account hasn't been confirmed yet, contact adminstration if you thing something went wrong"));
+    
+    
+    const token = jwt.sign(
+    { id: user._id, role: user.role.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
     process.env.JWT_KEY,
     { expiresIn: consts.LOGIN_TIMEOUT_SECS }
     );
