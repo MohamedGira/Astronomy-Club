@@ -5,7 +5,11 @@ import { AppError } from '../../utils/AppError.mjs';
 import { catchAsync } from '../../utils/catchAsync.mjs';
 
 export const isLoggedInMw = (req, res, next) => {
-    const token = req.cookies.jwt;
+    if(!req.headers.authorization)
+      return next()
+
+    const token =req.headers.authorization.split(' ')[1]
+    //const token = req.cookies.jwt;
     if (!token) return next();
     return jwt.verify(token, process.env.JWT_KEY, (err, decodedvalues) => {
       if (err) {
@@ -20,9 +24,14 @@ export const isLoggedInMw = (req, res, next) => {
 
 
 export const protect =catchAsync(async (req, res, next) => {
-  const token = req.cookies.jwt;
+  if(!req.headers.authorization)
+  return next(new AppError(401, "signin to continue"));
+  const token =req.headers.authorization.split(' ')[1]
+  //const token = req.cookies.jwt;
   if (!token)
-   return next(new AppError(401, "signin to continue"));
+   {
+    return next(new AppError(401, "signin to continue"));
+   }
   
   const decodedvalues=await promisify( jwt.verify)(token, process.env.JWT_KEY)
   const user= await User.findById(decodedvalues.id).populate('role')
