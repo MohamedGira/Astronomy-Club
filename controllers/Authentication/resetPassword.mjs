@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { User } from "../../models/Users/User.mjs";
-import { resetfrontStr } from "../../utils/templates/templatesCombined.mjs"
+import { resetfrontNew, resetfrontStr } from "../../utils/templates/templatesCombined.mjs"
 import * as consts from "../../utils/consts.mjs";
 import { appendFile, readFileSync } from "fs";
 import bcrypt from "bcrypt";
@@ -39,10 +39,10 @@ export const resetPassword = async (req, res, next) => {
     await emailer.sendHTMLMail(
     email,
     "Reset Password",
-    resetfrontStr
+    resetfrontNew
     .replace("{myJWT}", resetToken)
     .replace("{expiration_time}", consts.PASSWORD_RESET_TIMEOUT_MINS)
-    .replace("{targetUrl}",req.protocol + '://' + req.get('host'))
+    .replace("{targetUrl}",'https://astronomy-club.vercel.app/auth/new-password')
     );
 
     return res.status(200).json({
