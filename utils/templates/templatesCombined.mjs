@@ -1,3 +1,19 @@
+import fs from 'fs'
+
+import path, { relative } from "path";
+
+import { fileURLToPath } from "url";
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+
+
+
+
+
 export const confirmfrontStr=`    <style>
 div {
     font-family: sans-serif;
@@ -68,7 +84,7 @@ img {
 </div>
 `
 
-export const resetfrontStr=`
+/* export const resetfrontStr=`
 <style>
 div {
     font-family: sans-serif;
@@ -146,7 +162,7 @@ img {
     <p>this link will expire in {expiration_time} minutes</p>
 </div>
 </div>
-`
+` */
 
 export const resetfrontNew=`
 <!doctype html>
@@ -296,3 +312,10 @@ u+.emailify .gs{background:#000;mix-blend-mode:screen;display:inline-block;paddi
 </body>
 </html>
 `
+
+export const getResetTemplate=()=>{
+    return fs.readFileSync((__dirname+'\\reset_password_new.html').replace(/\\/,'/')).toString()
+}
+export const getconfirmTemplate=()=>{
+    return fs.readFileSync((__dirname+'\\confirm_registration.html').replace(/\\/,'/')).toString()
+}

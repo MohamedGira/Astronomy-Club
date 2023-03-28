@@ -1,13 +1,13 @@
-import path from "path";
+import path, { relative } from "path";
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { User } from "../../models/Users/User.mjs";
-import { resetfrontNew, resetfrontStr } from "../../utils/templates/templatesCombined.mjs"
+import { getResetTemplate } from "../../utils/templates/templatesCombined.mjs"
 import * as consts from "../../utils/consts.mjs";
-import { appendFile, readFileSync } from "fs";
+import { appendFile, fstat, readFileSync } from "fs";
 import bcrypt from "bcrypt";
 import { promisify } from "util";
 import { catchAsync } from "../../utils/catchAsync.mjs";
@@ -36,15 +36,16 @@ export const resetPassword = async (req, res, next) => {
       { expiresIn: consts.PASSWORD_RESET_TIMEOUT_SECS }
     );
     
-    await emailer.sendHTMLMail(
+   
+     await emailer.sendHTMLMail(
     email,
     "Reset Password",
-    resetfrontNew
-    .replace("{myJWT}", resetToken)
-    .replace("{expiration_time}", consts.PASSWORD_RESET_TIMEOUT_MINS)
-    .replace("{targetUrl}",'https://astronomy-club.vercel.app/auth/new-password')
-    );
-
+    getResetTemplate()
+        .replace("{myJWT}", resetToken)
+        .replace("{expiration_time}", consts.PASSWORD_RESET_TIMEOUT_MINS)
+        .replace("{targetUrl}",`${req.headers.referrer || req.headers.referer}/auth/new-password`)
+        .replace("{email}",encodeURIComponent(email)));
+ 
     return res.status(200).json({
         message: "check your email to reset password",
     });
