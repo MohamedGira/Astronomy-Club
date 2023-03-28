@@ -10,7 +10,7 @@ export const login = async (req, res, next) => {
     if (!email||!password)
         return next(new AppError(400, "enter username and password"));
 
-    const user = await User.findOne({ email: email }).select('+password').populate('role').exec();
+    const user = await User.findOne({ email: email }).select('+password')
     if (!user||! await bcrypt.compare(password, user.password)) 
         return next(new AppError(400, "invalid email or password"));
     
@@ -19,7 +19,7 @@ export const login = async (req, res, next) => {
     
     
     const token = jwt.sign(
-    { id: user._id, role: user.role.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
+    { id: user._id, role: user.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
     process.env.JWT_KEY,
     { expiresIn: consts.LOGIN_TIMEOUT_SECS }
     );
@@ -40,17 +40,16 @@ export const loginMember = async (req, res, next) => {
     if (!email||!password)
         return next(new AppError(400, "enter username and password"));
 
-    const user = await User.findOne({ email: email }).select('+password').populate('role').exec();
+    const user = await User.findOne({ email: email }).select('+password')
     if (!user||! await bcrypt.compare(password, user.password)) 
         return next(new AppError(400, "invalid email or password"));
     user._doc.password=undefined
-    user._doc.role=user.role.role
     
     if (!user.confirmed) 
         return next(new AppError(401, "This account hasn't been confirmed yet, contact adminstration if you thing something went wrong"));
-
+    
     const token = jwt.sign(
-    { id: user._id, role: user.role.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
+    { id: user._id, role: user.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
     process.env.JWT_KEY,
     { expiresIn: consts.LOGIN_TIMEOUT_SECS }
     );
