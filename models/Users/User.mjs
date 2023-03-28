@@ -77,10 +77,10 @@ const userScema = mongoose.Schema({
   },
 
   role: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "UserRole",
-    default: "6417697b843a6c0bf935c86e",
+    type: String,
+    default: "member",
   },
+  
   confirmed: {
     type: Boolean,
     default: false,
@@ -101,7 +101,7 @@ userScema.pre("save", function (next) {
 
 //check that role foriegn key is valid
 userScema.pre("save", async function (next) {
-  const data = await UserRole.find({ _id: this.role });
+  const data = await UserRole.find({ role: this.role });
   if (data.length == 0)
     return next(new AppError(400, "invalid role id"));
   next();

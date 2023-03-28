@@ -99,7 +99,7 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     if(!token)
         return next(new AppError(401, "no signed in user"))
     const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)
-    const user=await User.findById(decodedValues.id).select('+password').populate('role').exec();
+    const user=await User.findById(decodedValues.id).select('+password')
     if(!user)
         next(new AppError('401','invalid user id'))
     if(! await bcrypt.compare(oldPassword, user.password))
@@ -109,15 +109,15 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     await user.save()
     
     token =  jwt.sign(
-        { id: user._id, role: user.role.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
+        { id: user._id, role: user.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
         process.env.JWT_KEY,
         { expiresIn: consts.LOGIN_TIMEOUT_SECS }
         );  
     return res
-    .cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
+    //.cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
     .status(200)
     .json({
             message: "password changed successfully",
-        user: user._id,
+            user: user._id,
     });
 })
