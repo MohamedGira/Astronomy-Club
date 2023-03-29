@@ -1,9 +1,9 @@
 import { AppError } from "../utils/AppError.mjs";
 const sendErrorDev = (err, res) => {
+  console.log(err.stack)
   return res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
-    stack: err.stack,
   });
 };
 

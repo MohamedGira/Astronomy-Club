@@ -3,12 +3,12 @@ import { promisify } from 'util';
 import { User } from '../../models/Users/User.mjs';
 import { AppError } from '../../utils/AppError.mjs';
 import { catchAsync } from '../../utils/catchAsync.mjs';
+import { getToken } from '../../utils/getToken.mjs';
 
 export const isLoggedInMw = (req, res, next) => {
-    if(!req.headers.authorization)
-      return next()
-
-    const token =req.headers.authorization.split(' ')[1]
+    var token =getToken(req);
+    
+    
     //const token = req.cookies.jwt;
     if (!token) return next();
     return jwt.verify(token, process.env.JWT_KEY, (err, decodedvalues) => {
@@ -24,18 +24,13 @@ export const isLoggedInMw = (req, res, next) => {
 
 
 export const protect =catchAsync(async (req, res, next) => {
-  if(!req.headers.authorization)
-  return next(new AppError(401, "signin to continue"));
-  const token =req.headers.authorization.split(' ')[1]
-  //const token = req.cookies.jwt;
+  var token=getToken(req);  
+  
   if (!token)
-   {
     return next(new AppError(401, "signin to continue"));
-   }
   
   const decodedvalues=await promisify( jwt.verify)(token, process.env.JWT_KEY)
-  const user= await User.findById(decodedvalues.id).populate('role')
-  user._doc.role=user.role.role
+  const user= await User.findById(decodedvalues.id)
   if(!user){
     return next(new AppError(401, "user with this token no longer exists"));
   }

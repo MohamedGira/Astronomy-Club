@@ -1,5 +1,5 @@
 import { ErrorHandler } from "./controllers/ErrorContrller.mjs";
-import { connectDb } from "./models/DbConnection.js";
+import { Database } from "./models/DbConnection.mjs";
 import cookieParser from "cookie-parser";
 import express from 'express';
 import dotenv from "dotenv";
@@ -16,11 +16,8 @@ import { fileURLToPath } from "url";
 import { catchAsync } from "./utils/catchAsync.mjs";
 import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
-import { isLoggedInMw, protect } from "./controllers/Authentication/AuthUtils.mjs";
+import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
-import { Event } from "./models/Events/Event.mjs";
-import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
-import { Checkpoint } from "./models/Events/subSchemas/checkpoint.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,14 +27,18 @@ process.on('uncaughtException',err=>{
     process.exit(1)
 })
 
-const app = express()
-await connectDb()
-dotenv.config()
 
-   
+const app = express()
+dotenv.config()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
+
+await Database.getInstance()
+await Database.getInstance()
+await Database.getInstance()
+await Database.getInstance()
+await Database.getInstance()
 
 app.use(cors({
    origin:'*', 
