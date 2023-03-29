@@ -35,10 +35,6 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 
 await Database.getInstance()
-await Database.getInstance()
-await Database.getInstance()
-await Database.getInstance()
-await Database.getInstance()
 
 app.use(cors({
    origin:'*', 
