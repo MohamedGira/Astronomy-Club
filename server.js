@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
-import { frontEndRedirector } from "./Routers/frontEndRedirector.mjs";
 import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 import { EventRouter } from "./Routers/Event.mjs";
 import fileUpload from "express-fileupload";
@@ -18,6 +17,7 @@ import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
 import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
+import { setCache } from "./utils/cache.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,7 +41,6 @@ app.use(cors({
    credentials:true, 
    optionSuccessStatus:200,
 }))
-app.use(frontEndRedirector)
 app.use(
     fileUpload({
         limits: {
@@ -53,7 +52,7 @@ app.use(
 
 
 app.use(express.static('upload'))
-app.use('/',AuthRouter)
+app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/users/',UserRouter)

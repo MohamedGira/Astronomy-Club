@@ -10,16 +10,16 @@ import { deactevatedEndpoint } from "../utils/deactivatedEndpoint.mjs";
 export const AuthRouter=express.Router()
 
 //AuthRouter.route('/api/v1/auth/register').post(isLoggedInMw,catchAsync(regisrationController.registerUser))
-AuthRouter.route('/api/v1/auth/register').post(isLoggedInMw,catchAsync(regisrationController.registerMember))
-AuthRouter.route('/api/v1/auth/confirmRegistration').get(catchAsync(regisrationController.confirmRegisteration))
+AuthRouter.route('/register').post(isLoggedInMw,catchAsync(regisrationController.registerMember))
+AuthRouter.route('/confirmRegistration').get(catchAsync(regisrationController.confirmRegisteration))
 
-AuthRouter.route('/api/v1/auth/logout').post(logout)
-
-
-AuthRouter.route('/api/v1/auth/resetPassword').post(isLoggedInMw,catchAsync(resetPasswordController.resetPassword))
-AuthRouter.route('/api/v1/auth/changePassword').post(catchAsync(resetPasswordController.changePassword))
+AuthRouter.route('/logout').post(logout)
 
 
+AuthRouter.route('/resetPassword').post(isLoggedInMw,catchAsync(resetPasswordController.resetPassword))
+AuthRouter.route('/changePassword').post(catchAsync(resetPasswordController.changePassword))
 
-AuthRouter.route('/api/v1/auth/login').post(isLoggedInMw,catchAsync(loginMember))
+
+
+AuthRouter.route('/login').post(isLoggedInMw,catchAsync(loginMember))
 //AuthRouter.route('/api/v1/auth/login').post(isLoggedInMw,catchAsync(login))

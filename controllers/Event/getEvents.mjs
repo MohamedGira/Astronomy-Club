@@ -12,7 +12,6 @@ export const getEventsQuery=async (fullaccess)=>{
 }
 
 export const getEvents= catchAsync( async (req,res,next)=>{
-
     let events= await getEventsQuery(await isAuthorized(req,'admin'))
 
     if(!events)
