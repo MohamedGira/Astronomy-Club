@@ -60,27 +60,28 @@ const userScema = mongoose.Schema({
     type: String,
     minLength: [10, "invalid phone number,tshort"],
     maxLength: [13, "invalid phone number,tlong"],
+    required:[true, "You must provide a phone number"],
     unique: [true, "This phone number is already in use"],
     validate: {
       validator: function () {
-        try {
-          phoneUtil.isValidNumberForRegion(
-            phoneUtil.parse(this.phoneNumber, "EG"),
-            "EG"
-          );
-        } catch (e) {
-          return false;
-        }
+          try {
+            phoneUtil.isValidNumberForRegion(
+              phoneUtil.parse(this.phoneNumber, "EG"),
+              "EG"
+            );
+          } catch (e) {
+            return false;
+          }
       },
       message: "invalid phone number",
     },
   },
 
   role: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "UserRole",
-    default: "6417697b843a6c0bf935c86e",
+    type: String,
+    default: "member",
   },
+  
   confirmed: {
     type: Boolean,
     default: false,
@@ -101,7 +102,7 @@ userScema.pre("save", function (next) {
 
 //check that role foriegn key is valid
 userScema.pre("save", async function (next) {
-  const data = await UserRole.find({ _id: this.role });
+  const data = await UserRole.find({ role: this.role });
   if (data.length == 0)
     return next(new AppError(400, "invalid role id"));
   next();
