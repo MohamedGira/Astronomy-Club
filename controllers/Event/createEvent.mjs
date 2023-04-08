@@ -1,59 +1,124 @@
 import { Event } from "../../models/Events/Event.mjs";
 import path from "path";
 
-import { writeFile, writeFileSync } from "fs";
+import {unlinkSync} from "fs";
 import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import {saveImage} from '../../utils/image/saveImage.mjs'
+import {imgdir, saveImage} from '../../utils/image/saveImage.mjs'
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
 import { createCheckpoint } from "./checkpoints/CRUDCheckpoint.mjs";
 import { Checkpoint } from "../../models/Events/subSchemas/checkpoint.mjs";
+import { createGatheringPoint } from "./gatheringPoints/CRUDGatheringPoints.mjs";
+import { GatheringPoint } from "../../models/Events/subSchemas/gatheringPoint.mjs";
+const relativeUploadPath= '../../upload'
+
 /*  
     Title:String,
-    Type:{
-        type:String,
-        enum:['trip','conference','online']
-    },
+    Type:'trip','conference','online'
     description:String,
-    banner:String,
-    images:[String],
+    banner:banner_field_name,
+    images:[image1_field_name,image2_field_name,etc],
     capacity:Number,
     price:Number,
     isVisible:Boolean,
     date:Date,
-    location:LocationSchema,
-    checkpoints:[CheckpointSchema],
-    gatheringPoints:[GatheringPointSchema] */
+    location:{landmark: String, latitude:Number,longitude:Number},
+    checkpoints:[
+        {
+        name:String
+        description:String
+        startsAt:type:Date
+        endsAt:type:Date
+        type: String: either 'speaker' or 'gathering'
+        location:{landmark: String, latitude:Number,longitude:Number}
+        //if of type speaker
+        speaker:{
+            name:String
+            title:String,
+            description:String,
+            image: speakerx_image_field_name
+            }
+        },..
+    ],
+    gatheringPoints:[
+    {
+    from:Date,
+    to:Date,
+    location: {landmark: String, latitude:Number,longitude:Number}
+    },...]
+    */
 
 
 
 
 export const createEvent=catchAsync( async (req,res,next)=>{
-    const bannerFieldname=req.body.banner||''
+    const bannerFieldname =req.body.banner||''
     const imgsArrName=req.body.images||[]
 
-    
-    
     const body=jsonifyObj(req.body)
-    const filteredEvent=filterObj(body,Event.schema.paths)
+
+    const filteredEvent=filterObj(body,Event.schema.paths,['images','checkpoints','gatheringPoints','banner'])
+    //handling excluded fields
+
     const event=await Event.create(filteredEvent)
+    
+
     if(body.checkpoints){
         //checkpoints exists
         try{
-        for (let checkpoint in req.body.checkpoints){
-            await createCheckpoint(req.body.checkpoints[checkpoint],event._id,req.files)
-        }
+            for (let checkpoint in body.checkpoints){
+                await createCheckpoint(body.checkpoints[checkpoint],event._id,req.files)
+            }
         }
         catch(err){
             const del=await Event.findByIdAndDelete(event._id)
-            console.log(`couldn\'t create event ${del.title}`)
+            console.log(`couldn\'t create event ${del.title}, checkpoints issue`)
+            throw(err)
+        }
+    }
+    if(body.gatheringPoints){
+         //checkpoints exists
+         try{
+             for (let gatheringpoint in body.gatheringPoints){
+                 await createGatheringPoint(body.gatheringPoints[gatheringpoint],event._id,req.files)
+            }
+        }
+        catch(err){
+            const del=await Event.findByIdAndDelete(event._id)
+            console.log(`couldn\'t create event ${del.title}, gathering points issues`)
             throw(err)
         }
     }
 
+    if (req.files){
+        const imgslist=[] 
+        try{
+            let keys=Object.keys(req.files)
+            for(let i in keys){
+                if (keys[i].match(/event-image-\d+/)){
+                    imgslist.push(await saveImage(req.files[keys[i]]))
+                }
+            }
+            event.images=imgslist
+            const banner=await saveImage(req.files.banner)
+            event.banner=banner
+            event.save()
+            imgslist.push(banner)
+        }catch(err){
+
+            await Event.findByIdAndDelete(event._id)
+            console.log(`couldn\'t create event, imgs/banner issue`)
+            for (img in imgslist){
+                unlinkSync(imgdir+imgslist[img])
+            }   
+            return next(new AppError(500),'image saving issue'+err.message)
+        }   
+    }
+ 
+    
     
     return res.status(200).json({
         message:"event created successfully",
