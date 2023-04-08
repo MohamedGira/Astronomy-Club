@@ -45,8 +45,17 @@ req.body.gatheringPoints=[{
 
 } */
 
-
+// for bulk edit in postman
+name:Old elbaz
+description:tare2 elnaga7
+startsAt:2023-03-19T13:14:17.238Z
+endsAt:2023-03-20T13:14:17.238Z
+type:speaker
+speaker:{"name":"farouk elbaz","title":"astrlogist","description":"good boy","image":"speakerImage"}
+location:{"landmark":"stage","location":{"coordinates":[20,20]}}
 fullobject=
+
+
 {
     title:"astronomy conference",
     type:'trip',
