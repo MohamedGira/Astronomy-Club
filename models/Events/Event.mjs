@@ -2,7 +2,9 @@ import mongoose from'mongoose'
 import { LocationSchema } from './subSchemas/Location.mjs';
 import { Checkpoint, CheckpointSchema } from './subSchemas/checkpoint.mjs';
 
-import { GatheringPointSchema } from './subSchemas/gatheringPoint.mjs';
+import { GatheringPoint, GatheringPointSchema } from './subSchemas/gatheringPoint.mjs';
+import { imgdir } from '../../utils/image/saveImage.mjs';
+import {unlinkSync} from "fs";
 
 export const EventSchema = new mongoose.Schema({
     title:{
@@ -38,18 +40,36 @@ export const EventSchema = new mongoose.Schema({
         type:LocationSchema,
         required:true
     },
-    gatheringPoints:[GatheringPointSchema]
 });
 
 EventSchema.pre(/delete/i,async function(next){
     const doc = await this.model.findOne(this.getFilter());
     if (doc){
-    const deleted=await Checkpoint.find({event:doc._id})
-    for (let elem in deleted){
-        await Checkpoint.findByIdAndDelete(deleted[elem]._id)
+    const deletedCheckpoint=await Checkpoint.find({event:doc._id})
+    for (let elem in deletedCheckpoint){
+        await Checkpoint.findByIdAndDelete(deletedCheckpoint[elem]._id)
     }
-    if(deleted)
-        console.log(`deleted ${deleted.length} checkpoints from db`)}
+    if(deletedCheckpoint)
+        console.log(`deleted ${deletedCheckpoint.length} checkpoints from db`)
+    const deletedGatheringPoint=await GatheringPoint.find({event:doc._id})
+    for (let elem in deletedGatheringPoint){
+        await GatheringPoint.findByIdAndDelete(deletedGatheringPoint[elem]._id)
+    }
+    if(deletedGatheringPoint)
+        console.log(`deleted ${deletedGatheringPoint.length} gathering from db`)
+    
+    let imgs=[...doc.images]
+    if(doc.banner){
+        imgs.push(doc.banner)
+    }
+    for (let i in imgs){
+        try{
+            unlinkSync(imgdir+imgs[i])
+        }catch(e){
+            console.log(e.message)
+        }
+    }
+    }
     next()
 })
 export const Event=mongoose.model('Event',EventSchema)
