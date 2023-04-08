@@ -3,8 +3,7 @@ import { LocationSchema } from './subSchemas/Location.mjs';
 import { Checkpoint, CheckpointSchema } from './subSchemas/checkpoint.mjs';
 
 import { GatheringPoint, GatheringPointSchema } from './subSchemas/gatheringPoint.mjs';
-import { imgdir } from '../../utils/image/saveImage.mjs';
-import {unlinkSync} from "fs";
+import { deleteFile } from '../../utils/uploads/cleanDir.mjs';
 
 export const EventSchema = new mongoose.Schema({
     title:{
@@ -63,11 +62,7 @@ EventSchema.pre(/delete/i,async function(next){
         imgs.push(doc.banner)
     }
     for (let i in imgs){
-        try{
-            unlinkSync(imgdir+imgs[i])
-        }catch(e){
-            console.log(e.message)
-        }
+        deleteFile(imgs[i],'images')
     }
     }
     next()
