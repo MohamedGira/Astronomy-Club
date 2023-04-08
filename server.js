@@ -9,7 +9,7 @@ import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 import { EventRouter } from "./Routers/Event.mjs";
 import fileUpload from "express-fileupload";
-import { saveImage } from "./utils/image/saveImage.mjs";
+import { saveImage } from "./utils/uploads/saveImage.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { catchAsync } from "./utils/catchAsync.mjs";
@@ -18,6 +18,7 @@ import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
 import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
 import { setCache } from "./utils/cache.mjs";
+import { Event } from "./models/Events/Event.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,12 +57,11 @@ app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/users/',UserRouter)
-/* app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
+ app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
-    await Speaker.deleteMany({})
-    await Checkpoint.deleteMany({})
+    
     return res.json({ok:'ok'})
-}) */
+}) 
 //test image saving
 app.post('/upload',catchAsync(
     async (req,res,next)=>{

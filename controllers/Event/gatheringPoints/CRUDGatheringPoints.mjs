@@ -1,7 +1,7 @@
 import { GatheringPoint } from "../../../models/Events/subSchemas/gatheringPoint.mjs";
 import { AppError } from "../../../utils/AppError.mjs";
 import { catchAsync } from "../../../utils/catchAsync.mjs";
-import { saveImage } from "../../../utils/image/saveImage.mjs";
+import { saveImage } from "../../../utils/uploads/saveImage.mjs";
 
 import {createSpeaker} from "../speakers/CRUDSpeaker.mjs"
 import {filterObj,jsonifyObj} from "../../../utils/objOp.mjs"

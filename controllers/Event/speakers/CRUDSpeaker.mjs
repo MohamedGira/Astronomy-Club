@@ -1,7 +1,7 @@
 import { Speaker } from "../../../models/Events/subSchemas/Speaker.mjs";
 import { AppError } from "../../../utils/AppError.mjs";
 import {filterObj, jsonifyObj} from "../../../utils/objOp.mjs"
-import { saveImage } from "../../../utils/image/saveImage.mjs";
+import { saveImage } from "../../../utils/uploads/saveImage.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);

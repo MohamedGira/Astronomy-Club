@@ -1,7 +1,7 @@
 /* 
 Event= {
     title:String
-    type:String ['trip','conference','online'] //only one of theese
+    type:String ["trip","conference","online"] //only one of theese
     description:String
     banner:Image,
     images:[Image],
@@ -24,7 +24,7 @@ req.body.checkpoints = [{
     description:String,
     startsAt:Date,
     endsAt:Date,
-    type:String ['Speaker','Gathering'] //only one of theese{
+    type:String ["Speaker","Gathering"] //only one of theese{
     speaker:{
         name:String,
         title:String,
@@ -56,49 +56,50 @@ location:{"landmark":"stage","location":{"coordinates":[20,20]}}
 fullobject=
 
 
-{
-    title:"astronomy conference",
-    type:'trip',
-    description:'مؤتمر جامد جدا',
-    banner:'uplaoad image',
-    images:['uplaoad image','uplaoad image','uplaoad image'],
-    capacity:50,
-    price:20,
-    isVisible:true,
-    date:Date.now(),
-    location:{
-        landmark:'hi',
-        location:{
-        coordinates:[30,25]// شوف لو ينفع تطلعلو google map window يختار منها
-        }
-    },
-    checkpoints:[{
-        name:'Farouk elbaz',
-        description:'tare2 elnaga7',
-        startsAt:Date.now(),
-        endsAt:Date.now(),
-        type:'speaker',
-        speaker:{
-            name:'farouk elbaz',
-            title:'astrlogist',
-            description:'good boy',
-            image:'uplaoad image'
-        },
-        location:{
-        landmark:'stage',
-        location:{coordinates:[20,20]}
-        }
-    },...
-],
-    gatheringPoints:[
-        {
-            from:Date.now(),
-            to:Date.now(),
-            location:{
-                landmark:'mohamed nageeb',
-                location:{coordinates:[20,20]}
+    {
+        "title":"astronomy conference",
+        "type":"trip",
+        "description":"مؤتمر جامد جدا",
+        "banner":"uplaoad image",
+        "images":["uplaoad image","uplaoad image","uplaoad image"],
+        "capacity":50,
+        "price":20,
+        "isVisible":true,
+        "date":"2023-03-20T13:14:17.238Z",
+        "location":{
+            "landmark":"hi",
+            "location":{
+            "coordinates":[30,25]// شوف لو ينفع تطلعلو google map window يختار منها
             }
-        }
-    ,...}
-    ]
-}
+        },
+        "checkpoints":[{
+            "name":"Farouk elbaz",
+            "description":"tare2 elnaga7",
+            "startsAt":"2023-03-20T13:14:17.238Z",
+            "endsAt":"2023-03-20T13:14:17.238Z",
+            "type":"speaker",
+            "speaker":{
+                "name":"farouk elbaz",
+                "title":"astrlogist",
+                "description":"good boy",
+                "image":"uplaoad image"
+            },
+            "location":{
+            "landmark":"stage",
+            "location":{"coordinates":[20,20]}
+            }
+        },
+        ],
+        "gatheringPoints":[
+            {
+                "from":"2023-03-20T13:14:17.238Z",
+                "to":"2023-03-20T13:14:17.238Z",
+                "location":{
+                    "landmark":"mohamed nageeb",
+                    "location":{"coordinates":[20,20]}
+                }
+            }
+        ,
+        ]
+        
+    }

@@ -10,12 +10,11 @@ import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
-import {saveImage} from '../../utils/image/saveImage.mjs'
+import {saveImage} from '../../utils/uploads/saveImage.mjs'
 
 dotenv.config();
 
-import { writeFile, writeFileSync } from "fs";
-import { bufferCompressor} from "../../utils/image/ImageCompression/compressor.mjs";
+
 import { filterObj } from "../../utils/objOp.mjs";
 
 const relativeUploadPath='/../../upload/images/'

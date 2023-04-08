@@ -1,18 +1,18 @@
 import { Event } from "../../models/Events/Event.mjs";
 import path from "path";
 
-import {unlinkSync} from "fs";
 import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import {imgdir, saveImage} from '../../utils/image/saveImage.mjs'
+import {imgdir, saveImage} from '../../utils/uploads/saveImage.mjs'
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
 import { createCheckpoint } from "./checkpoints/CRUDCheckpoint.mjs";
 import { Checkpoint } from "../../models/Events/subSchemas/checkpoint.mjs";
 import { createGatheringPoint } from "./gatheringPoints/CRUDGatheringPoints.mjs";
 import { GatheringPoint } from "../../models/Events/subSchemas/gatheringPoint.mjs";
+import { deleteFile } from "../../utils/uploads/cleanDir.mjs";
 const relativeUploadPath= '../../upload'
 
 /*  
@@ -113,7 +113,7 @@ export const createEvent=catchAsync( async (req,res,next)=>{
             await Event.findByIdAndDelete(event._id)
             console.log(`couldn\'t create event, imgs issue`)
             for (img in imgslist){
-                unlinkSync(imgdir+imgslist[img])
+                deleteFile(imgslist[img],'images')
             }   
             return next(new AppError(500),'image saving issue'+err.message)
         }   
