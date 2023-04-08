@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import {imgdir, saveImage} from '../../utils/uploads/saveImage.mjs'
+import {createImageObject, imgdir} from '../../utils/uploads/saveImage.mjs'
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
 import { createCheckpoint } from "./checkpoints/CRUDCheckpoint.mjs";
@@ -100,11 +100,11 @@ export const createEvent=catchAsync( async (req,res,next)=>{
             let keys=Object.keys(req.files)
             for(let i in keys){
                 if (keys[i].match(/event-image-\d+/)){
-                    imgslist.push(await saveImage(req.files[keys[i]]))
+                    imgslist.push(await createImageObject(req.files[keys[i]]))
                 }
             }
             event.images=imgslist
-            const banner=await saveImage(req.files.banner)
+            const banner=await createImageObject(req.files.banner)
             event.banner=banner
             event.save()
             imgslist.push(banner)

@@ -1,0 +1,38 @@
+
+<!-- index.html -->
+<html>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script >
+    fetch('https://astronomy-club.onrender.com/api/v1/events/').then(()=>console.log('hi'))
+    </script>
+    <form action="https://astronomy-club.onrender.com/api/v1/events/" method="post" enctype="multipart/form-data">
+      <label for="photo">Select a photo:</label>
+      <input type="file" id="photo" name="image">
+      <input type="submit" value="Submit">
+    </form>
+    
+
+
+ 
+    <h1>Uploaded Images</h1>
+    <div>
+      <% items.forEach(function(image) { %>
+      <div>
+        <div>
+          <img
+            src="data:image/<%=image.img.contentType%>;base64,
+                    <%=image.img.data.toString('base64')%>"
+          />
+          <div>
+            <h5><%= image.name %></h5>
+ 
+            <p><%= image.desc %></p>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </body>
+  </html>
+  

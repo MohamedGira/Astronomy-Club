@@ -6,6 +6,7 @@ import phoneUtils from "google-libphonenumber";
 
 import dotenv from "dotenv";
 import { AppError } from "../../utils/AppError.mjs";
+import { imageSchema } from "../image.mjs";
 dotenv.config()
 
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
@@ -53,7 +54,7 @@ const userScema = mongoose.Schema({
   },
 
   profileImage: {
-    type: String,
+    type: imageSchema,
   },
 
   phoneNumber: {

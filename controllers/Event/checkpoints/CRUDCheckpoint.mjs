@@ -1,7 +1,6 @@
 import { Checkpoint } from "../../../models/Events/subSchemas/checkpoint.mjs";
 import { AppError } from "../../../utils/AppError.mjs";
 import { catchAsync } from "../../../utils/catchAsync.mjs";
-import { saveImage } from "../../../utils/uploads/saveImage.mjs";
 
 import {createSpeaker} from "../speakers/CRUDSpeaker.mjs"
 import {filterObj,jsonifyObj} from "../../../utils/objOp.mjs"
@@ -13,7 +12,7 @@ export const createCheckpoint= async(unfilteredBody,eventid,reqfiles=undefined)=
     var newSpeaker={}
     if(unfilteredBody.speaker){
         newSpeaker=await createSpeaker(unfilteredBody.speaker,reqfiles)
-    }   
+    }
     unfilteredBody=jsonifyObj(unfilteredBody)
     var checkpointBody=filterObj(unfilteredBody,Checkpoint.schema.paths,['speaker']) 
     var newCheckpoint=await Checkpoint.create({...checkpointBody,event:eventid,speaker:newSpeaker._id})

@@ -10,7 +10,7 @@ import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
-import {saveImage} from '../../utils/uploads/saveImage.mjs'
+import {createImageObject} from '../../utils/uploads/saveImage.mjs'
 
 dotenv.config();
 
@@ -29,11 +29,11 @@ export const registerMember = async (req, res, next) => {
     if (req.files)
     {
     const  image  = req.files.profileImage;
-    const img=await saveImage(image)
+    const img=await createImageObject(image)
     user.profileImage=img 
     }
     await user.save();    //user is saved successfully
-
+    
     return res.status(200).json({
         message: "user created successfully, wait for admin to verify your registration",
     });
@@ -53,7 +53,7 @@ export const registerUser = async (req, res, next) => {
     if (req.files)
     {
     const  image  = req.files.profileImage;
-    const img=await saveImage(image)
+    const img=await createImageObject(image)
     user.profileImage=img 
     }
     await user.save();    //user is saved successfully
