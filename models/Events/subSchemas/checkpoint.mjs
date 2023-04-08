@@ -33,7 +33,6 @@ export const CheckpointSchema = new mongoose.Schema({
 
 CheckpointSchema.pre(/delete/i,async function(next){
     const doc = await this.model.findOne(this.getFilter());
-    console.log('called')
     if(doc){
     const deleted=await Speaker.findByIdAndDelete(doc.speaker)
     if (deleted)
