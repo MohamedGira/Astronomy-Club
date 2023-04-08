@@ -31,18 +31,18 @@ process.on('uncaughtException',err=>{
 
 const app = express()
 
-/*
-testing stored images
- app.set("view engine", "ejs");
-app.get('/ui/:id', (req, res) => {
-    User.findById(req.params.id)
+
+app.set("view engine", "ejs");
+app.get('/eventImages/:id', (req, res) => {
+    Event.findById(req.params.id)
     .then((data, err)=>{
         if(err){
             console.log(err);
         }
-        res.render('file',{items: [data.profileImage]})
-    })
-}); */
+        
+        res.render('file',{items: [...data.images,data.banner]})
+    }).catch(err=>console.log(err))
+});
 
 
 
