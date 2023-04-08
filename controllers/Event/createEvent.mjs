@@ -19,8 +19,11 @@ const relativeUploadPath= '../../upload'
     Title:String,
     Type:'trip','conference','online'
     description:String,
-    banner:banner_field_name,
-    images:[image1_field_name,image2_field_name,etc],
+    banner:image,
+    event-image-1:image,
+    event-image-2:image,
+    etc...  
+
     capacity:Number,
     price:Number,
     isVisible:Boolean,
@@ -55,9 +58,7 @@ const relativeUploadPath= '../../upload'
 
 
 export const createEvent=catchAsync( async (req,res,next)=>{
-    const bannerFieldname =req.body.banner||''
-    const imgsArrName=req.body.images||[]
-
+    
     const body=jsonifyObj(req.body)
 
     const filteredEvent=filterObj(body,Event.schema.paths,['images','checkpoints','gatheringPoints','banner'])
@@ -110,7 +111,7 @@ export const createEvent=catchAsync( async (req,res,next)=>{
         }catch(err){
 
             await Event.findByIdAndDelete(event._id)
-            console.log(`couldn\'t create event, imgs/banner issue`)
+            console.log(`couldn\'t create event, imgs issue`)
             for (img in imgslist){
                 unlinkSync(imgdir+imgslist[img])
             }   
