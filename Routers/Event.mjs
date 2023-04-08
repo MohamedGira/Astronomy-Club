@@ -12,7 +12,7 @@ export const EventRouter=express.Router()
 
 
 EventRouter.route('/')
-.post(createEvent)
+.post(isAuthorizedMw('admin'),createEvent)
 .get(getEvents)
 EventRouter.route('/:id')
 .get(getEvent)
