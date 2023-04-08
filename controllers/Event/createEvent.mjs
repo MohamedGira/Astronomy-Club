@@ -111,7 +111,8 @@ export const createEvent=catchAsync( async (req,res,next)=>{
         }catch(err){
 
             await Event.findByIdAndDelete(event._id)
-            console.log(`couldn\'t create event, imgs issue`)
+            console.log(`couldn\'t create event, imgs issue:${err.message}`)
+            console.log(err)
             for (img in imgslist){
                 deleteFile(imgslist[img],'images')
             }   
