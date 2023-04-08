@@ -9,7 +9,6 @@ import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 import { EventRouter } from "./Routers/Event.mjs";
 import fileUpload from "express-fileupload";
-import { saveImage } from "./utils/uploads/saveImage.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { catchAsync } from "./utils/catchAsync.mjs";
@@ -19,6 +18,7 @@ import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
 import { setCache } from "./utils/cache.mjs";
 import { Event } from "./models/Events/Event.mjs";
+import { User } from "./models/Users/User.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +30,22 @@ process.on('uncaughtException',err=>{
 
 
 const app = express()
+
+/*
+testing stored images
+ app.set("view engine", "ejs");
+app.get('/ui/:id', (req, res) => {
+    User.findById(req.params.id)
+    .then((data, err)=>{
+        if(err){
+            console.log(err);
+        }
+        res.render('file',{items: [data.profileImage]})
+    })
+}); */
+
+
+
 dotenv.config()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -62,17 +78,7 @@ app.use('/api/v1/users/',UserRouter)
     
     return res.json({ok:'ok'})
 }) 
-//test image saving
-app.post('/upload',catchAsync(
-    async (req,res,next)=>{
-        if(req.files){
-            await saveImage(req.files.image,__dirname+'/upload/')
-            return res.status(200).json({message:'success'})
-        }
-        return res.status(500).json({message:'fail'})
-    }
-))
-//test image saving
+
 app.patch('/updatePassword',protect,    updatePassword
 )
 //testing authorizer functionality
