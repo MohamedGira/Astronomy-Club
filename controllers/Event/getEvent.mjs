@@ -2,6 +2,8 @@ import { Event } from "../../models/Events/Event.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { isAuthorized } from "../Authentication/authorizationMw.mjs/Authorizer.mjs";
 import { getCheckpointsbyId } from "./checkpoints/getCheckpoints.mjs";
+import { getGatheringpointsbyId } from "./gatheringPoints/getGatheringpoints.mjs";
+
 
 
 export const getEventById= async(id,fullaccess)=>{
@@ -21,7 +23,7 @@ export const getEvent= catchAsync( async (req,res,next)=>{
         });
 
     event._doc.checkpoints=await getCheckpointsbyId(id)
-    
+    event._doc.gatheringPoints=await getGatheringpointsbyId(id)
     return res.status(200).json({
         message:"sucess",
         event

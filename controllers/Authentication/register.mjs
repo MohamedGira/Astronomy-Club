@@ -30,7 +30,7 @@ export const registerMember = async (req, res, next) => {
     if (req.files)
     {
     const  image  = req.files.profileImage;
-    const img=await saveImage(image,__dirname+relativeUploadPath)
+    const img=await saveImage(image)
     user.profileImage=img 
     }
     await user.save();    //user is saved successfully
@@ -54,7 +54,7 @@ export const registerUser = async (req, res, next) => {
     if (req.files)
     {
     const  image  = req.files.profileImage;
-    const img=await saveImage(image,__dirname+relativeUploadPath)
+    const img=await saveImage(image)
     user.profileImage=img 
     }
     await user.save();    //user is saved successfully
