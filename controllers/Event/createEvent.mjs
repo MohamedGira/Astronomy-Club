@@ -113,6 +113,7 @@ export const createEvent=catchAsync( async (req,res,next)=>{
             await Event.findByIdAndDelete(event._id)
             console.log(`couldn\'t create event, imgs issue`)
         
+
             return next(new AppError(500),'image saving issue'+err.message)
         }   
     }
