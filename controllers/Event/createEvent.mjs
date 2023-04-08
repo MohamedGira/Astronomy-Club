@@ -81,7 +81,7 @@ export const createEvent=catchAsync( async (req,res,next)=>{
         }
     }
     if(body.gatheringPoints){
-         //checkpoints exists
+         //gathering points exists
          try{
              for (let gatheringpoint in body.gatheringPoints){
                  await createGatheringPoint(body.gatheringPoints[gatheringpoint],event._id,req.files)
@@ -112,9 +112,7 @@ export const createEvent=catchAsync( async (req,res,next)=>{
 
             await Event.findByIdAndDelete(event._id)
             console.log(`couldn\'t create event, imgs issue`)
-            for (img in imgslist){
-                deleteFile(imgslist[img],'images')
-            }   
+        
             return next(new AppError(500),'image saving issue'+err.message)
         }   
     }

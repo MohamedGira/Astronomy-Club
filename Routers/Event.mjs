@@ -7,6 +7,8 @@ import { getEvents } from "../controllers/Event/getEvents.mjs";
 import { updateEvent } from "../controllers/Event/updateEvent.mjs";
 import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 import { deleteEvent } from "../controllers/Event/deleteEvent.mjs";
+import { addGatheringPoint, deleteGatheringPoint, getGatheringPoint, updateGatheringPoint } from "../controllers/Event/gatheringPoints/CRUDGatheringPoints.mjs";
+import { getGatheringpoints } from "../controllers/Event/gatheringPoints/getGatheringpoints.mjs";
 
 export const EventRouter=express.Router()
 
@@ -29,4 +31,15 @@ EventRouter.route('/:id/checkpoints/:checkpointId')
 .patch(isAuthorizedMw('admin'),updateCheckpoint)
 .delete(isAuthorizedMw('admin'),deleteCheckpoint)
 
+EventRouter.route('/:id/gatheringPoints')
+.get(getGatheringpoints)
+.post(isAuthorizedMw('admin'),addGatheringPoint)
+
+
+
+
+EventRouter.route('/:id/gatheringPoints/:gatheringPointId')
+.get(getGatheringPoint)
+.patch(isAuthorizedMw('admin'),updateGatheringPoint)
+.delete(isAuthorizedMw('admin'),deleteGatheringPoint)
 

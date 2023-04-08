@@ -103,3 +103,29 @@ fullobject=
         ]
         
     }
+
+
+    {
+        "name":"Fffarouaaadk elbaz",
+        "description":"tare2 elnaga7",
+        "startsAt":"2023-03-24T13:14:17.238Z",
+        "endsAt":"2023-03-24T13:14:17.238Z",
+        "type":"speaker",
+        "speaker":{
+            "name":"farouk elbaz",
+            "title":"astrlogist",
+            "description":"good boy",
+            "image":"limk"
+        },
+        "location":{
+        "landmark":"stage",
+        "location":{"coordinates":[20,20]}
+        }
+    }
+    name:Fffarouaaadk elbaz
+    description:tare2 elnaga7
+    startsAt:2023-03-24T13:14:17.238Z
+    endsAt:2023-03-24T13:14:17.238Z
+    type:speaker
+    speaker:{"name":"farouk elbaz","title":"astrlogist","description":"good boy","image":"img"}
+    location:{"landmark":"stage","location":{"coordinates":[20,20]}}
