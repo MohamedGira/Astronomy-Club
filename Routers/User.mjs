@@ -14,6 +14,6 @@ export const UserRouter=express.Router()
 UserRouter.post('/confirmUser',isAuthorizedMw('admin'),confirmUser)
 
 UserRouter.get('/myProfile',protect,myProfile)
-UserRouter.get('/getUsers',isAuthorizedMw('admin'),getusers)
+UserRouter.get('/',isAuthorizedMw('admin'),getusers)
 
 UserRouter.get('/:id',isAuthorizedMw('admin'),getUser)

@@ -1,7 +1,6 @@
 import { Checkpoint } from "../../../models/Events/subSchemas/checkpoint.mjs";
 import { AppError } from "../../../utils/AppError.mjs";
 import { catchAsync } from "../../../utils/catchAsync.mjs";
-import { saveImage } from "../../../utils/uploads/saveImage.mjs";
 
 import {createSpeaker} from "../speakers/CRUDSpeaker.mjs"
 import {filterObj,jsonifyObj} from "../../../utils/objOp.mjs"
@@ -13,7 +12,7 @@ export const createCheckpoint= async(unfilteredBody,eventid,reqfiles=undefined)=
     var newSpeaker={}
     if(unfilteredBody.speaker){
         newSpeaker=await createSpeaker(unfilteredBody.speaker,reqfiles)
-    }   
+    }
     unfilteredBody=jsonifyObj(unfilteredBody)
     var checkpointBody=filterObj(unfilteredBody,Checkpoint.schema.paths,['speaker']) 
     var newCheckpoint=await Checkpoint.create({...checkpointBody,event:eventid,speaker:newSpeaker._id})
@@ -45,12 +44,10 @@ export const  getCheckpoint= catchAsync( async (req,res,next)=>{
     })
 })
 
-
 //events/:id/checkpoints/:checkPointId patch
 export const  updateCheckpoint= catchAsync( async (req,res,next)=>{
-    jsonifyObj(req.body)
-    var update=filterObj(req.body,Checkpoint.schema.paths,['speaker'])
-
+    const body=jsonifyObj(req.body)
+    var update=filterObj(body,Checkpoint.schema.paths,['speaker'])
     const checkpointid=req.params.checkpointId
     const newCheckpoint= await Checkpoint.findByIdAndUpdate(checkpointid,update,{
         new:true,
@@ -61,16 +58,17 @@ export const  updateCheckpoint= catchAsync( async (req,res,next)=>{
     }
     
     // speaker was edited
-    var newSpeaker={}
-    if(req.body.speaker){
-        newSpeaker=await createSpeaker(req.body.speaker,req.body.files)
+    if(body.speaker){
+        var newSpeaker={}
+        newSpeaker=await createSpeaker(body.speaker,req.files)
         Speaker.findByIdAndDelete(newCheckpoint.speaker)
-        newCheckpoint.speaker=newSpeaker
+        newCheckpoint.speaker=newSpeaker._id
     } 
     newCheckpoint.save()
+    const s=await  newCheckpoint.populate('speaker')
     return res.status(200).json({
         message:'Updated succesfully',
-        newCheckpoint
+        newCheckpoint:s
     })
 })
 

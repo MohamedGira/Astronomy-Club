@@ -1,5 +1,6 @@
 import mongoose from'mongoose'
 import { Checkpoint } from './checkpoint.mjs';
+import { imageSchema } from '../../image.mjs';
 
 export const speakerSchema=mongoose.Schema(
     {
@@ -16,7 +17,7 @@ export const speakerSchema=mongoose.Schema(
         required:true,
        },
        image:{
-        type:String,
+        type:imageSchema,
         required:true,
        }
         

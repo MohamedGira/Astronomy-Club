@@ -1,7 +1,6 @@
 import { GatheringPoint } from "../../../models/Events/subSchemas/gatheringPoint.mjs";
 import { AppError } from "../../../utils/AppError.mjs";
 import { catchAsync } from "../../../utils/catchAsync.mjs";
-import { saveImage } from "../../../utils/uploads/saveImage.mjs";
 
 import {createSpeaker} from "../speakers/CRUDSpeaker.mjs"
 import {filterObj,jsonifyObj} from "../../../utils/objOp.mjs"
@@ -16,7 +15,7 @@ export const createGatheringPoint= async(unfilteredBody,eventid)=>{
     return newGatheringPoint
 }
 
-/* //events/:id/gatheringPoints POST
+//events/:id/gatheringPoints POST
 export const  addGatheringPoint= catchAsync( async (req,res,next)=>{
     const id=req.params.id
     const newGatheringPoint=await createGatheringPoint(req.body,id)
@@ -30,7 +29,7 @@ export const  addGatheringPoint= catchAsync( async (req,res,next)=>{
 export const  getGatheringPoint= catchAsync( async (req,res,next)=>{
     const eventid=req.params.id
     const gatheringPointid=req.params.gatheringPointId
-    const gatheringPoint =await GatheringPoint.findOne({_id:gatheringPointid,event:eventid}).populate('speaker')
+    const gatheringPoint =await GatheringPoint.findOne({_id:gatheringPointid,event:eventid})
     if(!gatheringPoint)
         return next(new AppError(404,`requested GatheringPoint ${gatheringPointid} doesn\'t exitst`))
 
@@ -44,7 +43,7 @@ export const  getGatheringPoint= catchAsync( async (req,res,next)=>{
 //events/:id/gatheringPoints/:checkPointId patch
 export const  updateGatheringPoint= catchAsync( async (req,res,next)=>{
     jsonifyObj(req.body)
-    var update=filterObj(req.body,GatheringPoint.schema.paths,['speaker'])
+    var update=filterObj(req.body,GatheringPoint.schema.paths)
 
     const gatheringPointid=req.params.gatheringPointId
     const newGatheringPoint= await GatheringPoint.findByIdAndUpdate(gatheringPointid,update,{
@@ -54,20 +53,11 @@ export const  updateGatheringPoint= catchAsync( async (req,res,next)=>{
     if(!newGatheringPoint){
         return next( new AppError(400,'requested gatheringPoint does\'t exits'))
     }
-    
-    // speaker was edited
-    var newSpeaker={}
-    if(req.body.speaker){
-        newSpeaker=await createSpeaker(req.body.speaker,req.body.files)
-        Speaker.findByIdAndDelete(newGatheringPoint.speaker)
-        newGatheringPoint.speaker=newSpeaker
-    } 
-    newGatheringPoint.save()
-    return res.status(200).json({
-        message:'Updated succesfully',
+    return res.status(201).json({
+        message:'updated succesfully',
         newGatheringPoint
     })
-}) */
+})
 
 //events/:id/gatheringPoints/:checkPointId delete
 export const  deleteGatheringPoint= catchAsync( async (req,res,next)=>{

@@ -1,5 +1,6 @@
 import mongoose from'mongoose'
 import { LocationSchema } from './subSchemas/Location.mjs';
+import { imageSchema } from '../image.mjs';
 import { Checkpoint, CheckpointSchema } from './subSchemas/checkpoint.mjs';
 
 import { GatheringPoint, GatheringPointSchema } from './subSchemas/gatheringPoint.mjs';
@@ -20,8 +21,8 @@ export const EventSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    banner:String,
-    images:[String],
+    banner:imageSchema,
+    images:[imageSchema],
     capacity:{
         type:Number,
         required:true,
