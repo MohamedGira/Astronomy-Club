@@ -1,7 +1,7 @@
 import mongoose from'mongoose'
 import { AppError } from '../../../utils/AppError.mjs';
 import { LocationSchema } from './Location.mjs';
-import {Speaker, speakerSchema} from './Speaker.mjs'
+import {Speaker, SpeakerSchema} from './Speaker.mjs'
 import { Event } from '../Event.mjs';
 
 export const CheckpointSchema = new mongoose.Schema({

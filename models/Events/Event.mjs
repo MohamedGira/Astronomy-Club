@@ -5,6 +5,7 @@ import { Checkpoint, CheckpointSchema } from './subSchemas/checkpoint.mjs';
 
 import { GatheringPoint, GatheringPointSchema } from './subSchemas/gatheringPoint.mjs';
 import { deleteFile } from '../../utils/uploads/cleanDir.mjs';
+import { saveImage } from '../../utils/uploads/saveImage.mjs';
 
 export const EventSchema = new mongoose.Schema({
     title:{
@@ -21,8 +22,8 @@ export const EventSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    banner:imageSchema,
-    images:[imageSchema],
+    banner:String,
+    images:{type:[String],default:[]},
     capacity:{
         type:Number,
         required:true,
@@ -45,33 +46,32 @@ export const EventSchema = new mongoose.Schema({
     toObject:{virtuals:true}
 });
 
+EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id'})
+EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id'})
+
 EventSchema.pre(/delete/i,async function(next){
-    const doc = await this.model.findOne(this.getFilter());
+    const doc = await this.model.findOne(this.getFilter()).populate('checkpoints').populate('gatheringPoints');
     if (doc){
-    const deletedCheckpoint=await Checkpoint.find({event:doc._id})
-    for (let elem in deletedCheckpoint){
-        await Checkpoint.findByIdAndDelete(deletedCheckpoint[elem]._id)
+        
+    if(this.checkpoints){
+        this.checkpoints.forEach(async el=>await Checkpoint.findByIdAndDelete(el._id))
+        console.log(`deleted ${this.checkpoints.length} checkpoints from db`)
     }
-    if(deletedCheckpoint)
-        console.log(`deleted ${deletedCheckpoint.length} checkpoints from db`)
-    const deletedGatheringPoint=await GatheringPoint.find({event:doc._id})
-    for (let elem in deletedGatheringPoint){
-        await GatheringPoint.findByIdAndDelete(deletedGatheringPoint[elem]._id)
+
+    if(this.gatheringPoints){
+        this.gatheringPoints.forEach(async el=>await GatheringPoint.findByIdAndDelete(el._id))
+        console.log(`deleted ${this.gatheringPoints.length} gathering points from db`)
     }
-    if(deletedGatheringPoint)
-        console.log(`deleted ${deletedGatheringPoint.length} gathering from db`)
-    
-    let imgs=[...doc.images]
+            
     if(doc.banner){
-        imgs.push(doc.banner)
+        deleteFile(doc.banner,'images')
     }
-    for (let i in imgs){
-        deleteFile(imgs[i],'images')
-    }
+    if(doc.images)
+        doc.images.forEach(el=>deleteFile(el,'images'))    
     }
     next()
 })
-EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id'})
-EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id'})
+
+
 
 export const Event=mongoose.model('Event',EventSchema)
