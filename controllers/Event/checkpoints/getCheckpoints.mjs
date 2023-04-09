@@ -8,6 +8,7 @@ export const getCheckpointsbyId= async (id)=>{
 }
 
 export const getCheckpoints=  catchAsync(async (req,res,next)=>{
+    console.log(req.params.id,'a')
 const checkpoints =await getCheckpointsbyId(req.params.id)
 if (!checkpoints)
     return res.status(200).json({count:0,checkpoints})
