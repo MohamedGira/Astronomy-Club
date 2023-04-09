@@ -3,7 +3,7 @@ import { AppError } from "../../utils/AppError.mjs"
 import { catchAsync } from "../../utils/catchAsync.mjs"
 
 export const deleteEvent= catchAsync( async(req,res,next)=>{
-    //events/:id/checkpoints/:checkPointId delete
+    //events/:id/checkpoints/:elementId delete
     const eventid=req.params.id
     const event = await Event.findByIdAndDelete(eventid)
     if(!event)

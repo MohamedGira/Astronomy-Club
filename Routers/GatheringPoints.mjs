@@ -4,12 +4,12 @@ import { getGatheringpoints } from "../controllers/Event/gatheringPoints/getGath
 export const gatheringPointsRouter=express.Router({mergeParams:true})
 import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 
+
 gatheringPointsRouter.route('/')
 .get(getGatheringpoints)
 .post(isAuthorizedMw('admin'),addGatheringPoint)
 
-
-gatheringPointsRouter.route('/:gatheringPointId')
+gatheringPointsRouter.route('/:elementId')
 .get(getGatheringPoint)
 .patch(isAuthorizedMw('admin'),updateGatheringPoint)
 .delete(isAuthorizedMw('admin'),deleteGatheringPoint)
