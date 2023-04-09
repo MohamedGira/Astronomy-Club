@@ -71,13 +71,17 @@ app.use(
 
 
 app.use(express.static('upload'))
+
 app.use('/api/v1/auth/',AuthRouter)
+app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/tickets/',TicketRouter)
-app.use('/api/v1/users/',UserRouter)
- app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
+app.use('/api/v1/checkpoints/',CheckpointsRouter)
+app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
+
+app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
     
     return res.json({ok:'ok'})
