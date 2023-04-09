@@ -55,4 +55,4 @@ CheckpointSchema.pre('save',async function(next){
     }
     next()
 })
-export const Checkpoint= mongoose.model('CheckPoint',CheckpointSchema)
+export const Checkpoint= mongoose.model('Checkpoint',CheckpointSchema)

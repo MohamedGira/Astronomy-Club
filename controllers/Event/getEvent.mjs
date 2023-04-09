@@ -7,14 +7,16 @@ import { getGatheringpointsbyId } from "./gatheringPoints/getGatheringpoints.mjs
 
 
 export const getEventById= async(id,fullaccess)=>{
+    // the population is the new part
     if (fullaccess)
-    return Event.findById(id)
+        return Event.findById(id).populate('checkpoints').populate('gatheringPoints')
     else
-    return Event.findOne({_id:id,isVisible:{$ne:false}})
+        return Event.findOne({_id:id,isVisible:{$ne:false}}).populate('checkpoints').populate('gatheringPoints')
 }
 
 export const getEvent= catchAsync( async (req,res,next)=>{
     const id=req.params.id
+    //these commented parts are old implementation
     let event=await getEventById(id,await isAuthorized('admin'))
     
     if(!event)
@@ -22,8 +24,8 @@ export const getEvent= catchAsync( async (req,res,next)=>{
             message:"couldn't find this event",
         });
 
-    event._doc.checkpoints=await getCheckpointsbyId(id)
-    event._doc.gatheringPoints=await getGatheringpointsbyId(id)
+    /* event._doc.checkpoints=await getCheckpointsbyId(id)
+    event._doc.gatheringPoints=await getGatheringpointsbyId(id)*/
     return res.status(200).json({
         message:"sucess",
         event

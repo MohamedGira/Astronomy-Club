@@ -40,6 +40,9 @@ export const EventSchema = new mongoose.Schema({
         type:LocationSchema,
         required:true
     },
+},{
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
 });
 
 EventSchema.pre(/delete/i,async function(next){
@@ -68,4 +71,7 @@ EventSchema.pre(/delete/i,async function(next){
     }
     next()
 })
+EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id'})
+EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id'})
+
 export const Event=mongoose.model('Event',EventSchema)
