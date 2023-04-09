@@ -1,8 +1,8 @@
 import mongoose from'mongoose'
-import { Checkpoint } from './checkpoint.mjs';
-import { imageSchema } from '../../image.mjs';
 
-export const speakerSchema=mongoose.Schema(
+import { deleteFile } from '../../../utils/uploads/cleanDir.mjs';
+
+export const SpeakerSchema=mongoose.Schema(
     {
        name:{
         type:String,
@@ -17,20 +17,18 @@ export const speakerSchema=mongoose.Schema(
         required:true,
        },
        image:{
-        type:imageSchema,
-        required:true,
-       }
-        
+        type:String,
+        required:true
+       },
+      
     }
 )
+SpeakerSchema.pre(/delete/i,async function(next){
+  const doc = await this.model.findOne(this.getFilter())
 
-export const Speaker= mongoose.model('Speaker',speakerSchema)
+  deleteFile(doc.image,'images')
+  next()
+})
 
-speakerSchema.pre("save", async function (next) {
-    const checkpoint=Checkpoint.find({_id:this.checkpoint})
-    
-    if(!checkpoint)
-      return next(new AppError(400, "invalid Checkpoint id, couldn't create user"));
-    next()
-  });
-  
+
+export const Speaker= mongoose.model('Speaker',SpeakerSchema)

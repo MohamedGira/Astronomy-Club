@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import {createImageObject, imgdir} from '../../utils/uploads/saveImage.mjs'
+import {createImageObject, imgdir, saveImage} from '../../utils/uploads/saveImage.mjs'
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
 import { createCheckpoint } from "./checkpoints/CRUDCheckpoint.mjs";
@@ -100,20 +100,18 @@ export const createEvent=catchAsync( async (req,res,next)=>{
             let keys=Object.keys(req.files)
             for(let i in keys){
                 if (keys[i].match(/event-image-\d+/)){
-                    imgslist.push(await createImageObject(req.files[keys[i]]))
+                    imgslist.push(await saveImage(req.files[keys[i]]))
                 }
             }
             event.images=imgslist
-            const banner=await createImageObject(req.files.banner)
-            event.banner=banner
+            imgslist.push(req.files.banner)
+            console.log(req.files.banner)
+            event.banner= await saveImage(req.files.banner)
             event.save()
-            imgslist.push(banner)
         }catch(err){
-
             await Event.findByIdAndDelete(event._id)
             console.log(`couldn\'t create event, imgs issue`)
-        
-
+            imgslist.forEach(el=>deleteFile(el,'images'))
             return next(new AppError(500),'image saving issue'+err.message)
         }   
     }
@@ -126,4 +124,5 @@ export const createEvent=catchAsync( async (req,res,next)=>{
     });
 
 })
+
 

@@ -9,11 +9,14 @@ export const  uploadsdir=(__dirname+'/../../upload/').replace(/\\/g, "/")
 export const deleteFile=(fileName,subfolder='')=>{
     var imgdir=uploadsdir;
     if(subfolder)
-        imgdir+=`/${subfolder.replace(/\\|\//g,'')}/`
+        imgdir+=`${subfolder.replace(/^\\|^\/|\/$|\\$/g,'')}/`
+    
     
     unlink(imgdir+fileName,(err)=>{
         if(err)
-        console.log(err.message)
+          console.log(err.message)
+        else
+        console.log(`deleted ${imgdir+fileName}`)
     })
 }
 

@@ -54,7 +54,7 @@ const userScema = mongoose.Schema({
   },
 
   profileImage: {
-    type: imageSchema,
+    type: String,
   },
 
   phoneNumber: {
@@ -93,6 +93,8 @@ const userScema = mongoose.Schema({
   },
 });
 
+
+
 //check that passwords match
 userScema.pre("save", function (next) {
   if (this.password != this.passwordConfirm)
@@ -114,5 +116,8 @@ userScema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, parseInt(process.env.HASH_SALT));
   next();
 });
+
+
+
 
 export const User = mongoose.model("User", userScema);

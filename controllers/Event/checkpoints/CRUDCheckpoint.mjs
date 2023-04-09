@@ -5,6 +5,7 @@ import { catchAsync } from "../../../utils/catchAsync.mjs";
 import {createSpeaker} from "../speakers/CRUDSpeaker.mjs"
 import {filterObj,jsonifyObj} from "../../../utils/objOp.mjs"
 import { Speaker } from "../../../models/Events/subSchemas/Speaker.mjs";
+import * as factory from "../../CRUDFactory.mjs";
 
 
 export const createCheckpoint= async(unfilteredBody,eventid,reqfiles=undefined)=>{
@@ -30,11 +31,11 @@ export const  addCheckpoint= catchAsync( async (req,res,next)=>{
         newCheckpoint
     })
 })
-//events/:id/checkpoints/:checkPointId get
+//events/:id/checkpoints/:elementId get
 export const  getCheckpoint= catchAsync( async (req,res,next)=>{
     const eventid=req.params.id
-    const checkpointid=req.params.checkpointId
-    const checkpoint =await Checkpoint.findOne({_id:checkpointid,event:eventid}).populate('speaker')
+    const checkpointid=req.params.elementId
+    const checkpoint =await Checkpoint.findById(checkpointid).populate('speaker')
     if(!checkpoint)
         return next(new AppError(404,`requested Checkpoint ${checkpointid} doesn\'t exitst`))
 
@@ -44,11 +45,11 @@ export const  getCheckpoint= catchAsync( async (req,res,next)=>{
     })
 })
 
-//events/:id/checkpoints/:checkPointId patch
+//events/:id/checkpoints/:elementId patch
 export const  updateCheckpoint= catchAsync( async (req,res,next)=>{
     const body=jsonifyObj(req.body)
     var update=filterObj(body,Checkpoint.schema.paths,['speaker'])
-    const checkpointid=req.params.checkpointId
+    const checkpointid=req.params.elementId
     const newCheckpoint= await Checkpoint.findByIdAndUpdate(checkpointid,update,{
         new:true,
         runValidators:true
@@ -74,9 +75,8 @@ export const  updateCheckpoint= catchAsync( async (req,res,next)=>{
 
 //events/:id/checkpoints/:checkPointId delete
 export const  deleteCheckpoint= catchAsync( async (req,res,next)=>{
-    const eventid=req.params.id
     const checkpointid=req.params.checkpointId
-    const checkpoint = await Checkpoint.findOneAndDelete({_id:checkpointid,event:eventid})
+    const checkpoint = await Checkpoint.findByIdAndDelete(checkpointid)
     if(!checkpoint)
         return next(new AppError(404,'requested Checkpoint doesn\'t exitst'))
     console.log('deleted checkpoint',checkpoint)
