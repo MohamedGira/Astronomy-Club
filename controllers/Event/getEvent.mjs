@@ -16,16 +16,14 @@ export const getEventById= async(id,fullaccess)=>{
 
 export const getEvent= catchAsync( async (req,res,next)=>{
     const id=req.params.id
-    //these commented parts are old implementation
-    let event=await getEventById(id,await isAuthorized('admin'))
+    let event=await getEventById(id,await isAuthorized(req,'admin'))
     
     if(!event)
         return res.status(404).json({
             message:"couldn't find this event",
         });
 
-    /* event._doc.checkpoints=await getCheckpointsbyId(id)
-    event._doc.gatheringPoints=await getGatheringpointsbyId(id)*/
+  
     return res.status(200).json({
         message:"sucess",
         event

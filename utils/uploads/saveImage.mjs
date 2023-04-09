@@ -6,11 +6,13 @@ import path from "path";
 import { Image } from "../../models/image.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+import fs from 'fs'
 export const  imgdir=(__dirname+'/../../upload/images/').replace(/\\/g, "/")
 export const saveImage = async function (image,subfolder='',compress = false)
  {
-  
+  if (!fs.existsSync(imgdir)){
+    fs.mkdirSync(imgdir,{ recursive: true });
+  }
   if(subfolder)
     imgdir+=`/${subfolder.replace(/\\|\//g,'')}/`
   //uploaded file is not image
