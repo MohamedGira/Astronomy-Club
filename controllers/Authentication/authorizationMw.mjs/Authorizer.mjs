@@ -14,8 +14,9 @@ export const isAuthorizedMw = (...roles) => {
             if(!await User.findById(decodedValues.id))
                 return next(new AppError(401, "no user exists with this id"));
                 
-            if (!roles.includes(decodedValues.role))
+            if (!roles.includes(decodedValues.role)||decodedValues.role!='SystemAdmin')
                 return next(new AppError(403, "unauthorized access to this endpoint"));
+                
             next()
         }
         catch (err) {

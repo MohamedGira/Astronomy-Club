@@ -21,6 +21,7 @@ import { Event } from "./models/Events/Event.mjs";
 import { User } from "./models/Users/User.mjs";
 import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
 import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
+import { FsRouter } from "./Routers/FsRouter.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -71,7 +72,7 @@ app.use(
 
 
 app.use(express.static('upload'))
-
+app.use('/api/v1/files/',FsRouter)
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/events/',EventRouter)
