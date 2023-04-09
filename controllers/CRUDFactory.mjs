@@ -37,7 +37,7 @@ export const CreateOne=(Model,extrasMap=[],hasFiles=false,filesMap=[])=>{
         const extraFields=createExtrasObj(req,extrasMap)      
         var newModelObject=await Model.create({...filteredBody,...extraFields})
         return res.status(201).json({
-            message:'GatheringPoint created',
+            message:`${Model.collection.collectionName} created`,
             newModelObject
         })
         }
