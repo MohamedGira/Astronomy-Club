@@ -96,23 +96,17 @@ export const createEvent=catchAsync( async (req,res,next)=>{
 
     if (req.files){
         const imgslist=[] 
+        
         try{
-            let keys=Object.keys(req.files)
-            for(let i in keys){
-                if (keys[i].match(/event-image-\d+/)){
-                    imgslist.push(await saveImage(req.files[keys[i]]))
-                }
-            }
-            event.images=imgslist
-            imgslist.push(req.files.banner)
-            console.log(req.files.banner)
+            event.images=await Promise.all(req.files.images.map(async (el)=> { return await saveImage(el)}))
+            imgslist.push(...req.files.images)
             event.banner= await saveImage(req.files.banner)
-            event.save()
+            await event.save()
         }catch(err){
             await Event.findByIdAndDelete(event._id)
             console.log(`couldn\'t create event, imgs issue`)
             imgslist.forEach(el=>deleteFile(el,'images'))
-            return next(new AppError(500),'image saving issue'+err.message)
+            return next(new AppError(500,'image saving issue'+err.message))
         }   
     }
  

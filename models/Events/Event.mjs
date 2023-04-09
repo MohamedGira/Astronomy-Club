@@ -6,6 +6,7 @@ import { Checkpoint, CheckpointSchema } from './subSchemas/checkpoint.mjs';
 import { GatheringPoint, GatheringPointSchema } from './subSchemas/gatheringPoint.mjs';
 import { deleteFile } from '../../utils/uploads/cleanDir.mjs';
 import { saveImage } from '../../utils/uploads/saveImage.mjs';
+import { maxImagesPerEvent } from '../../utils/consts.mjs';
 
 export const EventSchema = new mongoose.Schema({
     title:{
@@ -23,7 +24,15 @@ export const EventSchema = new mongoose.Schema({
         required:true,
     },
     banner:String,
-    images:{type:[String],default:[]},
+    images:{
+        type:[String],
+        default:[],
+        validate: {validator: function(){
+            if(this.images.length>maxImagesPerEvent)
+                return false
+            return true
+        },message:`maximum of ${maxImagesPerEvent} images allowed`}
+    },
     capacity:{
         type:Number,
         required:true,
@@ -52,16 +61,16 @@ EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event'
 EventSchema.pre(/delete|remove/i,async function(next){
     const doc = await this.model.findOne(this.getFilter()).populate('checkpoints').populate('gatheringPoints');
     if (doc){
-        console.log(doc)
+        //console.log(doc)
         
     if(doc.checkpoints){
         doc.checkpoints.forEach(async el=>await Checkpoint.findByIdAndDelete(el._id))
-        console.log(`deleted ${doc.checkpoints.length} checkpoints from db`)
+        // console.log(`deleted ${doc.checkpoints.length} checkpoints from db`)
     }
 
     if(doc.gatheringPoints){
         doc.gatheringPoints.forEach(async el=>await GatheringPoint.findByIdAndDelete(el._id))
-        console.log(`deleted ${doc.gatheringPoints.length} gathering points from db`)
+        //  console.log(`deleted ${doc.gatheringPoints.length} gathering points from db`)
     }
             
     if(doc.banner){
