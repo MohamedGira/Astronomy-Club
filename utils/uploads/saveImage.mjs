@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs";
-import { bufferCompressor } from "../../utils/uploads/ImageCompression/compressor.mjs";
+import { imageResizer, bufferCompressor } from "../../utils/uploads/ImageCompression/compressor.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -8,12 +8,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import fs from 'fs'
 export const  imgdir=(__dirname+'/../../upload/images/').replace(/\\/g, "/")
-export const saveImage = async function (image,subfolder='',compress = false)
+/** options :{subfolder:String,compress:boolean} */
+export const saveImage = async function (image,options={subfolder:'',compress:false})
  {
+
   if (!fs.existsSync(imgdir)){
     fs.mkdirSync(imgdir,{ recursive: true });
   }
-  if(subfolder)
+  if(options.subfolder)
     imgdir+=`/${subfolder.replace(/\\|\//g,'')}/`
   //uploaded file is not image
   if (image && !/^image/.test(image.mimetype))
@@ -22,8 +24,8 @@ export const saveImage = async function (image,subfolder='',compress = false)
   const imgname = `${Date.now()}${parseInt(Math.random() * 1000).toString()}${image.mimetype.replace("image/", ".")}`;
 
   //compressing the image
-  if (compress == true) {
-    const compressedImg = await bufferCompressor.compressImageBuffer(image.data);
+  if (options.compress  == true) {
+    const compressedImg = await imageResizer.resizeImage(image.data);
     writeFileSync(imgdir+ imgname, compressedImg, "binary");
   }else{
     writeFileSync(imgdir+ imgname, image.data, "binary");
