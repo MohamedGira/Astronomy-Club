@@ -97,7 +97,9 @@ app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })
  
-
+app.get('images/*',(req,res,next)=>{
+    return next(new AppError(404,`requested image not found :${req.path},${req.method}`))
+})
 app.all('*',(req,res,next)=>{
     return next(new AppError(404,`cant find this route :${req.path},${req.method}`))
 })
