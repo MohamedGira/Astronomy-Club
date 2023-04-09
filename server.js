@@ -35,17 +35,6 @@ process.on('uncaughtException',err=>{
 const app = express()
 
 
-app.set("view engine", "ejs");
-app.get('/eventImages/:id', (req, res) => {
-    Event.findById(req.params.id)
-    .then((data, err)=>{
-        if(err){
-            console.log(err);
-        }
-        
-        res.render('file',{items: [...data.images,data.banner]})
-    }).catch(err=>console.log(err))
-});
 
 
 
@@ -97,7 +86,11 @@ app.get('/vishome',isAuthorizedMw('visitor'),(req,res,next)=>{
 app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })
- 
+     
+/* app.post('/uploadImage',catchAsync ( async (req,res,next)=>{
+    saveImage(req.files.image,{compress:true})
+})) */
+
 app.get('images/*',(req,res,next)=>{
     return next(new AppError(404,`requested image not found :${req.path},${req.method}`))
 })
@@ -108,8 +101,6 @@ app.use(ErrorHandler)
 
 
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
-
-    
 
 
 
