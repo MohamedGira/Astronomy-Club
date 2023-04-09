@@ -34,7 +34,7 @@ export const  addCheckpoint= catchAsync( async (req,res,next)=>{
 export const  getCheckpoint= catchAsync( async (req,res,next)=>{
     const eventid=req.params.id
     const checkpointid=req.params.checkpointId
-    const checkpoint =await Checkpoint.findOne({_id:checkpointid,event:eventid}).populate('speaker')
+    const checkpoint =await Checkpoint.findById(checkpointid).populate('speaker')
     if(!checkpoint)
         return next(new AppError(404,`requested Checkpoint ${checkpointid} doesn\'t exitst`))
 
@@ -74,9 +74,8 @@ export const  updateCheckpoint= catchAsync( async (req,res,next)=>{
 
 //events/:id/checkpoints/:checkPointId delete
 export const  deleteCheckpoint= catchAsync( async (req,res,next)=>{
-    const eventid=req.params.id
     const checkpointid=req.params.checkpointId
-    const checkpoint = await Checkpoint.findOneAndDelete({_id:checkpointid,event:eventid})
+    const checkpoint = await Checkpoint.findByIdAndDelete(checkpointid)
     if(!checkpoint)
         return next(new AppError(404,'requested Checkpoint doesn\'t exitst'))
     console.log('deleted checkpoint',checkpoint)

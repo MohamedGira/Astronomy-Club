@@ -49,18 +49,19 @@ export const EventSchema = new mongoose.Schema({
 EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id'})
 EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id'})
 
-EventSchema.pre(/delete/i,async function(next){
+EventSchema.pre(/delete|remove/i,async function(next){
     const doc = await this.model.findOne(this.getFilter()).populate('checkpoints').populate('gatheringPoints');
     if (doc){
+        console.log(doc)
         
-    if(this.checkpoints){
-        this.checkpoints.forEach(async el=>await Checkpoint.findByIdAndDelete(el._id))
-        console.log(`deleted ${this.checkpoints.length} checkpoints from db`)
+    if(doc.checkpoints){
+        doc.checkpoints.forEach(async el=>await Checkpoint.findByIdAndDelete(el._id))
+        console.log(`deleted ${doc.checkpoints.length} checkpoints from db`)
     }
 
-    if(this.gatheringPoints){
-        this.gatheringPoints.forEach(async el=>await GatheringPoint.findByIdAndDelete(el._id))
-        console.log(`deleted ${this.gatheringPoints.length} gathering points from db`)
+    if(doc.gatheringPoints){
+        doc.gatheringPoints.forEach(async el=>await GatheringPoint.findByIdAndDelete(el._id))
+        console.log(`deleted ${doc.gatheringPoints.length} gathering points from db`)
     }
             
     if(doc.banner){

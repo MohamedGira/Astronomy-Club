@@ -1,8 +1,5 @@
 import mongoose from'mongoose'
-import { Checkpoint } from './checkpoint.mjs';
-import { imageSchema } from '../../image.mjs';
-import { saveImage } from '../../../utils/uploads/saveImage.mjs';
-import { AppError } from '../../../utils/AppError.mjs';
+
 import { deleteFile } from '../../../utils/uploads/cleanDir.mjs';
 
 export const SpeakerSchema=mongoose.Schema(
@@ -26,8 +23,11 @@ export const SpeakerSchema=mongoose.Schema(
       
     }
 )
-SpeakerSchema.pre(/delete/,function(){
-  deleteFile(this.image)
+SpeakerSchema.pre(/delete/i,async function(next){
+  const doc = await this.model.findOne(this.getFilter())
+
+  deleteFile(doc.image,'images')
+  next()
 })
 
 
