@@ -14,7 +14,7 @@ export const isAuthorizedMw = (...roles) => {
             if(!await User.findById(decodedValues.id))
                 return next(new AppError(401, "no user exists with this id"));
                 
-            if (!roles.includes(decodedValues.role)||decodedValues.role!='SystemAdmin')
+            if (!roles.includes(decodedValues.role)&&decodedValues.role!='SystemAdmin')
                 return next(new AppError(403, "unauthorized access to this endpoint"));
                 
             next()
@@ -32,7 +32,7 @@ export const isAuthorized = async(req,...roles) => {
         
         try {
             const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)                
-            if (roles.includes(decodedValues.role))
+            if (roles.includes(decodedValues.role)||decodedValues.role=='SystemAdmin')
                 return true
             return false
         }
