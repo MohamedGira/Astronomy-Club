@@ -9,7 +9,7 @@ CheckpointsRouter.route('/')
 .get(getCheckpoints)
 .post(isAuthorizedMw('admin'),addCheckpoint)
 
-CheckpointsRouter.route('/:checkpointId')
+CheckpointsRouter.route('/:elementId')
 .get(getCheckpoint)
 .patch(isAuthorizedMw('admin'),updateCheckpoint)
 .delete(isAuthorizedMw('admin'),deleteCheckpoint)
