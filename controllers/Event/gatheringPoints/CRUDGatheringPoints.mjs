@@ -16,16 +16,18 @@ export const createGatheringPoint= async(unfilteredBody,eventid)=>{
     return newGatheringPoint
 }
 
-//events/:id/gatheringPoints POST
-export const  addGatheringPoint= factory.CreateOne(GatheringPoint,[{paramName:'id',nameInModel:'event'}])
-// GET events/:id/gatheringPoints/:elementId 
-// GET gatheringPoints/:elementId 
-export const  getGatheringPoint= factory.getAll(GatheringPoint)
 
-// PATCH events/:id/gatheringPoints/:elementId 
+// GET gatheringPoints/
+export const  getGatheringPoints= factory.getAll(GatheringPoint)
+
+// POST gatheringPoints/
+export const  addGatheringPoint= factory.CreateOne(GatheringPoint)
+
+// GET gatheringPoints/:elementId 
+export const  getGatheringPoint= factory.getOne(GatheringPoint)
+
 // PATCH gatheringPoints/:elementId 
 export const  updateGatheringPoint= factory.updateOne(GatheringPoint)
 
-// DELETE events/:id/gatheringPoints/:elementId
 // DELETE gatheringPoints/:elementId
 export const  deleteGatheringPoint= factory.deleteOne(GatheringPoint)
