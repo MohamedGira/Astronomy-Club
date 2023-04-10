@@ -1,7 +1,6 @@
-import { Event } from "../../models/Events/Event.mjs";
-import { Speaker } from "../../models/Events/subSchemas/Speaker.mjs";
-import { catchAsync } from "../../utils/catchAsync.mjs";
-import { isAuthorized } from "../Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { Event } from "../../../models/Events/Event.mjs";
+import { catchAsync } from "../../../utils/catchAsync.mjs";
+import { isAuthorized } from "../../Authentication/authorizationMw.mjs/Authorizer.mjs";
 
 export const getEventsQuery=async (fullaccess)=>{
     if (fullaccess)
