@@ -9,6 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
+export const templatesdir=__dirname
 
 
 
@@ -315,6 +316,9 @@ u+.emailify .gs{background:#000;mix-blend-mode:screen;display:inline-block;paddi
 
 export const getResetTemplate=()=>{
     return fs.readFileSync((__dirname+'\\reset_password_new.html').replace(/\\/,'/')).toString()
+}
+export const getResetejs=()=>{
+    return fs.readFileSync((__dirname+'\\resetPasswordNew.ejs').replace(/\\/,'/')).toString()
 }
 export const getconfirmTemplate=()=>{
     return fs.readFileSync((__dirname+'\\confirm_registration.html').replace(/\\/,'/')).toString()
