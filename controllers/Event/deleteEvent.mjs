@@ -1,6 +1,6 @@
-import { Event } from "../../../models/Events/Event.mjs"
-import { AppError } from "../../../utils/AppError.mjs"
-import { catchAsync } from "../../../utils/catchAsync.mjs"
+import { Event } from "../../models/Events/Event.mjs"
+import { AppError } from "../../utils/AppError.mjs"
+import { catchAsync } from "../../utils/catchAsync.mjs"
 
 export const deleteEvent= catchAsync( async(req,res,next)=>{
     //events/:id/checkpoints/:elementId delete

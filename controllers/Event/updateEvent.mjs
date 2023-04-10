@@ -1,10 +1,11 @@
-import { Event } from "../../../models/Events/Event.mjs"
-import { AppError } from "../../../utils/AppError.mjs";
-import { catchAsync } from "../../../utils/catchAsync.mjs"
-import { maxImagesPerEvent } from "../../../utils/consts.mjs";
-import { filterObj, jsonifyObj } from "../../../utils/objOp.mjs";
-import { deleteFile } from "../../../utils/uploads/cleanDir.mjs";
-import { saveImage } from "../../../utils/uploads/saveImage.mjs";
+import { Event } from "../../models/Events/Event.mjs"
+import { AppError } from "../../utils/AppError.mjs";
+import { catchAsync } from "../../utils/catchAsync.mjs"
+import { maxImagesPerEvent } from "../../utils/consts.mjs";
+import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
+import { deleteFile } from "../../utils/uploads/cleanDir.mjs";
+import { createImageObject, saveImage } from "../../utils/uploads/saveImage.mjs";
+import { createGatheringPoint } from "./gatheringPoints/CRUDGatheringPoints.mjs";
 
 
 
@@ -37,7 +38,7 @@ export const updateEvent= catchAsync( async (req,res,next)=>{
             if(req.files.images){
             event.images.push(...(await Promise.all(req.files.images.map(async (el)=> { return await saveImage(el)}))))
             imgslist.push(...req.files.images)
-            }        
+             }        
             //check for new banner
             if(req.files.banner){
                 const banner=await saveImage(req.files.banner)
