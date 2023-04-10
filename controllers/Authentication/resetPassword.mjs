@@ -36,16 +36,11 @@ export const resetPassword = async (req, res, next) => {
       { expiresIn: consts.PASSWORD_RESET_TIMEOUT_SECS }
     );
     
-   
-     await emailer.sendHTMLMail(
-    email,
-    "Reset Password",
-    getResetTemplate()
-        .replace("{myJWT}", resetToken)
-        .replace("{expiration_time}", consts.PASSWORD_RESET_TIMEOUT_MINS)
-        .replace("{targetUrl}",`${req.headers.referrer || req.headers.referer}/auth/new-password`)
-        .replace("{email}",encodeURIComponent(email)));
- 
+    await emailer.sendResetPassword(email,
+        'resetPasswordNew',
+        {url:`${req.headers.referrer || req.headers.referer}/auth/new-password?targetUrl=${resetToken}
+        &email=${encodeURIComponent(email)}`},'Astronomy Club')
+
     return res.status(200).json({
         message: "check your email to reset password",
     });
