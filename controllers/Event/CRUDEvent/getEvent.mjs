@@ -1,9 +1,6 @@
-import { Event } from "../../models/Events/Event.mjs";
-import { catchAsync } from "../../utils/catchAsync.mjs";
-import { isAuthorized } from "../Authentication/authorizationMw.mjs/Authorizer.mjs";
-import { getCheckpointsbyId } from "./checkpoints/getCheckpoints.mjs";
-import { getGatheringpointsbyId } from "./gatheringPoints/getGatheringpoints.mjs";
-
+import { Event } from "../../../models/Events/Event.mjs";
+import { catchAsync } from "../../../utils/catchAsync.mjs";
+import { isAuthorized } from "../../Authentication/authorizationMw.mjs/Authorizer.mjs";
 
 
 export const getEventById= async(id,fullaccess)=>{
