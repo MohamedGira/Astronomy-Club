@@ -25,7 +25,6 @@ export const SpeakerSchema=mongoose.Schema(
 
 
 SpeakerSchema.pre('validate', async function(next) {
-  console.log( await Speaker.findById(this._id))
   if (typeof this.image != 'String')
 
   try{
