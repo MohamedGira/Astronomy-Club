@@ -15,57 +15,13 @@ import { GatheringPoint } from "../../models/Events/subSchemas/gatheringPoint.mj
 import { deleteFile } from "../../utils/uploads/cleanDir.mjs";
 const relativeUploadPath= '../../upload'
 
-/*  
-    Title:String,
-    Type:'trip','conference','online'
-    description:String,
-    banner:image,
-    event-image-1:image,
-    event-image-2:image,
-    etc...  
-
-    capacity:Number,
-    price:Number,
-    isVisible:Boolean,
-    date:Date,
-    location:{landmark: String, latitude:Number,longitude:Number},
-    checkpoints:[
-        {
-        name:String
-        description:String
-        startsAt:type:Date
-        endsAt:type:Date
-        type: String: either 'speaker' or 'gathering'
-        location:{landmark: String, latitude:Number,longitude:Number}
-        //if of type speaker
-        speaker:{
-            name:String
-            title:String,
-            description:String,
-            image: speakerx_image_field_name
-            }
-        },..
-    ],
-    gatheringPoints:[
-    {
-    from:Date,
-    to:Date,
-    location: {landmark: String, latitude:Number,longitude:Number}
-    },...]
-    */
-
-
-
-
 export const createEvent=catchAsync( async (req,res,next)=>{
     
     const body=jsonifyObj(req.body)
 
     const filteredEvent=filterObj(body,Event.schema.paths,['images','checkpoints','gatheringPoints','banner'])
     //handling excluded fields
-
     const event=await Event.create(filteredEvent)
-    
 
     if(body.checkpoints){
         //checkpoints exists
@@ -76,7 +32,7 @@ export const createEvent=catchAsync( async (req,res,next)=>{
         }
         catch(err){
             const del=await Event.findByIdAndDelete(event._id)
-            console.log(`couldn\'t create event ${del.title}, checkpoints issue`)
+            console.log(`couldn\'t create event ${del.title}, checkpoints issue: ${err}`)
             throw(err)
         }
     }
@@ -89,14 +45,13 @@ export const createEvent=catchAsync( async (req,res,next)=>{
         }
         catch(err){
             const del=await Event.findByIdAndDelete(event._id)
-            console.log(`couldn\'t create event ${del.title}, gathering points issues`)
+            console.log(`couldn\'t create event ${del.title}, gathering points issues ${err}`)
             throw(err)
         }
     }
 
     if (req.files){
         const imgslist=[] 
-        
         try{
             event.images=await Promise.all(req.files.images.map(async (el)=> { return await saveImage(el)}))
             imgslist.push(...req.files.images)
