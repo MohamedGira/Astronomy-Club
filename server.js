@@ -22,6 +22,8 @@ import { User } from "./models/Users/User.mjs";
 import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
 import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
 import { FsRouter } from "./Routers/FsRouter.mjs";
+import { imageHandler } from "./utils/uploads/ImageCompression/compressor.mjs";
+import { saveImage } from "./utils/uploads/saveImage.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -69,7 +71,7 @@ app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)
-app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
+app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)           
 
 app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
@@ -88,7 +90,8 @@ app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
 })
      
 /* app.post('/uploadImage',catchAsync ( async (req,res,next)=>{
-    saveImage(req.files.image,{compress:true})
+   let name=await saveImage(req.files.image,{compress:true,subfolder:'a/a/'})
+   return res.json(name)
 })) */
 
 app.get('images/*',(req,res,next)=>{
