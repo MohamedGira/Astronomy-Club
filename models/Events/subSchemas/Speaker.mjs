@@ -1,6 +1,8 @@
 import mongoose from'mongoose'
 
 import { deleteFile } from '../../../utils/uploads/cleanDir.mjs';
+import { saveImage } from '../../../utils/uploads/saveImage.mjs';
+import { AppError } from '../../../utils/AppError.mjs';
 
 export const SpeakerSchema=mongoose.Schema(
     {
@@ -16,13 +18,27 @@ export const SpeakerSchema=mongoose.Schema(
         type:String,
         required:true,
        },
-       image:{
-        type:String,
-        required:true
-       },
-      
+       image:{},
+       
     }
 )
+
+
+SpeakerSchema.pre('validate', async function(next) {
+  console.log( await Speaker.findById(this._id))
+  if (typeof this.image != 'String')
+
+  try{
+    this.image=await saveImage(this.image)
+  }catch(err){
+    return next(new AppError(500,`something went wrong ${err.message}`))
+  }
+  
+  next()
+});
+
+
+
 SpeakerSchema.pre(/delete/i,async function(next){
   const doc = await this.model.findOne(this.getFilter())
 

@@ -24,6 +24,7 @@ import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
 import { FsRouter } from "./Routers/FsRouter.mjs";
 import { imageHandler } from "./utils/uploads/ImageCompression/compressor.mjs";
 import { saveImage } from "./utils/uploads/saveImage.mjs";
+import { addSpeaker } from "./controllers/Event/speakers/CRUDSpeaker.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -93,6 +94,7 @@ app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
    let name=await saveImage(req.files.image,{compress:true,subfolder:'a/a/'})
    return res.json(name)
 })) */
+app.post('/addSpeaker',isAuthorizedMw('admin'),addSpeaker)
 
 app.get('images/*',(req,res,next)=>{
     return next(new AppError(404,`requested image not found :${req.path},${req.method}`))

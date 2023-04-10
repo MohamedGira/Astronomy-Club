@@ -18,7 +18,8 @@ import { createImageObject } from "../utils/uploads/saveImage.mjs"
 export const CreateOne=(Model)=>{
     return catchAsync( async (req,res,next)=>{
         var filteredBody=filterObj(jsonifyObj(req.body),Model.schema.paths) 
-        var newModelObject=await Model.create({...filteredBody})
+        var filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
+        var newModelObject=await Model.create({...filteredBody,...filteredFiles})
         return res.status(201).json({
             message:`${Model.collection.collectionName} created`,
             newModelObject
