@@ -11,20 +11,17 @@ import { EventRouter } from "./Routers/Event.mjs";
 import fileUpload from "express-fileupload";
 import path from "path";
 import { fileURLToPath } from "url";
-import { catchAsync } from "./utils/catchAsync.mjs";
 import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
 import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
-import { setCache } from "./utils/cache.mjs";
 import { Event } from "./models/Events/Event.mjs";
-import { User } from "./models/Users/User.mjs";
 import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
 import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
 import { FsRouter } from "./Routers/FsRouter.mjs";
-import { imageHandler } from "./utils/uploads/ImageCompression/compressor.mjs";
-import { saveImage } from "./utils/uploads/saveImage.mjs";
-import { addSpeaker } from "./controllers/Event/speakers/CRUDSpeaker.mjs";
+import { addSpeaker } from "./controllers/Event/CRUDSpeaker.mjs";
+import { SpeakerRouter } from "./Routers/Speakers.mjs";
+import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,15 +65,14 @@ app.use('/api/v1/files/',FsRouter)
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/events/',EventRouter)
-app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
-app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/tickets/',TicketRouter)
+app.use('/api/v1/speakers/',SpeakerRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)
-app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)           
+app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)       
 
 app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
-    
+
     return res.json({ok:'ok'})
 }) 
 
