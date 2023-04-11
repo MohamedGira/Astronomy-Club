@@ -53,6 +53,9 @@ CheckpointSchema.pre('save',async function(next){
     if(! await Event.findById(this.event)){
         return next(new AppError('400',`this event doesn't exist`))
     }
+    if(this.type=='speaker'&&!await Speaker.findById(this.speaker)){
+        return next(new AppError('400',`this speaker doesn't exist`))
+    }
     next()
 })
 export const Checkpoint= mongoose.model('Checkpoint',CheckpointSchema)
