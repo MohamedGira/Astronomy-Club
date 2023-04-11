@@ -15,6 +15,9 @@ export const EventRouter=express.Router()
 
 function populateId(req,res,next){
     req.myFilter={event:req.params.id}
+    if (req.params.id)
+        req.body.event=req.params.id
+
     return next()
 }
 

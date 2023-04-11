@@ -1,15 +1,14 @@
 import express from "express";
-import { getCheckpoints } from "../controllers/Event/checkpoints/getCheckpoints.mjs";
-import { addCheckpoint, deleteCheckpoint, getCheckpoint, updateCheckpoint } from "../controllers/Event/checkpoints/CRUDCheckpoint.mjs";
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 
+import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import * as checkpointsController from "../controllers/Event/CRUDCheckpoint.mjs"
 export const CheckpointsRouter=express.Router({mergeParams:true})
 
 CheckpointsRouter.route('/')
-.get(getCheckpoints)
-.post(isAuthorizedMw('admin'),addCheckpoint)
+.get(checkpointsController.getCheckpoints)
+.post(isAuthorizedMw('admin'),checkpointsController.addCheckpoint)
 
 CheckpointsRouter.route('/:elementId')
-.get(getCheckpoint)
-.patch(isAuthorizedMw('admin'),updateCheckpoint)
-.delete(isAuthorizedMw('admin'),deleteCheckpoint)
+.get(checkpointsController.getCheckpoint)
+.patch(isAuthorizedMw('admin'),checkpointsController.updateCheckpoint)
+.delete(isAuthorizedMw('admin'),checkpointsController.deleteCheckpoint)
