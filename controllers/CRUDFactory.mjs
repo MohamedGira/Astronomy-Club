@@ -3,7 +3,9 @@ import { filterObj, jsonifyObj } from "../utils/objOp.mjs"
 import { catchAsync } from "../utils/catchAsync.mjs"
 import { AppError } from "../utils/AppError.mjs"
 import { createImageObject } from "../utils/uploads/saveImage.mjs"
-//crud factory for BASIC classes : No images or sub Images
+//crud factory for BASIC classes : no childReferencing Docs
+
+//!!!!!!! if used model has images, then images must be saved on model file not controller
 
 /*
 *this is only for plain endpoints : for example api/v1/events/:elementId
@@ -18,8 +20,10 @@ import { createImageObject } from "../utils/uploads/saveImage.mjs"
 export const CreateOne=(Model)=>{
     return catchAsync( async (req,res,next)=>{
         var filteredBody=filterObj(jsonifyObj(req.body),Model.schema.paths) 
-        var filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
-        var newModelObject=await Model.create({...filteredBody,...filteredFiles})
+        var filteredFiles;
+        if (req.files)
+            filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
+            var newModelObject=await Model.create({...filteredBody,...filteredFiles})
         return res.status(201).json({
             message:`${Model.collection.collectionName} created`,
             newModelObject
@@ -28,10 +32,12 @@ export const CreateOne=(Model)=>{
 )}
 
 /** params req.params: elementId -> referes to the requested document */
-export const getOne=(Model)=>{
+export const getOne=(Model,populate=[])=>{
     return catchAsync(  async (req,res,next)=>{
         const elementId=req.params.elementId
-        var modelObject=await Model.find({_id:elementId})
+        var modelObject=Model.findOne({_id:elementId})
+        populate.forEach(el=>{console.log(el);modelObject.populate(el)})
+        modelObject=await modelObject
 
         if(!modelObject)
             return next(new AppError(404,`requested ${Model.collection.collectionName} of id ${elementId} doesn\'t exitst`))
@@ -46,13 +52,17 @@ export const getOne=(Model)=>{
 export const updateOne=(Model)=>{
     return catchAsync( async (req,res,next)=>{
         jsonifyObj(req.body)
-        var update=filterObj(req.body,Model.schema.paths)
         
+        var filteredFiles;
+        if (req.files)
+            filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
+        var update={...filterObj(req.body,Model.schema.paths),...filteredFiles}
         const elementId=req.params.elementId
-        const newModelObject= await Model.findByIdAndUpdate(elementId,update,{
+        let newModelObject= await Model.findOneAndUpdate({_id:elementId},update,{
             new:true,
-            runValidators:true
+            runValidators :true
         })
+        newModelObject=await newModelObject.save()
     if(!newModelObject){
         return next( new AppError(400,`requested ${Model.collection.collectionName} of id ${elementId} doesn\'t exitst`))
     }
