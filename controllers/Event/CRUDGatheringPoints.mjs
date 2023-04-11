@@ -1,11 +1,6 @@
-import { GatheringPoint } from "../../../models/Events/subSchemas/gatheringPoint.mjs";
-import { AppError } from "../../../utils/AppError.mjs";
-import { catchAsync } from "../../../utils/catchAsync.mjs";
-
-import {createSpeaker} from "../speakers/CRUDSpeaker.mjs"
-import {filterObj,jsonifyObj} from "../../../utils/objOp.mjs"
-import { Speaker } from "../../../models/Events/subSchemas/Speaker.mjs";
-import * as factory from "../../CRUDFactory.mjs";
+import { GatheringPoint } from "../../models/Events/subSchemas/gatheringPoint.mjs";
+import {filterObj,jsonifyObj} from "../../utils/objOp.mjs"
+import * as factory from "../CRUDFactory.mjs";
 
 
 export const createGatheringPoint= async(unfilteredBody,eventid)=>{
