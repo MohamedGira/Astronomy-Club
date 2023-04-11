@@ -2,8 +2,8 @@ import { Event } from "../../../models/Events/Event.mjs";
 import { AppError } from "../../../utils/AppError.mjs";
 import { catchAsync } from "../../../utils/catchAsync.mjs";
 import { filterObj, jsonifyObj } from "../../../utils/objOp.mjs";
-import { createCheckpoint } from "../checkpoints/CRUDCheckpoint.mjs";
-import { createGatheringPoint } from "../gatheringPoints/CRUDGatheringPoints.mjs";
+import { createCheckpoint } from "../CRUDCheckpoint.mjs";
+import { createGatheringPoint } from "../CRUDGatheringPoints.mjs";
 import { deleteFile } from "../../../utils/uploads/cleanDir.mjs";
 import { saveImage} from '../../../utils/uploads/saveImage.mjs'
 
@@ -19,7 +19,7 @@ export const createEvent=catchAsync( async (req,res,next)=>{
         //checkpoints exists
         try{
             for (let checkpoint in body.checkpoints){
-                await createCheckpoint(body.checkpoints[checkpoint],event._id,req.files)
+                await createCheckpoint(body.checkpoints[checkpoint],event._id)
             }
         }
         catch(err){
