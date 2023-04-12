@@ -22,6 +22,7 @@ import { FsRouter } from "./Routers/FsRouter.mjs";
 import { addSpeaker } from "./controllers/Event/CRUDSpeaker.mjs";
 import { SpeakerRouter } from "./Routers/Speakers.mjs";
 import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
+import { deploymentTrick } from "./models/deploymentTrick.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,6 +45,21 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 
 await Database.getInstance()
+
+
+// a trick to stay up on the deployed site
+var stayup={}
+var refreshEveryMins=stayup.refreshEvery||12
+setInterval(async () => {
+    stayup=(await deploymentTrick.findOne())._doc
+    if(stayup.stayup){ 
+        refreshEveryMins=stayup.refreshEvery||12
+        await fetch(`${stayup.siteUrl}/`).catch(err=>{
+            console.log(`couldn't send to ${stayup.siteUrl}/  ,  ${err.message}`)
+        })
+    }        
+},refreshEveryMins*60000)
+
 
 app.use(cors({
    origin:'*', 
@@ -72,14 +88,13 @@ app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
 
 app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
-
     return res.json({ok:'ok'})
 }) 
 
 app.patch('/updatePassword',protect,    updatePassword
 )
 //testing authorizer functionality
-app.get('/vishome',isAuthorizedMw('visitor'),(req,res,next)=>{
+app.get('/vishome',(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })
 app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
@@ -96,6 +111,7 @@ app.get('images/*',(req,res,next)=>{
     return next(new AppError(404,`requested image not found :${req.path},${req.method}`))
 })
 app.all('*',(req,res,next)=>{
+    console.log('a')
     return next(new AppError(404,`cant find this route :${req.path},${req.method}`))
 })
 app.use(ErrorHandler)

@@ -1,6 +1,8 @@
 import { AppError } from "../utils/AppError.mjs";
 const sendErrorDev = (err, res) => {
-  console.log(err.stack)
+    if ( String(err.statusCode).match(/^5/))
+       console.error("Error: ", err);
+
   return res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
