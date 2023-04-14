@@ -7,12 +7,19 @@ import { Event } from "../Events/Event.mjs";
 import { User } from "../Users/User.mjs";
 dotenv.config()
 
+import evalidator from "validator";
 
 
 const ticketSchema = mongoose.Schema({
   user:{
     type:String,
-    required:true,
+    required: [true, "Email is required"],
+    validate: {
+      validator: function () {
+        return evalidator.isEmail(this.email);
+      },
+      message: "Invalid email format",
+    },
     /* type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required:true, */
@@ -42,15 +49,13 @@ ticketSchema.methods.alreadyReserved= async function(){
 
 //check that role foriegn key is valid. to avoid many requests to the data base, ticketcount is checked here as well?
 ticketSchema.pre("save", async function (next) {
-  const user = await User.findById (this.user);
+  const user =this.user// await User.findById (this.user);
   const event = await Event.findById (this.event);
   
   if (!user||!event)
-    return next(new AppError(400, "invalid user or event id"));
+    return next(new AppError(400, "invalid email or event id"));
     
   //YAGNI
-  if (!user.confirmed)
-    return next(new AppError(400, "user is not confirmed"));
   if (!event.isVisible)
     return next(new AppError(400, "you can't make a reservation for this event"));
   
