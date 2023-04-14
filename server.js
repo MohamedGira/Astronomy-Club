@@ -24,7 +24,7 @@ import { SpeakerRouter } from "./Routers/Speakers.mjs";
 import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
 import { BookingRouter } from "./Routers/Booking.mjs";
 import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
-
+import compression from "compression"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 process.on('uncaughtException',err=>{
@@ -44,6 +44,7 @@ dotenv.config()
 //this webhook uses request body as raw format, not as a json, so it must be defiend before we user expressjson() middleware,, DONT MOVE IT
 app.post('/api/v1/events/confirmPayment/',express.raw({type: 'application/json'}),webhook)
 app.use(express.json())
+
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 
@@ -66,7 +67,7 @@ app.use(
     })
 );
 
-
+app.use(compression())
 app.use(express.static('upload'))
 
 app.use('/api/v1/book/',BookingRouter)
