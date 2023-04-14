@@ -13,7 +13,7 @@ async  function getCheckoutStripeSession(req,event){
         success_url:`${req.protocol}://${req.get('host')}/vishome`,
         cancel_url:`${req.protocol}://${req.get('host')}/?message=${`couldn't book the event`}`,
         customer_email:req.body.email,
-        client_reference_id:req.params.id,
+        client_reference_id:event.id,
         line_items:[{
             price_data: {
                 currency: 'eur',
