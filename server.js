@@ -11,17 +11,20 @@ import { EventRouter } from "./Routers/Event.mjs";
 import fileUpload from "express-fileupload";
 import path from "path";
 import { fileURLToPath } from "url";
-import { catchAsync } from "./utils/catchAsync.mjs";
 import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
 import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
-import { setCache } from "./utils/cache.mjs";
 import { Event } from "./models/Events/Event.mjs";
-import { User } from "./models/Users/User.mjs";
 import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
 import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
 import { FsRouter } from "./Routers/FsRouter.mjs";
+import { addSpeaker } from "./controllers/Event/CRUDSpeaker.mjs";
+import { SpeakerRouter } from "./Routers/Speakers.mjs";
+import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
+import { deploymentTrick } from "./models/deploymentTrick.mjs";
+import { BookingRouter } from "./Routers/Booking.mjs";
+import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,26 +38,34 @@ process.on('uncaughtException',err=>{
 const app = express()
 
 
-app.set("view engine", "ejs");
-app.get('/eventImages/:id', (req, res) => {
-    Event.findById(req.params.id)
-    .then((data, err)=>{
-        if(err){
-            console.log(err);
-        }
-        
-        res.render('file',{items: [...data.images,data.banner]})
-    }).catch(err=>console.log(err))
-});
 
 
 
 dotenv.config()
+//this webhook uses request body as raw format, not as a json, so it must be defiend before we user expressjson() middleware,, DONT MOVE IT
+app.post('/api/v1/events/confirmPayment/',express.raw({type: 'application/json'}),webhook)
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 
 await Database.getInstance()
+
+
+// a trick to stay up on the deployed site
+var stayup={}
+stayup=(await deploymentTrick.findOne())._doc
+
+var refreshEveryMins=stayup.refreshEvery||12
+setInterval(async () => {
+    stayup=(await deploymentTrick.findOne())._doc
+    if(stayup.stayup){ 
+        refreshEveryMins=stayup.refreshEvery||12
+        await fetch(`${stayup.siteUrl}/`).catch(err=>{
+            console.log(`couldn't send to ${stayup.siteUrl}/  ,  ${err.message}`)
+        })
+    }        
+},refreshEveryMins*60000)
+
 
 app.use(cors({
    origin:'*', 
@@ -72,44 +83,49 @@ app.use(
 
 
 app.use(express.static('upload'))
+
+app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/files/',FsRouter)
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/events/',EventRouter)
-app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
-app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/tickets/',TicketRouter)
+app.use('/api/v1/speakers/',SpeakerRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)
-app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
+app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)       
 
 app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
-    
     return res.json({ok:'ok'})
 }) 
 
 app.patch('/updatePassword',protect,    updatePassword
 )
 //testing authorizer functionality
-app.get('/vishome',isAuthorizedMw('visitor'),(req,res,next)=>{
+app.get('/vishome',(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })
 app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
     return res.status(200).json({home:'home'})
 })
- 
+     
+/* app.post('/uploadImage',catchAsync ( async (req,res,next)=>{
+   let name=await saveImage(req.files.image,{compress:true,subfolder:'a/a/'})
+   return res.json(name)
+})) */
+app.post('/addSpeaker',isAuthorizedMw('admin'),addSpeaker)
+
 app.get('images/*',(req,res,next)=>{
     return next(new AppError(404,`requested image not found :${req.path},${req.method}`))
 })
 app.all('*',(req,res,next)=>{
+    console.log('a')
     return next(new AppError(404,`cant find this route :${req.path},${req.method}`))
 })
 app.use(ErrorHandler)
 
 
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
-
-    
 
 
 

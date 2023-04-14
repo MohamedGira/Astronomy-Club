@@ -1,4 +1,4 @@
-const Errorlist={
+export const Errorlist={
     100: "Continue",
     101: "Switching Protocols",
     200: "OK",

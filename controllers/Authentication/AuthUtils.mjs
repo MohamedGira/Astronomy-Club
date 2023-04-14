@@ -5,7 +5,7 @@ import { AppError } from '../../utils/AppError.mjs';
 import { catchAsync } from '../../utils/catchAsync.mjs';
 import { getToken } from '../../utils/getToken.mjs';
 
-export const isLoggedInMw = (req, res, next) => {
+export const alreadyLoggedIn = (req, res, next) => {
     var token =getToken(req);
     
     

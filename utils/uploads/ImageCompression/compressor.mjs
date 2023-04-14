@@ -4,49 +4,15 @@ import imagemin from 'imagemin';
 import imageminPngquant from 'imagemin-pngquant';
 import fs from 'fs';
 import imageminMozjpeg from 'imagemin-mozjpeg';
-import util from 'util';
+import util, { promisify } from 'util';
 import exp from 'constants';
+import sharp from 'sharp';
 
 
 
-class Compressor{
+
+class BufferCompressor{
     constructor(){
-        this.MaximumSize=80;
-    }
-
-    getImageSize(imagepath){
-    var fileSizeInKiloBytes = fs.statSync(imagepath).size/1024.0;
-    return fileSizeInKiloBytes;
-    }
-    
-    async compressImage(source,destination=undefined){
-    var inputImgSize=this.getImageSize(source)
-    if(inputImgSize==0){
-        throw Error('0 file size!')
-    }
-    if(inputImgSize<=this.MaximumSize){
-        return await util.promisify(fs.readFile)(source)
-    }
-    var ratio=1;
-    
-    ratio=this.MaximumSize/inputImgSize
-    const file = await imagemin([source], {
-        destination: destination,
-        plugins: [
-            imageminMozjpeg({quality:Math.max(ratio*100,5)}),
-            imageminPngquant({
-                quality: [.1,Math.max(ratio,.3)]
-            })
-        ]
-    });
-    
-    return file[0].data;
-}
-}
-
-class BufferCompressor extends Compressor{
-    constructor(){
-        super()
     }
     getbufferSize(imgbuffer){
         return Buffer.byteLength(imgbuffer)/1024;
@@ -72,5 +38,38 @@ class BufferCompressor extends Compressor{
     return file;
     }
 }
-export const compressor=new Compressor()
+
+class ImageHandler  {
+    constructor(){
+        
+    }
+     saveImage(image,options={compress:false,maxHeight:1080,maxWidth:1920}){
+         
+         let img=sharp(image)
+        .toFormat('jpeg')
+        if(options.compress)
+        {
+        options.maxHeight=options.maxHeight||1080
+        options.maxWidth=options.maxWidth||1920
+        img.resize(options.maxWidth, options.maxHeight, {
+            fit: sharp.fit.inside,
+            withoutEnlargement: true
+        })
+        }
+        return img
+    }
+    async resizeImage(image,maxHeight=1080,maxWidth=1920){    
+        return await sharp(image)
+        .resize(maxWidth, maxHeight, {
+            fit: sharp.fit.inside,
+            withoutEnlargement: true
+        })
+        .toFormat('jpeg')
+        .toBuffer()
+        
+    }
+}
+
+
 export const bufferCompressor=new BufferCompressor()
+export const imageHandler=new ImageHandler()

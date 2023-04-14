@@ -1,11 +1,11 @@
 import express from "express";
 
-import { createEvent } from "../controllers/Event/createEvent.mjs";
-import { getEvent } from "../controllers/Event/getEvent.mjs";
-import { getEvents } from "../controllers/Event/getEvents.mjs";
-import { updateEvent } from "../controllers/Event/updateEvent.mjs";
+import { createEvent } from "../controllers/Event/CRUDEvent/createEvent.mjs";
+import { getEvent } from "../controllers/Event/CRUDEvent/getEvent.mjs";
+import { getEvents } from "../controllers/Event/CRUDEvent/getEvents.mjs";
+import { updateEvent } from "../controllers/Event/CRUDEvent/updateEvent.mjs";
 import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
-import { deleteEvent } from "../controllers/Event/deleteEvent.mjs";
+import { deleteEvent } from "../controllers/Event/CRUDEvent/deleteEvent.mjs";
 
 import { CheckpointsRouter } from "./Checkpoints.mjs";
 import { gatheringPointsRouter } from "./GatheringPoints.mjs";
@@ -13,7 +13,13 @@ import { gatheringPointsRouter } from "./GatheringPoints.mjs";
 export const EventRouter=express.Router()
 
 
+function populateId(req,res,next){
+    req.myFilter={event:req.params.id}
+    if (req.params.id)
+        req.body.event=req.params.id
 
+    return next()
+}
 
 EventRouter.route('/')
 .get(getEvents)
@@ -27,5 +33,5 @@ EventRouter.route('/:id')
 
 
 
-EventRouter.use('/:id/checkpoints',CheckpointsRouter)
-EventRouter.use('/:id/gatheringPoints',gatheringPointsRouter)
+EventRouter.use('/:id/checkpoints',populateId,CheckpointsRouter)
+EventRouter.use('/:id/gatheringPoints',populateId,gatheringPointsRouter)

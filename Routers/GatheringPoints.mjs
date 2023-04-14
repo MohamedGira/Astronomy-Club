@@ -1,15 +1,14 @@
 import express from "express";
-import { addGatheringPoint, deleteGatheringPoint, getGatheringPoint, updateGatheringPoint } from "../controllers/Event/gatheringPoints/CRUDGatheringPoints.mjs";
-import { getGatheringpoints } from "../controllers/Event/gatheringPoints/getGatheringpoints.mjs";
+import * as gatheringPointsController from "../controllers/Event/CRUDGatheringPoints.mjs";
 export const gatheringPointsRouter=express.Router({mergeParams:true})
 import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 
 
 gatheringPointsRouter.route('/')
-.get(getGatheringpoints)
-.post(isAuthorizedMw('admin'),addGatheringPoint)
+.get(gatheringPointsController.getGatheringPoints)
+.post(isAuthorizedMw('admin'),gatheringPointsController.addGatheringPoint)
 
 gatheringPointsRouter.route('/:elementId')
-.get(getGatheringPoint)
-.patch(isAuthorizedMw('admin'),updateGatheringPoint)
-.delete(isAuthorizedMw('admin'),deleteGatheringPoint)
+.get(gatheringPointsController.getGatheringPoint)
+.patch(isAuthorizedMw('admin'),gatheringPointsController.updateGatheringPoint)
+.delete(isAuthorizedMw('admin'),gatheringPointsController.deleteGatheringPoint)

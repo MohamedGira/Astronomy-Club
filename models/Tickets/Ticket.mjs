@@ -11,9 +11,11 @@ dotenv.config()
 
 const ticketSchema = mongoose.Schema({
   user:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type:String,
     required:true,
+    /* type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required:true, */
   },
   event: {
     type: mongoose.Schema.Types.ObjectId,

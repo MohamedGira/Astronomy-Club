@@ -1,19 +1,11 @@
-import { Event } from "../../models/Events/Event.mjs";
-import path from "path";
-
-import { fileURLToPath } from "url";
-import { AppError } from "../../utils/AppError.mjs";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-import {createImageObject, imgdir, saveImage} from '../../utils/uploads/saveImage.mjs'
-import { catchAsync } from "../../utils/catchAsync.mjs";
-import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
-import { createCheckpoint } from "./checkpoints/CRUDCheckpoint.mjs";
-import { Checkpoint } from "../../models/Events/subSchemas/checkpoint.mjs";
-import { createGatheringPoint } from "./gatheringPoints/CRUDGatheringPoints.mjs";
-import { GatheringPoint } from "../../models/Events/subSchemas/gatheringPoint.mjs";
-import { deleteFile } from "../../utils/uploads/cleanDir.mjs";
-const relativeUploadPath= '../../upload'
+import { Event } from "../../../models/Events/Event.mjs";
+import { AppError } from "../../../utils/AppError.mjs";
+import { catchAsync } from "../../../utils/catchAsync.mjs";
+import { filterObj, jsonifyObj } from "../../../utils/objOp.mjs";
+import { createCheckpoint } from "../CRUDCheckpoint.mjs";
+import { createGatheringPoint } from "../CRUDGatheringPoints.mjs";
+import { deleteFile } from "../../../utils/uploads/cleanDir.mjs";
+import { saveImage} from '../../../utils/uploads/saveImage.mjs'
 
 export const createEvent=catchAsync( async (req,res,next)=>{
     
@@ -27,7 +19,7 @@ export const createEvent=catchAsync( async (req,res,next)=>{
         //checkpoints exists
         try{
             for (let checkpoint in body.checkpoints){
-                await createCheckpoint(body.checkpoints[checkpoint],event._id,req.files)
+                await createCheckpoint(body.checkpoints[checkpoint],event._id)
             }
         }
         catch(err){

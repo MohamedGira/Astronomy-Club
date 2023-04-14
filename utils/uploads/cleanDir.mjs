@@ -15,8 +15,7 @@ export const deleteFile=(fileName,subfolder='')=>{
     unlink(imgdir+fileName,(err)=>{
         if(err)
           console.log(err.message)
-        else
-        console.log(`deleted ${imgdir+fileName}`)
+        
     })
 }
 
