@@ -110,9 +110,11 @@ app.all('*',(req,res,next)=>{
 })
 app.use(ErrorHandler)
 
-
+try{
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
-
+}catch(err){
+    console.log(err)
+}
 
 
 //saftey net
