@@ -2,10 +2,7 @@
 
 import imagemin from 'imagemin';
 import imageminPngquant from 'imagemin-pngquant';
-import fs from 'fs';
-import imageminMozjpeg from 'imagemin-mozjpeg';
-import util, { promisify } from 'util';
-import exp from 'constants';
+
 import sharp from 'sharp';
 
 
@@ -31,7 +28,6 @@ class BufferCompressor{
     ratio=this.MaximumSize/inputImgSize
     const file = await imagemin.buffer(buffer, {
         plugins: [
-            imageminMozjpeg(),
             imageminPngquant()
         ]
     });
