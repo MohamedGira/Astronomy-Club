@@ -10,7 +10,7 @@ async  function getCheckoutStripeSession(req,event){
     const Token=generateToken({email:req.body.email,event:event.id},60*60*24*90)
     const session= await stripe.checkout.sessions.create({
         payment_method_types:['card'],
-        //success_url:`${req.protocol}://${req.get('host')}/?booking=${Token}`,
+        success_url:`${req.protocol}://${req.get('host')}/vishome`,
         cancel_url:`${req.protocol}://${req.get('host')}/?message=${`couldn't book the event`}`,
         customer_email:req.body.email,
         client_reference_id:req.params.id,
