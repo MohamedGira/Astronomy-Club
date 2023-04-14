@@ -67,8 +67,8 @@ app.use(
     })
 );
 
-app.use(compression())
 app.use(express.static('upload'))
+app.use(compression())
 
 app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/files/',FsRouter)
