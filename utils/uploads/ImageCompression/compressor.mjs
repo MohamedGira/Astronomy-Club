@@ -1,15 +1,12 @@
 
 
-import imagemin from 'imagemin';
-import imageminPngquant from 'imagemin-pngquant';
 import fs from 'fs';
-import imageminMozjpeg from 'imagemin-mozjpeg';
 import util, { promisify } from 'util';
 import exp from 'constants';
 import sharp from 'sharp';
 
 
-
+/* 
 
 class BufferCompressor{
     constructor(){
@@ -38,7 +35,7 @@ class BufferCompressor{
     return file;
     }
 }
-
+ */
 class ImageHandler  {
     constructor(){
         
@@ -71,5 +68,5 @@ class ImageHandler  {
 }
 
 
-export const bufferCompressor=new BufferCompressor()
+//export const bufferCompressor=new BufferCompressor()
 export const imageHandler=new ImageHandler()

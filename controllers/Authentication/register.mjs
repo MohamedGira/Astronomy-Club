@@ -10,7 +10,7 @@ import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
-import {createImageObject} from '../../utils/uploads/saveImage.mjs'
+import { saveImage} from '../../utils/uploads/saveImage.mjs'
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ export const registerMember = async (req, res, next) => {
     if (req.files)
     {
     const  image  = req.files.profileImage;
-    const img=await createImageObject(image)
+    const img=await saveImage(image)
     user.profileImage=img 
     }
     await user.save();    //user is saved successfully
@@ -39,7 +39,7 @@ export const registerMember = async (req, res, next) => {
     });
 };
 
-export const registerUser = async (req, res, next) => {
+/* export const registerUser = async (req, res, next) => {
     const filtereduser=filterObj(req.body,User.schema.paths,['role'])
     const user = new User(filtereduser);
     
@@ -78,7 +78,7 @@ export const registerUser = async (req, res, next) => {
     return res.status(200).json({
         message: "user created successfully",
     });
-};
+}; */
 
 export const confirmRegisteration = async (req, res, next) => {
     const reqtoken = req.query.token;

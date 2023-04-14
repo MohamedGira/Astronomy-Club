@@ -2,7 +2,6 @@ import { json } from "express"
 import { filterObj, jsonifyObj } from "../utils/objOp.mjs"
 import { catchAsync } from "../utils/catchAsync.mjs"
 import { AppError } from "../utils/AppError.mjs"
-import { createImageObject } from "../utils/uploads/saveImage.mjs"
 //crud factory for BASIC classes : no childReferencing Docs
 
 //!!!!!!! if used model has images, then images must be saved on model file not controller

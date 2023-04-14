@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs";
-import { imageHandler, bufferCompressor } from "../../utils/uploads/ImageCompression/compressor.mjs";
+import { imageHandler } from "../../utils/uploads/ImageCompression/compressor.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -57,7 +57,7 @@ export const saveImage = async function (image,options={subfolder:'',compress:fa
 };
 
 
-export const createImageObject = async function (image,compress = false)
+/* export const createImageObject = async function (image,compress = false)
  {
   //uploaded file is not image
   if (image && !/^image/.test(image.mimetype))
@@ -73,4 +73,4 @@ export const createImageObject = async function (image,compress = false)
     img= new Image({name:imgname,img:{data:image.data,contentType:image.mimetype}})
   }
   return img;
-};
+}; */

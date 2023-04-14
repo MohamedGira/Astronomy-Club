@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { AppError } from "../../utils/AppError.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import {createImageObject, imgdir, saveImage} from '../../utils/uploads/saveImage.mjs'
+import {saveImage} from '../../utils/uploads/saveImage.mjs'
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
 import { createCheckpoint } from "./checkpoints/CRUDCheckpoint.mjs";

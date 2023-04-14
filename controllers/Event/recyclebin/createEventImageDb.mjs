@@ -1,4 +1,4 @@
-export const createEvent=catchAsync( async (req,res,next)=>{
+/* export const createEvent=catchAsync( async (req,res,next)=>{
     
     const body=jsonifyObj(req.body)
 
@@ -67,3 +67,4 @@ export const createEvent=catchAsync( async (req,res,next)=>{
     });
 
 })
+ */
