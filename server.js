@@ -111,7 +111,9 @@ app.all('*',(req,res,next)=>{
 app.use(ErrorHandler)
 
 try{
-const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
+const port = process.env.PORT || 3000
+console.log(port)
+const server=  app.listen(port, () =>{ console.log(`connected on port ${port}`)})
 }catch(err){
     console.log(err)
 }
