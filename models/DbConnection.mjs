@@ -27,6 +27,7 @@ export class Database{
             this.DB = "mongodb://127.0.0.1:27017/Astronomy" 
         else
             this.DB= `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSCDE}@cluster0.sq0pkrl.mongodb.net/astronomy?retryWrites=true&w=majority`
+            console.log(this.DB)
         if(this.dbinstance==null)
         {
             mongoose.set('strictQuery', false);
