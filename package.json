@@ -40,6 +40,7 @@
     "nodemailer-juice": "^1.0.1",
     "nodemon": "^2.0.22",
     "sharp": "^0.32.0",
+    "stripe": "^12.1.1",
     "validator": "^13.9.0"
   },
   "type": "module"
