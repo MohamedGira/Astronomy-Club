@@ -22,7 +22,6 @@ import { FsRouter } from "./Routers/FsRouter.mjs";
 import { addSpeaker } from "./controllers/Event/CRUDSpeaker.mjs";
 import { SpeakerRouter } from "./Routers/Speakers.mjs";
 import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
-import { deploymentTrick } from "./models/deploymentTrick.mjs";
 import { BookingRouter } from "./Routers/Booking.mjs";
 import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
 
