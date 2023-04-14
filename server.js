@@ -50,7 +50,7 @@ app.use(cookieParser());
 
 await Database.getInstance()
 
-
+/* 
 // a trick to stay up on the deployed site
 var stayup={}
 stayup=(await deploymentTrick.findOne())._doc
@@ -64,7 +64,7 @@ setInterval(async () => {
             console.log(`couldn't send to ${stayup.siteUrl}/  ,  ${err.message}`)
         })
     }        
-},refreshEveryMins*60000)
+},refreshEveryMins*60000) */
 
 
 app.use(cors({
