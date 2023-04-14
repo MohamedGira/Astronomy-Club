@@ -23,6 +23,8 @@ import { addSpeaker } from "./controllers/Event/CRUDSpeaker.mjs";
 import { SpeakerRouter } from "./Routers/Speakers.mjs";
 import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
 import { deploymentTrick } from "./models/deploymentTrick.mjs";
+import { BookingRouter } from "./Routers/Booking.mjs";
+import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +42,8 @@ const app = express()
 
 
 dotenv.config()
+//this webhook uses request body as raw format, not as a json, so it must be defiend before we user expressjson() middleware,, DONT MOVE IT
+app.post('/api/v1/events/confirmPayment/',express.raw({type: 'application/json'}),webhook)
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
@@ -49,6 +53,8 @@ await Database.getInstance()
 
 // a trick to stay up on the deployed site
 var stayup={}
+stayup=(await deploymentTrick.findOne())._doc
+
 var refreshEveryMins=stayup.refreshEvery||12
 setInterval(async () => {
     stayup=(await deploymentTrick.findOne())._doc
@@ -77,6 +83,8 @@ app.use(
 
 
 app.use(express.static('upload'))
+
+app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/files/',FsRouter)
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
