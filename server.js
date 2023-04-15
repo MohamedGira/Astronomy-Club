@@ -109,9 +109,10 @@ app.use(ErrorHandler)
 
 
 // a trick to stay up on the deployed site
-var refreshEveryMins=5
+let stayup=(await deploymentTrick.findOne())
+var refreshEveryMins=stayup.refreshEvery||12
 setInterval(async () => {
-    let stayup=(await deploymentTrick.findOne())
+    stayup=(await deploymentTrick.findOne())
     if(stayup)
         stayup=stayup._doc
     console.log(stayup.stayup)

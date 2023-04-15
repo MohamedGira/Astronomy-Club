@@ -11,6 +11,7 @@ import { appendFile, fstat, readFileSync } from "fs";
 import bcrypt from "bcrypt";
 import { promisify } from "util";
 import { catchAsync } from "../../utils/catchAsync.mjs";
+import { getToken } from "../../utils/getToken.mjs";
 
 dotenv.config();
 
@@ -90,7 +91,7 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
     const confirmPassword = req.body.confirmPassword;
-    var token = req.cookies.jwt;
+    var token = getToken(req);
     if(!token)
         return next(new AppError(401, "no signed in user"))
     const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)

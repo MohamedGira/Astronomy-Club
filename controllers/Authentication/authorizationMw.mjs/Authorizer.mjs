@@ -2,11 +2,12 @@ import jwt from 'jsonwebtoken';
 import { promisify } from 'util'
 import { User } from '../../../models/Users/User.mjs';
 import { AppError } from '../../../utils/AppError.mjs';
+import { getToken } from '../../../utils/getToken.mjs';
 
 
 export const isAuthorizedMw = (...roles) => {
     return async (req, res, next) => {
-        const token = req.cookies.jwt;
+        const token = getToken(req);
 
         try {
             const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)

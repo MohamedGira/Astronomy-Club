@@ -1,9 +1,10 @@
 import  jwt  from "jsonwebtoken";
 import { promisify } from "util";
 import { Ticket } from "../../models/Tickets/Ticket.mjs";
+import { getToken } from "../../utils/getToken.mjs";
 
 export const createTicket=async(req,res,next)=>{
-  const token = req.cookies.jwt;
+  const token = getToken(req);
   if (!token)
     return next();
   const decodedvalues=await promisify(jwt.verify)(token, process.env.JWT_KEY)
