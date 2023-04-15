@@ -16,13 +16,11 @@ const ticketSchema = mongoose.Schema({
     required: [true, "Email is required"],
     validate: {
       validator: function () {
-        return evalidator.isEmail(this.email);
+        return evalidator.isEmail(this.user);
       },
       message: "Invalid email format",
     },
-    /* type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required:true, */
+
   },
   event: {
     type: mongoose.Schema.Types.ObjectId,
@@ -31,6 +29,7 @@ const ticketSchema = mongoose.Schema({
   },
   link:{
     type:String,
+    required:false
   },
   entered:{
     type:Boolean,
@@ -51,7 +50,7 @@ ticketSchema.methods.alreadyReserved= async function(){
 ticketSchema.pre("save", async function (next) {
   const user =this.user// await User.findById (this.user);
   const event = await Event.findById (this.event);
-  
+  console.log('alo')
   if (!user||!event)
     return next(new AppError(400, "invalid email or event id"));
     

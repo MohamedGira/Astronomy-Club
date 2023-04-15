@@ -51,9 +51,6 @@ app.use(cookieParser());
 
 await Database.getInstance()
 
-
-
-
 app.use(cors({
    origin:'*', 
    credentials:true, 
