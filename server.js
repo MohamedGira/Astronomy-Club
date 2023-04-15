@@ -43,7 +43,7 @@ const app = express()
 
 dotenv.config()
 //this webhook uses request body as raw format, not as a json, so it must be defiend before we user expressjson() middleware,, DONT MOVE IT
-app.post('/api/v1/events/confirmPayment/',express.raw({type: 'application/json'}),webhook)
+app.post('/api/v1/events/payment/',express.raw({type: 'application/json'}),webhook)
 app.use(express.json())
 
 app.use(express.urlencoded({extended:true}))

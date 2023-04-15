@@ -4,6 +4,7 @@ import { Ticket } from "../../models/Tickets/Ticket.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { generateToken } from "../../utils/generteToken.mjs";
+import { Payment } from "../../models/Payments/Payment.mjs";
 const stripe=Stripe(process.env.STRIPE_SK)
 
 async  function getCheckoutStripeSession(req,event){
@@ -43,17 +44,24 @@ export const getCheckoutSession= catchAsync(
             return next(new AppError(403,`this event can not be booked`))
         if(await Ticket.find({event:id}).count()>=event.capacity)
             return next(new AppError(400,`this event is full`))
+
         let oldticket=await Ticket.findOne({event:id,user:req.body.email})
-        if(oldticket&&oldticket.paid)
+
+        if(oldticket&&await Payment.findOne({ticketId:oldticket._id}))
             return next(new AppError(400,`You have already bought a ticket for this event`))
-        else if(oldticket)
-            await Ticket.findByIdAndDelete(oldticket._id)
-        const ticket= await Ticket.create({user:req.body.email,event:id})
-        const session= await getCheckoutStripeSession(req,event)
+
+        let ticket
+        if (oldticket){
+            console.log(oldticket._id)
+            ticket=oldticket
+        }
+        else
+            ticket= await Ticket.create({user:req.body.email,event:id})
         
+        const session= await getCheckoutStripeSession(req,event)
         res.status(200).json({
             status:'success',
             session
-        })
+        })        
     }
 )
