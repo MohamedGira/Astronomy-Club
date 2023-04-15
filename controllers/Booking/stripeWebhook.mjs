@@ -17,7 +17,7 @@ export const webhook= catchAsync(async (req,res,next) => {
     if(event.type=='checkout.session.completed'){
       const data = event.data.object;
       console.log({user:data.customer_email,event:data.client_reference_id} )
-      const ticket= await Ticket.find({user:data.customer_email,event:data.client_reference_id})
+      const ticket= await Ticket.findOne({user:data.customer_email,event:data.client_reference_id})
       ticket.paid=true
       ticket.save()
       return res.status(201).json(
