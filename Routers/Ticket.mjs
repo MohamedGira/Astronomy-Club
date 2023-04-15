@@ -6,6 +6,15 @@ import {catchAsync} from "../utils/catchAsync.mjs";
 
 export const TicketRouter=express.Router()
 
-TicketRouter.post('/',isAuthorizedMw('visitor'),catchAsync(createTicket))
+import * as TicketsController from "../controllers/Ticket/CRUDTicket.mjs"
+import { protect } from "../controllers/Authentication/AuthUtils.mjs";
 
+TicketRouter.use(protect)
+TicketRouter.route('/')
+.get(TicketsController.getTickets)
+.post(TicketsController.addTicket)
 
+TicketRouter.route('/:elementId')
+.get(TicketsController.getTicket)
+.patch(TicketsController.updateTicket)
+.delete(TicketsController.deleteTicket)
