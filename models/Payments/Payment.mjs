@@ -14,7 +14,7 @@ const paymentSchema = mongoose.Schema({
     required: [true, "Email is required"],
     validate: { 
       validator: function () {
-        return evalidator.isEmail(this.user);
+        return evalidator.isEmail(this.customer_email);
       },
       message: "Invalid email format",
     }
