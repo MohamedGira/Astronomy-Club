@@ -25,6 +25,7 @@ import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
 import { BookingRouter } from "./Routers/Booking.mjs";
 import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
 import compression from "compression"
+import { deploymentTrick } from "./models/deploymentTrick.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 process.on('uncaughtException',err=>{
@@ -105,10 +106,27 @@ app.get('images/*',(req,res,next)=>{
     return next(new AppError(404,`requested image not found :${req.path},${req.method}`))
 })
 app.all('*',(req,res,next)=>{
-    console.log('a')
     return next(new AppError(404,`cant find this route :${req.path},${req.method}`))
 })
 app.use(ErrorHandler)
+
+
+// a trick to stay up on the deployed site
+var stayup={}
+stayup=(await deploymentTrick.findOne())._doc
+
+var refreshEveryMins=stayup.refreshEvery||12
+setInterval(async () => {
+    stayup=(await deploymentTrick.findOne())._doc
+    console.log(stayup)
+    if(stayup.stayup){ 
+        refreshEveryMins=stayup.refreshEvery||12
+        await fetch(`${stayup.siteUrl}/`).catch(err=>{
+            console.log(`couldn't send to ${stayup.siteUrl}/  ,  ${err.message}`)
+        })
+    }        
+},refreshEveryMins*60000) 
+
 
 try{
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
