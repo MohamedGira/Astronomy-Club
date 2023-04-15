@@ -27,6 +27,7 @@ export const login = async (req, res, next) => {
     return res
     .cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
     .status(200)
+    .set('authorization',`Bearer ${token}`)
     .json({
         message: "signed in",
         user,
@@ -57,6 +58,7 @@ export const loginMember = async (req, res, next) => {
     return res
     .cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
     .status(200)
+    .set('authorization',`Bearer ${token}`)
     .json({
         message: "signed in",
         user,
