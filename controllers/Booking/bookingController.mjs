@@ -44,6 +44,8 @@ export const getCheckoutSession= catchAsync(
             return next(new AppError(403,`this event can not be booked`))
         if(await Ticket.find({event:id})>=event.capacity)
             return next(new AppError(400,`this event is full`))
+        if(await Ticket.find({event:id,user:req.body.email}))
+            return next(new AppError(400,`You have already bought a ticket for this event`))
         const session= await getCheckoutStripeSession(req,event)
 
         res.status(200).json({
