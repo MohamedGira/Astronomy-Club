@@ -60,7 +60,6 @@ const userScema = mongoose.Schema({
   phoneNumber: {
     type: String,
     minLength: [10, "invalid phone number,tshort"],
-
     required:[true, "You must provide a phone number"],
     unique: [true, "This phone number is already in use"],
     validate: {
@@ -119,3 +118,5 @@ userScema.pre("save", async function (next) {
 
 
 
+
+export const User = mongoose.model("User", userScema);
