@@ -7,7 +7,6 @@ import { generateToken } from "../../utils/generteToken.mjs";
 const stripe=Stripe(process.env.STRIPE_SK)
 
 async  function getCheckoutStripeSession(req,event){
-    const Token=generateToken({email:req.body.email,event:event.id},60*60*24*90)
     const session= await stripe.checkout.sessions.create({
         payment_method_types:['card'],
         success_url:`${req.protocol}://${req.get('host')}/vishome`,
@@ -44,8 +43,10 @@ export const getCheckoutSession= catchAsync(
             return next(new AppError(403,`this event can not be booked`))
         if(await Ticket.find({event:id})>=event.capacity)
             return next(new AppError(400,`this event is full`))
+        if(await Ticket.find({event:id,user:req.body.email}))
+            return next(new AppError(400,`You have already bought a ticket for this event`))
         const session= await getCheckoutStripeSession(req,event)
-
+        
         res.status(200).json({
             status:'success',
             session

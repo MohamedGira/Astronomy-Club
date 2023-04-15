@@ -16,13 +16,11 @@ const ticketSchema = mongoose.Schema({
     required: [true, "Email is required"],
     validate: {
       validator: function () {
-        return evalidator.isEmail(this.email);
+        return evalidator.isEmail(this.user);
       },
       message: "Invalid email format",
     },
-    /* type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required:true, */
+
   },
   event: {
     type: mongoose.Schema.Types.ObjectId,
@@ -31,6 +29,7 @@ const ticketSchema = mongoose.Schema({
   },
   link:{
     type:String,
+    required:false
   },
   entered:{
     type:Boolean,
@@ -39,7 +38,10 @@ const ticketSchema = mongoose.Schema({
 }, { timestamps: true });
 
 
-ticketSchema.methods.alreadyReserved= async function(){
+
+// all these validatiors where moved to booking Controller
+
+/* ticketSchema.methods.alreadyReserved= async function(){
   const alreadyReserved=await Ticket.find({user:this.user,event:this.event}).count()
   if(alreadyReserved){
     return true
@@ -51,7 +53,7 @@ ticketSchema.methods.alreadyReserved= async function(){
 ticketSchema.pre("save", async function (next) {
   const user =this.user// await User.findById (this.user);
   const event = await Event.findById (this.event);
-  
+  console.log('alo')
   if (!user||!event)
     return next(new AppError(400, "invalid email or event id"));
     
@@ -65,14 +67,16 @@ ticketSchema.pre("save", async function (next) {
     
   next()
 });
+ */
 
-
-//check if user already have a ticket for this event
-ticketSchema.pre('save',async function(next){
+//check if user already have a ticket for this event 
+//moved to booking controller, stripe stuff
+/* ticketSchema.pre('save',async function(next){
   if(await this.alreadyReserved())
     return next(new AppError(400, "you already have a reservation for this event"))
   next()
-})
+}) */
+
 //hashing a value for the qrcode
 ticketSchema.pre('save',async function(next){
   this.link = await bcrypt.hash(this.user.toString()+Date.now().toString(), 2);

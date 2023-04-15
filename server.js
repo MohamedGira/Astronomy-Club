@@ -34,7 +34,7 @@ process.on('uncaughtException',err=>{
     process.exit(1)
 })
 
-
+ 
 const app = express()
 
 
@@ -50,9 +50,6 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 
 await Database.getInstance()
-
-
-
 
 app.use(cors({
    origin:'*', 
