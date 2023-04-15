@@ -1,5 +1,5 @@
 import mongoose from'mongoose'
-import { LocationSchema } from './subSchemas/Location.mjs';
+import { Location, LocationSchema } from './subSchemas/Location.mjs';
 import { imageSchema } from '../image.mjs';
 import { Checkpoint, CheckpointSchema } from './subSchemas/checkpoint.mjs';
 
@@ -7,6 +7,8 @@ import { GatheringPoint, GatheringPointSchema } from './subSchemas/gatheringPoin
 import { deleteFile } from '../../utils/uploads/cleanDir.mjs';
 import { saveImage } from '../../utils/uploads/saveImage.mjs';
 import { maxImagesPerEvent } from '../../utils/consts.mjs';
+import { EventType } from './EventTypes.mjs';
+import { AppError } from '../../utils/AppError.mjs';
 
 export const EventSchema = new mongoose.Schema({
     title:{
@@ -16,8 +18,15 @@ export const EventSchema = new mongoose.Schema({
     },
     type:{
         type:String,
-        enum:['trip','conference','online'],
-        default:'trip'
+        required:true,
+        validate:{
+            validator: async function(){
+                if(!await EventType.findOne({type:this.type}))
+                    return false
+                return true
+            },
+            message:`invalid event Type provided`
+        }    
     },
     description:{
         type:String,
@@ -57,6 +66,7 @@ export const EventSchema = new mongoose.Schema({
 
 EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id'})
 EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id'})
+
 
 EventSchema.pre(/delete|remove/i,async function(next){
     const doc = await this.model.findOne(this.getFilter()).populate('checkpoints').populate('gatheringPoints');
