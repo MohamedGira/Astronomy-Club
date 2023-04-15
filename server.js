@@ -118,7 +118,7 @@ stayup=(await deploymentTrick.findOne())._doc
 var refreshEveryMins=stayup.refreshEvery||12
 setInterval(async () => {
     stayup=(await deploymentTrick.findOne())._doc
-    console.log(stayup)
+    console.log(stayup.stayup)
     if(stayup.stayup){ 
         refreshEveryMins=stayup.refreshEvery||12
         await fetch(`${stayup.siteUrl}/`).catch(err=>{
