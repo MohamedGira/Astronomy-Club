@@ -16,7 +16,7 @@ async  function getCheckoutStripeSession(req,event){
         client_reference_id:event.id,
         line_items:[{
             price_data: {
-                currency: 'eur',
+                currency: 'egp',
                 unit_amount: event.price*100,
                 product_data: {
                     name:event.title,
