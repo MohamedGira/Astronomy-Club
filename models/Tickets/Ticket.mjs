@@ -34,6 +34,10 @@ const ticketSchema = mongoose.Schema({
   entered:{
     type:Boolean,
     default:false
+  },
+  paid:{
+    type:Boolean,
+    default:false
   }
 }, { timestamps: true });
 
