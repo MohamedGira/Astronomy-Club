@@ -26,6 +26,7 @@ import { BookingRouter } from "./Routers/Booking.mjs";
 import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
 import compression from "compression"
 import { deploymentTrick } from "./models/deploymentTrick.mjs";
+import { eventTypesRouter } from "./Routers/EventTypes.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 process.on('uncaughtException',err=>{
@@ -73,6 +74,7 @@ app.use('/api/v1/files/',FsRouter)
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/events/',EventRouter)
+app.use('/api/v1/eventTypes/',eventTypesRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/speakers/',SpeakerRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)

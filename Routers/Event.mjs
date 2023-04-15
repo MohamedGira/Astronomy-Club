@@ -9,6 +9,7 @@ import { deleteEvent } from "../controllers/Event/CRUDEvent/deleteEvent.mjs";
 
 import { CheckpointsRouter } from "./Checkpoints.mjs";
 import { gatheringPointsRouter } from "./GatheringPoints.mjs";
+import { eventTypesRouter } from "./EventTypes.mjs";
 
 export const EventRouter=express.Router()
 
@@ -24,6 +25,9 @@ function populateId(req,res,next){
 EventRouter.route('/')
 .get(getEvents)
 .post(isAuthorizedMw('admin'),createEvent)
+
+
+
 EventRouter.route('/:id')
 .get(getEvent)
 .patch(isAuthorizedMw('admin'),updateEvent)

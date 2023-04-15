@@ -57,11 +57,12 @@ export const updateOne=(Model)=>{
             filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
         var update={...filterObj(req.body,Model.schema.paths),...filteredFiles}
         const elementId=req.params.elementId
-        let newModelObject= await Model.findOneAndUpdate({_id:elementId},update,{
+        let newModelObject= await Model.findByIdAndUpdate({_id:elementId},update,{
             new:true,
             runValidators :true
         })
-        newModelObject=await newModelObject.save()
+        if(newModelObject)
+            newModelObject=await newModelObject.save()
     if(!newModelObject){
         return next( new AppError(400,`requested ${Model.collection.collectionName} of id ${elementId} doesn\'t exitst`))
     }
