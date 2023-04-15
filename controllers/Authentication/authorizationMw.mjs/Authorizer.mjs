@@ -26,10 +26,10 @@ export const isAuthorizedMw = (...roles) => {
     }
 }
 
-export const isAuthorized = async(req,...roles) => {    
-        if (!req.cookies)
+export const isAuthorized = async(req,...roles) => {  
+        const token = getToken(req);  
+        if (!token)
             return false
-        const token = req.cookies.jwt;
         
         try {
             const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)                
