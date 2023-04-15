@@ -20,14 +20,18 @@ export const webhook= catchAsync(async (req,res,next) => {
 
     if(event.type=='checkout.session.completed'){
       const ticket= await Ticket.findOne({user:data.customer_email,event:data.client_reference_id})
-      const payment= await Payment.create({customer_email:data.customer_email,ticketId:ticket._id,paid:true})
-
+      let payment=await Payment.findOne({ticketId:ticket._id})
+      if(!payment)
+        payment= await Payment.create({customer_email:data.customer_email,ticketId:ticket._id,paid:true})
+      
       return res.status(201).json(
         {
           message:'successful payment',
           payment
         }
       )
+      
+
     }else if(event.type=='checkout.session.expired'){
       const ticket= await Ticket.findOne({user:data.customer_email,event:data.client_reference_id})
       if(!await Payment.findOne({ticketId:ticket._id})){
