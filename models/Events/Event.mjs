@@ -20,8 +20,8 @@ export const EventSchema = new mongoose.Schema({
         type:String,
         required:true,
         validate:{
-            validator: async function(){
-                if(!await EventType.findOne({type:this.type}))
+            validator: async function(type){
+                if(!await EventType.findOne({type:type}))
                     return false
                 return true
             },
@@ -36,8 +36,8 @@ export const EventSchema = new mongoose.Schema({
     images:{
         type:[String],
         default:[],
-        validate: {validator: function(){
-            if(this.images.length>maxImagesPerEvent)
+        validate: {validator: function(images){
+            if(images.length>maxImagesPerEvent)
                 return false
             return true
         },message:`maximum of ${maxImagesPerEvent} images allowed`}

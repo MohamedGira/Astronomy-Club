@@ -57,7 +57,7 @@ export const updateOne=(Model)=>{
             filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
         var update={...filterObj(req.body,Model.schema.paths),...filteredFiles}
         const elementId=req.params.elementId
-        let newModelObject= await Model.findByIdAndUpdate({_id:elementId},update,{
+        let newModelObject= await Model.findByIdAndUpdate(elementId,update,{
             new:true,
             runValidators :true
         })

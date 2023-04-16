@@ -7,28 +7,32 @@ import cors from 'cors'
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
-import { EventRouter } from "./Routers/Event.mjs";
 import fileUpload from "express-fileupload";
 import path from "path";
 import { fileURLToPath } from "url";
-import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
 import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
-import { UserRouter } from "./Routers/User.mjs";
 import { Event } from "./models/Events/Event.mjs";
-import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
-import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
-import { FsRouter } from "./Routers/FsRouter.mjs";
 import { addSpeaker } from "./controllers/Event/CRUDSpeaker.mjs";
-import { SpeakerRouter } from "./Routers/Speakers.mjs";
-import { Speaker } from "./models/Events/subSchemas/Speaker.mjs";
-import { BookingRouter } from "./Routers/Booking.mjs";
 import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
 import compression from "compression"
 import { deploymentTrick } from "./models/deploymentTrick.mjs";
+
+//routes
+import { FsRouter } from "./Routers/FsRouter.mjs";
+import { UserRouter } from "./Routers/Users.mjs";
+import { EventRouter } from "./Routers/Events.mjs";
+import { TicketRouter } from "./Routers/Tickets.mjs";
+import { SpeakerRouter } from "./Routers/Speakers.mjs";
+import { PaymentRouter } from "./Routers/Payments.mjs";
+import { BookingRouter } from "./Routers/Booking.mjs";
 import { eventTypesRouter } from "./Routers/EventTypes.mjs";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
+import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
+import { User } from "./models/Users/User.mjs";
+
+
+
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
     console.log('Uncaught Exception')
@@ -69,14 +73,15 @@ app.use(
 app.use(express.static('upload'))
 app.use(compression())
 
-app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/files/',FsRouter)
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/events/',EventRouter)
-app.use('/api/v1/eventTypes/',eventTypesRouter)
+app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/speakers/',SpeakerRouter)
+app.use('/api/v1/payments/',PaymentRouter)
+app.use('/api/v1/eventTypes/',eventTypesRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)       
 
@@ -126,8 +131,10 @@ setInterval(async () => {
     }        
 },refreshEveryMins*60000) 
 
+User.findByIdAndUpdate('64231f80d51f2e177a046af0',{phoneNumber:`+201117230955`})
 
 try{
+await User.findByIdAndUpdate('64231f80d51f2e177a046af0',{phoneNumber:`+201117230955`},{new:true,runValidators:true})
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
 }catch(err){
     console.log(err)

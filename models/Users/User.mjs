@@ -30,8 +30,8 @@ const userScema = mongoose.Schema({
     required: [true, "password is required"],
     minLength: [5, "password is too short"],
     validate: {
-      validator: function () {
-        if (Buffer.from(this.password).length > 72) return false;
+      validator: function (password) {
+        if (Buffer.from(password).length > 72) return false;
       },
       message: "password is too long",
     },
@@ -46,8 +46,8 @@ const userScema = mongoose.Schema({
     required: [true, "Email is required"],
     unique: [true, "This email is already in use"],
     validate: {
-      validator: function () {
-        return evalidator.isEmail(this.email);
+      validator: function (email) {
+        return evalidator.isEmail(email);
       },
       message: "Invalid email format",
     },
@@ -63,10 +63,10 @@ const userScema = mongoose.Schema({
     required:[true, "You must provide a phone number"],
     unique: [true, "This phone number is already in use"],
     validate: {
-      validator: function () {
+      validator: function (number) {
           try {
             phoneUtil.isValidNumberForRegion(
-              phoneUtil.parse(this.phoneNumber, "EG"),
+              phoneUtil.parse(number, "EG"),
               "EG"
             );
           } catch (e) {
