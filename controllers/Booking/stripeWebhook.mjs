@@ -31,6 +31,7 @@ async function SessionCompleted(event,req,res,next){
       )
     }
   else{
+    //souldn't reach here
     return res.status(200).json(
     {
       message:'a payment already exists..hmmm, shouldn\t reach here',
@@ -49,13 +50,19 @@ async function SessionExpired(event,req,res,next){
     return  res.status(200).json({
     message:`ticket doesn't exist`,
     event
-    });
-  if(!await Payment.findOne({ticketId:ticket._id})){
+  });
+  let payment=await Payment.findOne({ticketId:ticket._id})
+  if(!payment){
     let t=await Ticket.findByIdAndDelete(ticket._id)
     console.log(`removed ticket ${t}`)
     return  res.status(204).json({
     message:`this reservation is expired, removing ticket ${ticket}`,
     });
+  }else{
+    //shouldn't reach here
+    return  res.status(400).json({
+      message:`a payment ${payment} is already made`,
+      });
   }
 }
 
