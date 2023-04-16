@@ -51,7 +51,8 @@ async function SessionExpired(event,req,res,next){
     event
     });
   if(!await Payment.findOne({ticketId:ticket._id})){
-    Ticket.findByIdAndDelete(ticket._id)
+    let t=await Ticket.findByIdAndDelete(ticket._id)
+    console.log(`removed ticket ${t}`)
     return  res.status(204).json({
     message:`this reservation is expired, removing ticket ${ticket}`,
     });
