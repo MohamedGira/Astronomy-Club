@@ -15,8 +15,8 @@ const ticketSchema = mongoose.Schema({
     type:String,
     required: [true, "Email is required"],
     validate: {
-      validator: function () {
-        return evalidator.isEmail(this.user);
+      validator: function (user) {
+        return evalidator.isEmail(user);
       },
       message: "Invalid email format",
     },
