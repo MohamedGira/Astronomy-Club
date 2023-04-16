@@ -42,6 +42,8 @@ async function SessionCompleted(event){
 }
 
 async function SessionExpired(event){
+  const data = event.data.object;
+
   const ticket= await Ticket.findOne({user:data.customer_email,event:data.client_reference_id})
   if(!ticket)
     return  res.status(200).json({
@@ -67,7 +69,6 @@ export const webhook= catchAsync(async (req,res,next) => {
       return next(new AppError(300,`Webhook Error: ${err.message}`))
     }
     
-    const data = event.data.object;
 
     if(event.type=='checkout.session.completed')
       return SessionCompleted(event)
