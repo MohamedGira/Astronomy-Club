@@ -9,7 +9,7 @@ import { Payment } from "../../models/Payments/Payment.mjs";
 
 const endpointSecret = process.env.STRIPE_ENDPOINT_SK
 
-async function SessionCompleted(event){
+async function SessionCompleted(event,req,res,next){
   const data = event.data.object;
 
   const ticket= await Ticket.findOne({user:data.customer_email,event:data.client_reference_id})
@@ -41,7 +41,7 @@ async function SessionCompleted(event){
 
 }
 
-async function SessionExpired(event){
+async function SessionExpired(event,req,res,next){
   const data = event.data.object;
 
   const ticket= await Ticket.findOne({user:data.customer_email,event:data.client_reference_id})
@@ -71,9 +71,9 @@ export const webhook= catchAsync(async (req,res,next) => {
     
 
     if(event.type=='checkout.session.completed')
-      return SessionCompleted(event)
+      return SessionCompleted(event,req,res,next)
     else if(event.type=='checkout.session.expired')
-      return SessionExpired(event)
+      return SessionExpired(event,req,res,next)
     else
       console.log(`Unhandled event type ${event.type}`);
   
