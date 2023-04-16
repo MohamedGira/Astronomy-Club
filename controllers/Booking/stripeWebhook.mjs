@@ -17,7 +17,7 @@ async function SessionCompleted(event,req,res,next){
   if(!payment)
     {
       payment= await Payment.create({
-        customer_email:data.customer_email,
+        customerEmail:data.customer_email,
         ticketId:ticket._id,
         amount:data.amount_total/100,
         currency:data.currency,
@@ -89,4 +89,4 @@ export const webhook= catchAsync(async (req,res,next) => {
       message:`shouldn't reach here`,
       event
     });
-  })
+})

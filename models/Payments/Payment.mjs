@@ -9,12 +9,12 @@ import evalidator from "validator";
 
 
 const paymentSchema = mongoose.Schema({
-  customer_email:{
+  customerEmail:{
     type:String,
     required: [true, "Email is required"],
     validate: { 
-      validator: function () {
-        return evalidator.isEmail(this.customer_email);
+      validator: function (email) {
+        return evalidator.isEmail(email);
       },
       message: "Invalid email format",
     }
