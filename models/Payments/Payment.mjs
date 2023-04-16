@@ -24,6 +24,8 @@ const paymentSchema = mongoose.Schema({
     ref: "Ticket",
     required:true
   },
+  amount:Number,
+  currency:String,
   paid: {
     type:Boolean,
     default:false
