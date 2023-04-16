@@ -50,7 +50,10 @@ export const createEvent=catchAsync( async (req,res,next)=>{
              imgslist.push(req.files.banner)
         }
         if(req.files.images){
+            if(!Array.isArray(req.files.images))
+                req.files.images=[req.files.images]
             event.images=await Promise.all(req.files.images.map(async (el)=> { return await saveImage(el)}))
+            
             imgslist.push(...req.files.images)
             await event.save()
         }

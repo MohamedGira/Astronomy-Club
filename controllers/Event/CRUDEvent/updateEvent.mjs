@@ -35,6 +35,8 @@ export const updateEvent= catchAsync( async (req,res,next)=>{
         try{
             //check if new images where added
             if(req.files.images){
+            if(!Array.isArray(req.files.images))
+                req.files.images=[req.files.images]
             event.images.push(...(await Promise.all(req.files.images.map(async (el)=> { return await saveImage(el)}))))
             imgslist.push(...req.files.images)
             }        
