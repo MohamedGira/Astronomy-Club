@@ -54,6 +54,8 @@ export const updateEvent= catchAsync( async (req,res,next)=>{
 
     if(body.delete){
     let imagesTodelete=body.delete;
+    if(!Array.isArray(imagesTodelete))
+        imagesTodelete=[imagesTodelete]
     imagesTodelete.forEach(el=>{
         try{
             event.images=event.images.filter(item=>item!=el)
