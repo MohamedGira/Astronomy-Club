@@ -6,7 +6,11 @@ import phoneUtils from "google-libphonenumber";
 
 import dotenv from "dotenv";
 import { AppError } from "../../utils/AppError.mjs";
-dotenv.config()
+
+import committeeSchema from "../../models/Events/subSchemas/committee.mjs";
+import committeeRoleSchema from "../../models/Events/subSchemas/committeeRole.mjs";
+
+dotenv.config();
 
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
 
@@ -34,7 +38,7 @@ const userScema = mongoose.Schema({
       },
       message: "password is too long",
     },
-    select:false
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -60,18 +64,18 @@ const userScema = mongoose.Schema({
     type: String,
     minLength: [10, "invalid phone number,tshort"],
     maxLength: [13, "invalid phone number,tlong"],
-    required:[true, "You must provide a phone number"],
+    required: [true, "You must provide a phone number"],
     unique: [true, "This phone number is already in use"],
     validate: {
       validator: function () {
-          try {
-            phoneUtil.isValidNumberForRegion(
-              phoneUtil.parse(this.phoneNumber, "EG"),
-              "EG"
-            );
-          } catch (e) {
-            return false;
-          }
+        try {
+          phoneUtil.isValidNumberForRegion(
+            phoneUtil.parse(this.phoneNumber, "EG"),
+            "EG"
+          );
+        } catch (e) {
+          return false;
+        }
       },
       message: "invalid phone number",
     },
@@ -81,7 +85,11 @@ const userScema = mongoose.Schema({
     type: String,
     default: "member",
   },
-  
+
+  committee: {
+    type: committeeSchema,
+  },
+
   confirmed: {
     type: Boolean,
     default: false,
@@ -103,14 +111,16 @@ userScema.pre("save", function (next) {
 //check that role foriegn key is valid
 userScema.pre("save", async function (next) {
   const data = await UserRole.find({ role: this.role });
-  if (data.length == 0)
-    return next(new AppError(400, "invalid role id"));
+  if (data.length == 0) return next(new AppError(400, "invalid role id"));
   next();
 });
 
 //encrypt password before storing it to the database
 userScema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(this.password, parseInt(process.env.HASH_SALT));
+  this.password = await bcrypt.hash(
+    this.password,
+    parseInt(process.env.HASH_SALT)
+  );
   next();
 });
 
