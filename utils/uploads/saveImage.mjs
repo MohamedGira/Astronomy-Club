@@ -8,6 +8,62 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import fs from 'fs'
 export const  imgdir=(__dirname+'/../../upload/images/').replace(/\\/g, "/")
+
+/* import AWS from 'aws-sdk'
+const s3=AWS.S3()
+ */
+/* class ImageSaver{
+  constructor(){
+
+  }
+  async saveImage(image,options={subfolder:'',compress:false,maxHeight:1080,maxWidth:1920}){
+    
+  }
+}
+
+class AWSSaver extends ImageSaver{
+  constructor(){
+    super()
+  }
+  
+  async saveImage(image,options={subfolder:'',compress:false,maxHeight:1080,maxWidth:1920}){
+  const imgname = `${Date.now()}${parseInt(Math.random() * 1000).toString()}.jpeg`;
+    await s3.upload({
+      Key: `images/${imgname}`,
+      Body: image,
+      Bucket: "cyclic-champagne-nightingale-boot-ap-south-1",
+    }).promise()
+    return imgname
+  }
+  async retrieveImage()
+  
+}
+*/
+/* class FSystemSaver extends ImageSaver{
+  constructor(){
+    super()
+  }
+  async saveImage(image,options={subfolder:'',compress:false,maxHeight:1080,maxWidth:1920}){
+    //uploaded file is not image
+    if (image && !/^image/.test(image.mimetype))
+      throw new AppError("400","the provided file's extension is not a supported image type");
+    let fdir=imgdir
+    if(options.subfolder)
+      fdir= path.join(imgdir,options.subfolder)
+
+    if (!fs.existsSync(fdir)){
+      fs.mkdirSync(fdir,{ recursive: true });
+    }
+
+    const imgname = `${Date.now()}${parseInt(Math.random() * 1000).toString()}.jpeg`;
+    await imageHandler.saveImage(image.data,options).toFile(path.join(imgdir,imgname));
+    return imgname;
+  }
+}
+ */
+
+
+
 /** options :{subfolder:String,compress:boolean} */
 export const saveImageOld = async function (image,options={subfolder:'',compress:false})
  {
@@ -30,7 +86,6 @@ export const saveImageOld = async function (image,options={subfolder:'',compress
   }else{
     writeFileSync(imgdir+ imgname, image.data, "binary");
   }
-
 
   return imgname;
 
