@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { AppError } from "../../../utils/AppError.mjs";
 
-const committeeSchema = new mongoose.Schema({
+export const committeeSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -22,4 +22,4 @@ const committeeSchema = new mongoose.Schema({
 */
 });
 
-module.exports = mongoose.model("Committee", committeeSchema);
+export const committee = mongoose.model("committee", committeeSchema);
