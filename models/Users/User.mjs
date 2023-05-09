@@ -7,10 +7,15 @@ import phoneUtils from "google-libphonenumber";
 import dotenv from "dotenv";
 import { AppError } from "../../utils/AppError.mjs";
 
-import committeeSchema from "../../models/Events/subSchemas/committee.mjs";
-import committeeRoleSchema from "../../models/Events/subSchemas/committeeRole.mjs";
+import { committeeSchema } from "../../models/Events/subSchemas/committee.mjs";
 
 dotenv.config();
+
+const STATUS_MAP = {
+  0: "pending",
+  1: "approved",
+  2: "declined",
+};
 
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
 
@@ -90,10 +95,11 @@ const userScema = mongoose.Schema({
     type: committeeSchema,
   },
 
-  confirmed: {
-    type: Boolean,
-    default: false,
+  status: {
+    type: String,
     required: true,
+    enum: Object.values(STATUS_MAP),
+    default: STATUS_MAP[0],
   },
   confirmationToken: {
     type: String,

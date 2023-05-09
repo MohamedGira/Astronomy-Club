@@ -1,9 +1,9 @@
 import { ErrorHandler } from "./controllers/ErrorContrller.mjs";
 import { Database } from "./models/DbConnection.mjs";
 import cookieParser from "cookie-parser";
-import express from 'express';
+import express from "express";
 import dotenv from "dotenv";
-import cors from 'cors'
+import cors from "cors";
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
@@ -15,47 +15,47 @@ import { fileURLToPath } from "url";
 import { catchAsync } from "./utils/catchAsync.mjs";
 import { TicketRouter } from "./Routers/Ticket.mjs";
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
-import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
+import { protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { UserRouter } from "./Routers/User.mjs";
 import { setCache } from "./utils/cache.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-process.on('uncaughtException',err=>{
-    console.trace(`Error: ${err}`)
-    console.log('Uncaught Exception')
-    process.exit(1)
-})
+process.on("uncaughtException", (err) => {
+  console.trace(`Error: ${err}`);
+  console.log("Uncaught Exception");
+  process.exit(1);
+});
 
-
-const app = express()
-dotenv.config()
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+const app = express();
+dotenv.config();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-await Database.getInstance()
+await Database.getInstance();
 
-app.use(cors({
-   origin:'*', 
-   credentials:true, 
-   optionSuccessStatus:200,
-}))
 app.use(
-    fileUpload({
-        limits: {
-            fileSize: 150000000,
-        },
-        abortOnLimit: true,
-    })
+  cors({
+    origin: "*",
+    credentials: true,
+    optionSuccessStatus: 200,
+  })
+);
+app.use(
+  fileUpload({
+    limits: {
+      fileSize: 150000000,
+    },
+    abortOnLimit: true,
+  })
 );
 
-
-app.use(express.static('upload'))
-app.use('/api/v1/auth/',AuthRouter)
-app.use('/api/v1/events/',EventRouter)
-app.use('/api/v1/tickets/',TicketRouter)
-app.use('/api/v1/users/',UserRouter)
+app.use(express.static("upload"));
+app.use("/api/v1/auth/", AuthRouter);
+app.use("/api/v1/events/", EventRouter);
+app.use("/api/v1/tickets/", TicketRouter);
+app.use("/api/v1/users/", UserRouter);
 /* app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
     await Speaker.deleteMany({})
@@ -63,44 +63,42 @@ app.use('/api/v1/users/',UserRouter)
     return res.json({ok:'ok'})
 }) */
 //test image saving
-app.post('/upload',catchAsync(
-    async (req,res,next)=>{
-        if(req.files){
-            await saveImage(req.files.image,__dirname+'/upload/')
-            return res.status(200).json({message:'success'})
-        }
-        return res.status(500).json({message:'fail'})
+app.post(
+  "/upload",
+  catchAsync(async (req, res, next) => {
+    if (req.files) {
+      await saveImage(req.files.image, __dirname + "/upload/");
+      return res.status(200).json({ message: "success" });
     }
-))
+    return res.status(500).json({ message: "fail" });
+  })
+);
 //test image saving
-app.patch('/updatePassword',protect,    updatePassword
-)
+app.patch("/updatePassword", protect, updatePassword);
 //testing authorizer functionality
-app.get('/vishome',isAuthorizedMw('visitor'),(req,res,next)=>{
-    return res.status(200).json({home:'home'})
-})
-app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
-    return res.status(200).json({home:'home'})
-})
- 
+app.get("/vishome", isAuthorizedMw("visitor"), (req, res, next) => {
+  return res.status(200).json({ home: "home" });
+});
+app.get("/adhome", isAuthorizedMw("admin"), (req, res, next) => {
+  return res.status(200).json({ home: "home" });
+});
 
-app.all('*',(req,res,next)=>{
-    return next(new AppError(404,`cant find this route :${req.path},${req.method}`))
-})
-app.use(ErrorHandler)
+app.all("*", (req, res, next) => {
+  return next(
+    new AppError(404, `cant find this route :${req.path},${req.method}`)
+  );
+});
+app.use(ErrorHandler);
 
-
-const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
-
-    
-
-
+const server = app.listen(process.env.PORT, () => {
+  console.log(`connected on port ${process.env.PORT}`);
+});
 
 //saftey net
-process.on('unhandledRejection',err=>{
-    console.log(`Error: ${err.name}. ${err.message}`)
-    console.log('Uhnandled Rejection',err)
-    server.close(()=>{
-        process.exit(1)
-    })
-})
+process.on("unhandledRejection", (err) => {
+  console.log(`Error: ${err.name}. ${err.message}`);
+  console.log("Uhnandled Rejection", err);
+  server.close(() => {
+    process.exit(1);
+  });
+});
