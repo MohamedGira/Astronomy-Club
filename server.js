@@ -23,6 +23,7 @@ import { FsRouter } from "./Routers/FsRouter.mjs";
 import { UserRouter } from "./Routers/Users.mjs";
 import { EventRouter } from "./Routers/Events.mjs";
 import { TicketRouter } from "./Routers/Tickets.mjs";
+import { TaskRouter } from "./Routers/Tasks.mjs";
 import { SpeakerRouter } from "./Routers/Speakers.mjs";
 import { PaymentRouter } from "./Routers/Payments.mjs";
 import { BookingRouter } from "./Routers/Booking.mjs";
@@ -79,6 +80,7 @@ app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/tickets/',TicketRouter)
+app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/speakers/',SpeakerRouter)
 app.use('/api/v1/payments/',PaymentRouter)
 app.use('/api/v1/eventTypes/',eventTypesRouter)
