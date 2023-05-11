@@ -22,9 +22,7 @@ const taskSchema = mongoose.Schema({
         enum: ["low", "medium", "high"],
         default: "low",
     },
-    comments : {
-        type: [String],
-    },
+
     completed: {
         type: Boolean,
         default: false,

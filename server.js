@@ -30,12 +30,11 @@ import { eventTypesRouter } from "./Routers/EventTypes.mjs";
 import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
 import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
 import { User } from "./models/Users/User.mjs";
-import { CommentRouter } from "./routers/Comments.mjs";
+import { CommentRouter } from "./Routers/Comments.mjs";
 
 import { TaskRouter } from "./Routers/Tasks.mjs";
 import { AssignmentRouter } from "./Routers/Assignments.mjs";
 import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
-
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
