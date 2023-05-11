@@ -66,7 +66,7 @@ export const updateOne=(Model)=>{
     if(!newModelObject){
         return next( new AppError(400,`requested ${Model.collection.collectionName} of id ${elementId} doesn\'t exitst`))
     }
-    return res.status(201).json({
+    return res.status(200).json({
         message:'updated succesfully',
         newModelObject
     })
