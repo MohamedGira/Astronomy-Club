@@ -10,21 +10,28 @@ const taskSchema = mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, "Description is required"],
     },
-    dueDate: {
-        type: Date,
-        required: [true, "Due date is required"],
-        validate: {
-            validator: function (value) {
-                return value > Date.now();
-            }
-        }
+    due: {
+        type: [Date],
+    },
+    attachments: {
+        type: [String],
+    },
+    comments : {
+        type: [String],
+    },
+    completed: {
+        type: Boolean,
+        default: false,
     },
     boardColumn: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "BoardColumn",
         required: [true, "Board column is required"],
+    },
+    assignee : {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "User",
     },
 }, { timestamps: true });
 
