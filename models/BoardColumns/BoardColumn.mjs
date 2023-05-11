@@ -8,7 +8,13 @@ const boardColumnSchema = mongoose.Schema({
         type: String,
         required: [true, "Name is required"],
     },
-}, { timestamps: true });
+}, { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true } 
+});
+
+boardColumnSchema.virtual('tasks', { ref: 'Task', foreignField: 'boardColumn', localField: '_id' });
 
 export const BoardColumn = mongoose.model("BoardColumn", boardColumnSchema);
 

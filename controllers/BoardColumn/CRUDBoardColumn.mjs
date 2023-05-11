@@ -1,4 +1,5 @@
 import { BoardColumn } from "../../models/BoardColumns/BoardColumn.mjs";
+import { catchAsync } from "../../utils/catchAsync.mjs";
 import * as factory from "../CRUDFactory.mjs";
 
 // GET BoardColumns/
@@ -8,7 +9,7 @@ export const  getBoardColumns= factory.getAll(BoardColumn)
 export const  addBoardColumn= factory.CreateOne(BoardColumn)
 
 // GET BoardColumns/:elementId 
-export const  getBoardColumn= factory.getOne(BoardColumn)
+export const getBoardColumn = factory.getOne(BoardColumn, ['tasks']);
 
 // PATCH BoardColumns/:elementId 
 export const  updateBoardColumn= factory.updateOne(BoardColumn)
