@@ -17,6 +17,11 @@ const taskSchema = mongoose.Schema({
     attachments: {
         type: [String],
     },
+    prioritize: {
+        type: String,
+        enum: ["low", "medium", "high"],
+        default: "low",
+    },
     comments : {
         type: [String],
     },
