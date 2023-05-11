@@ -21,6 +21,11 @@ const taskSchema = mongoose.Schema({
             }
         }
     },
+    status: {
+        type: String,
+        enum: ["unassigned", "pending", "in-progress", "completed"],
+        default: "unassigned",
+    },
 }, { timestamps: true });
 
 export const Task = mongoose.model("Task", taskSchema);
