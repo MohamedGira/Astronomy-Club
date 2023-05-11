@@ -23,8 +23,6 @@ import { FsRouter } from "./Routers/FsRouter.mjs";
 import { UserRouter } from "./Routers/Users.mjs";
 import { EventRouter } from "./Routers/Events.mjs";
 import { TicketRouter } from "./Routers/Tickets.mjs";
-import { TaskRouter } from "./Routers/Tasks.mjs";
-import { AssignmentRouter } from "./Routers/Assignments.mjs";
 import { SpeakerRouter } from "./Routers/Speakers.mjs";
 import { PaymentRouter } from "./Routers/Payments.mjs";
 import { BookingRouter } from "./Routers/Booking.mjs";
@@ -33,6 +31,9 @@ import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
 import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
 import { User } from "./models/Users/User.mjs";
 
+import { TaskRouter } from "./Routers/Tasks.mjs";
+import { AssignmentRouter } from "./Routers/Assignments.mjs";
+import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
 
 
 process.on('uncaughtException',err=>{
@@ -81,13 +82,15 @@ app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/tickets/',TicketRouter)
-app.use('/api/v1/tasks/',TaskRouter)
-app.use('/api/v1/assignments/',AssignmentRouter)
 app.use('/api/v1/speakers/',SpeakerRouter)
 app.use('/api/v1/payments/',PaymentRouter)
 app.use('/api/v1/eventTypes/',eventTypesRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)
-app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)       
+app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)
+
+app.use('/api/v1/tasks/',TaskRouter)
+app.use('/api/v1/assignments/',AssignmentRouter)
+app.use('/api/v1/boardColumns/',BoardColumnRouter)
 
 app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})

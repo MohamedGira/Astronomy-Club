@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { BoardColumn } from "../BoardColumns/BoardColumn.mjs";
 
-dotenv.config()
 
 const taskSchema = mongoose.Schema({
     name: {
@@ -21,12 +21,20 @@ const taskSchema = mongoose.Schema({
             }
         }
     },
-    status: {
-        type: String,
-        enum: ["unassigned", "pending", "in-progress", "completed"],
-        default: "unassigned",
+    boardColumn: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "BoardColumn",
+        required: [true, "Board column is required"],
     },
 }, { timestamps: true });
+
+
+taskSchema.pre('save',async function(next){
+    if(! await BoardColumn.findById(this.boardColumn)){
+        return next(new AppError('400',`this event doesn't exist`))
+    }
+    next()
+})
 
 export const Task = mongoose.model("Task", taskSchema);
 
