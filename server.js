@@ -32,6 +32,7 @@ import { eventTypesRouter } from "./Routers/EventTypes.mjs";
 import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
 import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
 import { User } from "./models/Users/User.mjs";
+import { CommentRouter } from "./routers/Comments.mjs";
 
 
 
@@ -78,16 +79,18 @@ app.use(compression())
 app.use('/api/v1/files/',FsRouter)
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
+app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/tickets/',TicketRouter)
-app.use('/api/v1/tasks/',TaskRouter)
-app.use('/api/v1/assignments/',AssignmentRouter)
+app.use('/api/v1/comments/',CommentRouter)
 app.use('/api/v1/speakers/',SpeakerRouter)
 app.use('/api/v1/payments/',PaymentRouter)
 app.use('/api/v1/eventTypes/',eventTypesRouter)
+app.use('/api/v1/assignments/',AssignmentRouter)
 app.use('/api/v1/checkpoints/',CheckpointsRouter)
-app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)       
+app.use('/api/v1/gatheringPoints/',gatheringPointsRouter)     
+  
 
 app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
@@ -135,10 +138,8 @@ setInterval(async () => {
     }        
 },refreshEveryMins*60000) 
 
-User.findByIdAndUpdate('64231f80d51f2e177a046af0',{phoneNumber:`+201117230955`})
 
 try{
-await User.findByIdAndUpdate('64231f80d51f2e177a046af0',{phoneNumber:`+201117230955`},{new:true,runValidators:true})
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
 }catch(err){
     console.log(err)
