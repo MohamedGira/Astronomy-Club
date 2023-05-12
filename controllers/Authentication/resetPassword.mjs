@@ -64,15 +64,16 @@ export const changePassword = async (req, res, next) => {
         const user = await User.findOne({email: decodedvalues.email}).select('+password');
 
         if (user.password === decodedvalues.password) {
-            user.password=newPassword
-            user.passwordConfirm=confirm_newPassword
-            try{
-                await user.save()
-            }catch(err){
-                //new password had some violations
-                return next(err)
-            }
-
+            
+            if (newPassword!= confirm_newPassword)
+                return next(new AppError(400, "passwords doesn't match"));
+            user.password =  bcrypt.hash(
+            newPassword,
+            parseInt(process.env.HASH_SALT)
+            )
+            
+            await user.save()
+          
             return res.status(200).json({
                 message: "password changed succesfully",
             });
@@ -100,8 +101,14 @@ export const updatePassword =catchAsync (async (req, res, next) => {
         next(new AppError('401','invalid user id'))
     if(! await bcrypt.compare(oldPassword, user.password))
         next(new AppError('401','invalid old password'))
-    user.password=newPassword
-    user.passwordConfirm=confirmPassword
+    if (newPassword!= confirmPassword)
+        return next(new AppError(400, "passwords doesn't match"));
+
+    user.password =  bcrypt.hash(
+    newPassword,
+    parseInt(process.env.HASH_SALT)
+    );
+    
     await user.save()
     
     token =  jwt.sign(
@@ -110,10 +117,10 @@ export const updatePassword =catchAsync (async (req, res, next) => {
         { expiresIn: consts.LOGIN_TIMEOUT_SECS }
         );  
     return res
-    //.cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
     .status(200)
     .json({
             message: "password changed successfully",
             user: user._id,
+            accessToken:token
     });
 })

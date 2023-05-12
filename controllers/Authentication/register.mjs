@@ -22,9 +22,15 @@ const relativeUploadPath='/../../upload/images/'
 
 export const registerMember = async (req, res, next) => {
     const filtereduser=filterObj(req.body,User.schema.paths,['role'])
-    const user = new User(filtereduser);
     
-
+    
+    if (req.body.password != req.body.passwordConfirm)
+        return next(new AppError(400, "passwords doesn't match"));
+    filtereduser.password =  bcrypt.hash(
+        req.password.password,
+        parseInt(process.env.HASH_SALT)
+    );
+    const user = new User(filtereduser);
     //user uploaded profileImage     
     if (req.files)
     {
@@ -35,7 +41,7 @@ export const registerMember = async (req, res, next) => {
     await user.save();    //user is saved successfully
     
     return res.status(200).json({
-        message: "user created successfully, wait for admin to verify your registration",
+        message: "user created successfuwlly, wait for admin to verify your registration",
     });
 };
 
