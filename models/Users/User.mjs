@@ -6,8 +6,16 @@ import phoneUtils from "google-libphonenumber";
 
 import dotenv from "dotenv";
 import { AppError } from "../../utils/AppError.mjs";
-import { imageSchema } from "../image.mjs";
-dotenv.config()
+
+import { committeeSchema } from "../../models/Events/subSchemas/committee.mjs";
+
+dotenv.config();
+
+const STATUS_MAP = {
+  0: "pending",
+  1: "approved",
+  2: "declined",
+};
 
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
 
@@ -35,7 +43,7 @@ const userScema = mongoose.Schema({
       },
       message: "password is too long",
     },
-    select:false
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -81,11 +89,16 @@ const userScema = mongoose.Schema({
     type: String,
     default: "member",
   },
-  
-  confirmed: {
-    type: Boolean,
-    default: false,
+
+  committee: {
+    type: committeeSchema,
+  },
+
+  status: {
+    type: String,
     required: true,
+    enum: Object.values(STATUS_MAP),
+    default: STATUS_MAP[0],
   },
   confirmationToken: {
     type: String,
@@ -105,14 +118,16 @@ userScema.pre("save", function (next) {
 //check that role foriegn key is valid
 userScema.pre("save", async function (next) {
   const data = await UserRole.find({ role: this.role });
-  if (data.length == 0)
-    return next(new AppError(400, "invalid role id"));
+  if (data.length == 0) return next(new AppError(400, "invalid role id"));
   next();
 });
 
 //encrypt password before storing it to the database
 userScema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(this.password, parseInt(process.env.HASH_SALT));
+  this.password = await bcrypt.hash(
+    this.password,
+    parseInt(process.env.HASH_SALT)
+  );
   next();
 });
 

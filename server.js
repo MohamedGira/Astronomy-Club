@@ -1,9 +1,9 @@
 import { ErrorHandler } from "./controllers/ErrorContrller.mjs";
 import { Database } from "./models/DbConnection.mjs";
 import cookieParser from "cookie-parser";
-import express from 'express';
+import express from "express";
 import dotenv from "dotenv";
-import cors from 'cors'
+import cors from "cors";
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
@@ -57,20 +57,22 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 
-await Database.getInstance()
+await Database.getInstance();
 
-app.use(cors({
-   origin:'*', 
-   credentials:true, 
-   optionSuccessStatus:200,
-}))
 app.use(
-    fileUpload({
-        limits: {
-            fileSize: 150000000,
-        },
-        abortOnLimit: true,
-    })
+  cors({
+    origin: "*",
+    credentials: true,
+    optionSuccessStatus: 200,
+  })
+);
+app.use(
+  fileUpload({
+    limits: {
+      fileSize: 150000000,
+    },
+    abortOnLimit: true,
+  })
 );
 
 app.use(express.static('upload'))
@@ -147,12 +149,15 @@ const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on por
     console.log(err)
 }
 
+const server = app.listen(process.env.PORT, () => {
+  console.log(`connected on port ${process.env.PORT}`);
+});
 
 //saftey net
-process.on('unhandledRejection',err=>{
-    console.log(`Error: ${err.name}. ${err.message}`)
-    console.log('Uhnandled Rejection',err)
-    server.close(()=>{
-        process.exit(1)
-    })
-})
+process.on("unhandledRejection", (err) => {
+  console.log(`Error: ${err.name}. ${err.message}`);
+  console.log("Uhnandled Rejection", err);
+  server.close(() => {
+    process.exit(1);
+  });
+});
