@@ -9,20 +9,11 @@ export const confirmUser = catchAsync(async (req, res, next) => {
   if (user.status == STATUS_MAP[1])
     return next(new AppError(400, "this user is already confirmed"));
 
-  if (
-    typeof window !== "undefined" &&
-    window.confirm("Are you sure you want to proceed?")
-  ) {
-    // user clicked "OK", perform the action here
-    user._doc.status = STATUS_MAP[1];
-    return res.status(200).json({
-      messge: "user approved succesfully",
-      user,
-    });
-  } else {
-    // user clicked "Cancel", do nothing or show a message
-    return res.status(200).json({
-      messge: "User's status has not changed!",
-    });
-  }
+
+  user._doc.status = STATUS_MAP[1];
+  return res.status(200).json({
+    messge: "user approved succesfully",
+    user,
+  });
+
 });
