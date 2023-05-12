@@ -15,8 +15,10 @@ import { editProfile } from "../controllers/User/editProfile.mjs";
 
 export const UserRouter = express.Router();
 
+
+
 UserRouter.get("/myProfile", protect, myProfile);
-UserRouter.post("/editProfile", protect, editProfile);
+UserRouter.patch("/myprofile/edit", protect,editProfile);
 
 UserRouter.get("/getUsers", isAuthorizedMw("admin"), getusers);
 UserRouter.get("/getPendingUsers", isAuthorizedMw("admin"), getPendingUsers);
