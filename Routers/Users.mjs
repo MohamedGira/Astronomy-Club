@@ -11,7 +11,7 @@ import { deleteUser } from "../controllers/User/Admin/deleteUser.mjs";
 import { declineUser } from "../controllers/User/Admin/declineUser.mjs";
 import { editProfile } from "../controllers/User/editProfile.mjs";
 import { myTasks } from "../controllers/User/myTasks.mjs";
-import { editUser } from "../controllers/User/Admin/EditUser.mjs";
+import { editUser } from "../controllers/User/Admin/editUser.mjs";
 
 export const UserRouter = express.Router();
 
