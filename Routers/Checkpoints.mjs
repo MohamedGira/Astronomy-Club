@@ -1,6 +1,6 @@
 import express from "express";
 
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 import * as checkpointsController from "../controllers/Event/CRUDCheckpoint.mjs"
 export const CheckpointsRouter=express.Router({mergeParams:true})
 

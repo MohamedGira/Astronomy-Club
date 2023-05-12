@@ -1,7 +1,7 @@
 import express from "express";
 import * as gatheringPointsController from "../controllers/Event/CRUDGatheringPoints.mjs";
 export const gatheringPointsRouter=express.Router({mergeParams:true})
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 
 
 gatheringPointsRouter.route('/')

@@ -1,5 +1,5 @@
 import express from "express";
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 
 
 export const TicketRouter=express.Router()

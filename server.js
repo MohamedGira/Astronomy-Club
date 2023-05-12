@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
-import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw/Authorizer.mjs";
 import fileUpload from "express-fileupload";
 
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";

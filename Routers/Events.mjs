@@ -4,7 +4,7 @@ import { createEvent } from "../controllers/Event/CRUDEvent/createEvent.mjs";
 import { getEvent } from "../controllers/Event/CRUDEvent/getEvent.mjs";
 import { getEvents } from "../controllers/Event/CRUDEvent/getEvents.mjs";
 import { updateEvent } from "../controllers/Event/CRUDEvent/updateEvent.mjs";
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 import { deleteEvent } from "../controllers/Event/CRUDEvent/deleteEvent.mjs";
 
 import { CheckpointsRouter } from "./Checkpoints.mjs";

@@ -1,17 +1,17 @@
 import express from "express";
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 import { protect } from "../controllers/Authentication/AuthUtils.mjs";
 
 import { getUser } from "../controllers/User/getUser.mjs";
 import { getusers } from "../controllers/User/getUsers.mjs";
 import { myProfile } from "../controllers/User/myProfile.mjs";
-import { getPendingUsers } from "../controllers/User/Admin.mjs/getPendingUsers.mjs";
-import { confirmUser } from "../controllers/User/Admin.mjs/confirmMember.mjs";
-import { deleteUser } from "../controllers/User/Admin.mjs/deleteUser.mjs";
-import { declineUser } from "../controllers/User/Admin.mjs/declineUser.mjs";
+import { getPendingUsers } from "../controllers/User/Admin/getPendingUsers.mjs";
+import { confirmUser } from "../controllers/User/Admin/confirmMember.mjs";
+import { deleteUser } from "../controllers/User/Admin/deleteUser.mjs";
+import { declineUser } from "../controllers/User/Admin/declineUser.mjs";
 import { editProfile } from "../controllers/User/editProfile.mjs";
 import { myTasks } from "../controllers/User/myTasks.mjs";
-import { editUser } from "../controllers/User/Admin.mjs/EditUser.mjs";
+import { editUser } from "../controllers/User/Admin/EditUser.mjs";
 
 export const UserRouter = express.Router();
 

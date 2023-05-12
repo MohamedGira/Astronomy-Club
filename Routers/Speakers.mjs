@@ -1,7 +1,7 @@
 import express from "express";
 import * as speakerController from '../controllers/Event/CRUDSpeaker.mjs'
 export const SpeakerRouter=express.Router({mergeParams:true})
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
+import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 
 
 SpeakerRouter.route('/')
