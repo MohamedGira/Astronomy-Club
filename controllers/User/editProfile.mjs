@@ -1,24 +1,20 @@
-export const updateUser = async (req, res, next) => {
-  try {
-    const user = req.user;
+import { User } from "../../models/Users/User.mjs";
+import { catchAsync } from "../../utils/catchAsync.mjs";
+import { saveImage } from "../../utils/image/saveImage.mjs";
+import { filterObj } from "../../utils/objOp.mjs";
 
-    if (req.body.firstName) user.firstName = req.body.firstName;
-    if (req.body.lastName) user.lastName = req.body.lastName;
-    if (req.body.password) user.password = req.body.password;
-    if (req.body.email) user.email = req.body.email;
-    if (req.body.profileImage) user.profileImage = req.body.profileImage;
-    if (req.body.phoneNumber) user.phoneNumber = req.body.phoneNumber;
-
+export const editProfile = catchAsync( async (req, res, next) => {    
+    let body=filterObj(req.body,User.schema.path,['password','phoneNumber','email'])
+    let user=await User.findByIdAndUpdate(req.user._id,body)
+    if (req.files){
+      if (req.files.profileImage)
+        user.profileImage=saveImage(req.files.profileImage)
+    }
     await user.save();
-
     return res.status(200).json({
       status: "success",
-      message: "User updated successfully",
+      message: "profile updated successfully",
       user: user,
     });
-  } catch (error) {
-    return next(
-      new AppError(400, "An error occured while updating the user!!")
-    );
-  }
-};
+}
+)
