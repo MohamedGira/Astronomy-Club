@@ -8,8 +8,7 @@ import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
 import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw.mjs/Authorizer.mjs";
 import fileUpload from "express-fileupload";
-import path from "path";
-import { fileURLToPath } from "url";
+
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
 import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { Event } from "./models/Events/Event.mjs";
@@ -33,8 +32,8 @@ import { CommentRouter } from "./Routers/Comments.mjs";
 import { TaskRouter } from "./Routers/Tasks.mjs";
 import { AssignmentRouter } from "./Routers/Assignments.mjs";
 import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
-import { CommitteeRouter } from "./routers/Committees.mjs";
-import { userRolesRouter } from "./routers/UserRoles.mjs";
+import { CommitteeRouter } from "./Routers/Committees.mjs";
+import { userRolesRouter } from "./Routers/UserRoles.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)

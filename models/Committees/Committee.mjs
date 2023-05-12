@@ -7,10 +7,6 @@ export const committeeSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
 
   president: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
