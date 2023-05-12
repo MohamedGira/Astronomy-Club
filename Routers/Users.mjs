@@ -15,14 +15,19 @@ import { editProfile } from "../controllers/User/editProfile.mjs";
 
 export const UserRouter = express.Router();
 
+export const myProfileRouter = express.Router();
+myProfile.get('/',protect.myProfile)
+myProfile.get('/myTasks', protect,myTasks)
+myProfile.patch("/edit", protect,editProfile);
 
-UserRouter.get('/myProfile',protect,myProfile)
-UserRouter.get('/myTasks', protect,myTasks)
+
+UserRouter.use('/myProfile',myProfileRouter)
+
+
+
+
+
 UserRouter.get('/',isAuthorizedMw('admin'),getusers)
-
-UserRouter.get("/myProfile", protect, myProfile);
-UserRouter.patch("/myprofile/edit", protect,editProfile);
-
 UserRouter.get("/getUsers", isAuthorizedMw("admin"), getusers);
 UserRouter.get("/getPendingUsers", isAuthorizedMw("admin"), getPendingUsers);
 UserRouter.delete("/deleteUser", isAuthorizedMw("admin"), deleteUser);
