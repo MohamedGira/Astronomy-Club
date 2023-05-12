@@ -25,9 +25,9 @@ export class Database{
         if(process.env.NODE_ENV=='gdev')
         this.DB = 'mongodb://127.0.0.1:27017/Astronomy'
         else if (process.env.NODE_ENV!='prod')
-        this.DB = `mongodb+srv://${process.env.localDBUSERNAME}:${process.env.localDBPASSCDE}@cluster0.ic8oarj.mongodb.net/`
+        this.DB= `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSCDE}@cluster0.sq0pkrl.mongodb.net/astronomy?retryWrites=true&w=majority`
         else
-            this.DB= `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSCDE}@cluster0.sq0pkrl.mongodb.net/astronomy?retryWrites=true&w=majority`
+        this.DB= `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSCDE}@cluster0.sq0pkrl.mongodb.net/astronomy?retryWrites=true&w=majority`
         if(this.dbinstance==null)
         {
             mongoose.set('strictQuery', false);

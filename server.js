@@ -28,13 +28,13 @@ import { PaymentRouter } from "./Routers/Payments.mjs";
 import { BookingRouter } from "./Routers/Booking.mjs";
 import { eventTypesRouter } from "./Routers/EventTypes.mjs";
 import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
-import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
-import { User } from "./models/Users/User.mjs";
 import { CommentRouter } from "./Routers/Comments.mjs";
 
 import { TaskRouter } from "./Routers/Tasks.mjs";
 import { AssignmentRouter } from "./Routers/Assignments.mjs";
 import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
+import { CommitteeRouter } from "./routers/Committees.mjs";
+import { userRolesRouter } from "./routers/UserRoles.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -83,6 +83,10 @@ app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/events/',EventRouter)
+app.use('/api/v1/userRoles/',userRolesRouter)
+
+app.use('/api/v1/committees/',CommitteeRouter)
+
 app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/comments/',CommentRouter)
@@ -128,6 +132,7 @@ app.use(ErrorHandler)
 
 // a trick to stay up on the deployed site
 let stayup=(await deploymentTrick.findOne())
+console.log(stayup)
 var refreshEveryMins=stayup.refreshEvery||12
 setInterval(async () => {
     stayup=(await deploymentTrick.findOne())
@@ -149,10 +154,6 @@ const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on por
     console.log(err)
 }
 
-const server = app.listen(process.env.PORT, () => {
-  console.log(`connected on port ${process.env.PORT}`);
-});
-
 //saftey net
 process.on("unhandledRejection", (err) => {
   console.log(`Error: ${err.name}. ${err.message}`);
@@ -161,3 +162,4 @@ process.on("unhandledRejection", (err) => {
     process.exit(1);
   });
 });
+
