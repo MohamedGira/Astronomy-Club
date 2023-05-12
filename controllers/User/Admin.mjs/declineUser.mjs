@@ -1,4 +1,4 @@
-import { STATUS_MAP, User } from "../../../models/Users/User.mjs";
+import {  User } from "../../../models/Users/User.mjs";
 import { AppError } from "../../../utils/AppError.mjs";
 import { catchAsync } from "../../../utils/catchAsync.mjs";
 
