@@ -1,6 +1,6 @@
 import express from "express";
 import {catchAsync} from "../utils/catchAsync.mjs";
-import {login, loginMember} from "../controllers/Authentication/login.mjs";
+import { loginMember} from "../controllers/Authentication/login.mjs";
 import {logout} from "../controllers/Authentication/logout.mjs";
 import { alreadyLoggedIn } from "../controllers/Authentication/AuthUtils.mjs";
 import * as regisrationController from "../controllers/Authentication/register.mjs";

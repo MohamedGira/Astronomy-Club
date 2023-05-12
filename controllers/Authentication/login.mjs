@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { User } from "../../models/Users/User.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import * as consts from "../../utils/consts.mjs";
-
+/* 
 export const login = async (req, res, next) => { 
     const email = req.body.email;
     const password = req.body.password;
@@ -16,6 +16,7 @@ export const login = async (req, res, next) => {
     
     if (!user.confirmed) 
         return next(new AppError(401, "This account isn't confirmed, check your email"));
+    
     
     
     const token = jwt.sign(
@@ -33,7 +34,7 @@ export const login = async (req, res, next) => {
         user,
         accessToken:token
     });
-};
+}; */
 
 export const loginMember = async (req, res, next) => { 
     const email = req.body.email;
@@ -45,12 +46,13 @@ export const loginMember = async (req, res, next) => {
     if (!user||! await bcrypt.compare(password, user.password)) 
         return next(new AppError(400, "invalid email or password"));
     user._doc.password=undefined
+
     
     if (!user.confirmed) 
         return next(new AppError(401, "This account hasn't been confirmed yet, contact adminstration if you thing something went wrong"));
     
     const token = jwt.sign(
-    { id: user._id, role: user.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
+    { id: user._id, role: user.role.name, username: `${user.firstName} ${user.lastName}` ,email:user.email},
     process.env.JWT_KEY,
     { expiresIn: consts.LOGIN_TIMEOUT_SECS }
     );

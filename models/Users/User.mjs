@@ -1,21 +1,13 @@
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import evalidator from "validator";
-import { UserRole } from "./UserType.mjs";
+import { UserRole } from "./UserRole.mjs";
 import phoneUtils from "google-libphonenumber";
-
 import dotenv from "dotenv";
 import { AppError } from "../../utils/AppError.mjs";
-
-import { committeeSchema } from "../../models/Events/subSchemas/committee.mjs";
-
+import { Committee } from "../Committees/Committee.mjs";
 dotenv.config();
 
-const STATUS_MAP = {
-  0: "pending",
-  1: "approved",
-  2: "declined",
-};
 
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
 
@@ -44,10 +36,6 @@ const userScema = mongoose.Schema({
       message: "password is too long",
     },
     select: false,
-  },
-  passwordConfirm: {
-    type: String,
-    required: [true, "password confirmation is required"],
   },
   email: {
     type: String,
@@ -86,50 +74,50 @@ const userScema = mongoose.Schema({
   },
 
   role: {
-    type: String,
-    default: "member",
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "UserRole",
   },
 
   committee: {
-    type: committeeSchema,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Committee",
+  },
+  confirmed:{
+    type:Boolean,
+    default:false
   },
 
-  status: {
-    type: String,
-    required: true,
-    enum: Object.values(STATUS_MAP),
-    default: STATUS_MAP[0],
-  },
+
   confirmationToken: {
     type: String,
   },
 });
 
 
+userScema.pre(/^find/,function(next){
+  this.populate('role committee')
+  next()
+})
 
-//check that passwords match
-userScema.pre("save", function (next) {
-  if (this.password != this.passwordConfirm)
-    return next(new AppError(400, "passwords doesn't match"));
-  this.passwordConfirm = undefined;
-  next();
-});
-
-//check that role foriegn key is valid
+//check that  foriegn keys are valid
 userScema.pre("save", async function (next) {
-  const data = await UserRole.find({ role: this.role });
-  if (data.length == 0) return next(new AppError(400, "invalid role id"));
+  
+  if(this.role)
+  {
+    const data = await UserRole.findById( this.role);
+    if (!data) return next(new AppError(400, "invalid role id"));
+  }
+  if(this.committee)
+  {
+    const data = await Committee.findById( this.committee);
+    if (!data) return next(new AppError(400, "invalid committee id"));
+  }
+
   next();
 });
 
-//encrypt password before storing it to the database
-userScema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(
-    this.password,
-    parseInt(process.env.HASH_SALT)
-  );
-  next();
-});
+
+
 
 
 
