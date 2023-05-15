@@ -8,7 +8,7 @@ export const  getCommittees= factory.getAll(Committee)
 export const  addCommittee= factory.CreateOne(Committee)
 
 // GET tasks/:elementId 
-export const  getCommittee= factory.getOne(Committee)
+export const  getCommittee= factory.getOne(Committee,['kanban'])
 
 // PATCH tasks/:elementId 
 export const  updateCommittee= factory.updateOne(Committee)
