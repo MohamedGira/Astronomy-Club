@@ -8,7 +8,6 @@ import * as CommitteesController from "../controllers/Committee/CRUDCommittee.mj
 import { protect } from "../controllers/Authentication/AuthUtils.mjs";
 import { getCommiteeKanban } from "../controllers/Committee/Kanban.mjs";
 
-CommitteeRouter.use(protect)
 CommitteeRouter.route('/')
 .get(CommitteesController.getCommittees)
 .post( isAuthorizedMw('admin'),CommitteesController.addCommittee)
