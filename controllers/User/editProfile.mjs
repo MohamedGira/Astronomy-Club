@@ -5,7 +5,7 @@ import { filterObj } from "../../utils/objOp.mjs";
 import { saveImage } from "../../utils/uploads/saveImage.mjs";
 
 export const editProfile = catchAsync( async (req, res, next) => {    
-    let body=filterObj(req.body,User.schema.paths,['password','role','committee','confirmed'])
+    let body=filterObj(req.body,User.schema.paths,['password','role','committee','confirmed','profileImage'])
     let user=await User.findById(req.user._id)
     for (let a in body){
       user[a]=body[a]

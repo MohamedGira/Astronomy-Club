@@ -5,7 +5,7 @@ import { saveImage } from "../../../utils/uploads/saveImage.mjs"
 
 export const editUser = catchAsync( async (req, res, next) => {    
     
-    let body=filterObj(req.body,User.schema.paths, ['password'])
+    let body=filterObj(req.body,User.schema.paths, ['password','profileImage'])
     
     let user=await User.findByIdAndUpdate(req.params.id,body,{new:true})
     if (req.files){
