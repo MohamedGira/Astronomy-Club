@@ -104,8 +104,7 @@ app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     return res.json({ok:'ok'})
 }) 
 
-app.patch('/updatePassword',protect,    updatePassword
-)
+
 //testing authorizer functionality
 app.get('/vishome',(req,res,next)=>{
     return res.status(200).json({home:'home'})

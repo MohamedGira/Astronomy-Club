@@ -104,7 +104,7 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     if (newPassword!= confirmPassword)
         return next(new AppError(400, "passwords doesn't match"));
 
-    user.password =  bcrypt.hash(
+    user.password =  await bcrypt.hash(
     newPassword,
     parseInt(process.env.HASH_SALT)
     );
