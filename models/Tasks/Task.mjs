@@ -14,9 +14,7 @@ const taskSchema = mongoose.Schema({
     due: {
         type: [Date],
     },
-    attachments: {
-        type: [String],
-    },
+    
     prioritize: {
         type: String,
         enum: ["low", "medium", "high"],
@@ -32,13 +30,16 @@ const taskSchema = mongoose.Schema({
         ref: "BoardColumn",
         required: [true, "Board column is required"],
     },
-    assignee : {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: "User",
-    },
-}, { timestamps: true });
 
+}, { timestamps: true ,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true } });
 
+taskSchema.virtual('comments', { ref: 'Comment', foreignField: 'to', localField: '_id'});
+
+taskSchema.pre(/^find/,function(){
+    this.populate('comments')
+})
 taskSchema.pre('save',async function(next){
     if(! await BoardColumn.findById(this.boardColumn)){
         return next(new AppError('400',`this boardColumn doesn't exist`))
