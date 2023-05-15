@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { AppError } from "../../utils/AppError.mjs";
+import { Kanban } from "../Kanban/Kanban.mjs";
 
 export const committeeSchema = new mongoose.Schema({
   name: {
@@ -10,6 +11,18 @@ export const committeeSchema = new mongoose.Schema({
 
   president: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true } 
 });
 
+committeeSchema.post('save',async function(){
+  if(! await Kanban.findOne({committee:this._id}))
+    await Kanban.create({committee:this._id})
+})
+committeeSchema.virtual('kanban', { ref: 'Kanban', foreignField: 'committee', localField: '_id' ,  justOne: true});
+committeeSchema.post(/^find/,function(){
+  console.log(this)
+})
 export const Committee = mongoose.model("Committee", committeeSchema);

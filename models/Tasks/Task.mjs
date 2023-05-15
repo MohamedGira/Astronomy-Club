@@ -41,7 +41,7 @@ const taskSchema = mongoose.Schema({
 
 taskSchema.pre('save',async function(next){
     if(! await BoardColumn.findById(this.boardColumn)){
-        return next(new AppError('400',`this event doesn't exist`))
+        return next(new AppError('400',`this boardColumn doesn't exist`))
     }
     next()
 })
