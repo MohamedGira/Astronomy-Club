@@ -87,16 +87,15 @@ export const deleteOne=(Model)=>{
     )}
 
 /** params None, filter: filteres the resources for requested id */
-/** filteres use: on defining GET /events/eventId/checkpoints/elementId: filter={event:req.params.eventId} */
-export const getAll=(Model)=>{
+
+export const getAll=(Model,populate=[])=>{
     return catchAsync( async (req,res,next)=>{
-        const filter=req.myFilter
         const elementId=req.params.elementId
         var results;
-        if(!filter)
-            results =await Model.find()
-        else
-            results=await Model.find({...filterObj(filter,Model.schema.paths)})
+            results = Model.find()
+        if (populate)
+            results.populate(populate.join(' '))
+        results=await results
         if(!results)
             return next(new AppError(404,`requested ${Model.collection.collectionName} of id ${elementId} doesn\'t exitst`))
         return res.status(200).json({
