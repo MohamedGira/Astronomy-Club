@@ -31,14 +31,15 @@ const taskSchema = mongoose.Schema({
         required: [true, "Board column is required"],
     },
 
+
 }, { timestamps: true ,
     toJSON: { virtuals: true },
     toObject: { virtuals: true } });
 
 taskSchema.virtual('comments', { ref: 'Comment', foreignField: 'to', localField: '_id'});
-
+taskSchema.virtual('assignee', { ref: 'Assignment', foreignField: 'taskID', localField: '_id'});
 taskSchema.pre(/^find/,function(){
-    this.populate('comments')
+    this.populate('comments').populate('assignee','userID')
 })
 taskSchema.pre('save',async function(next){
     if(! await BoardColumn.findById(this.boardColumn)){
