@@ -16,5 +16,8 @@ const assignmentSchema = mongoose.Schema({
     },
 }, { timestamps: true });
 
+assignmentSchema.pre(/^find/,function(){
+    this.populate('userID','firstName lastName email profileImage')
+})
 export const Assignment = mongoose.model("Assignment", assignmentSchema);
 
