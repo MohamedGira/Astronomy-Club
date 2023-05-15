@@ -22,7 +22,5 @@ committeeSchema.post('save',async function(){
     await Kanban.create({committee:this._id})
 })
 committeeSchema.virtual('kanban', { ref: 'Kanban', foreignField: 'committee', localField: '_id' ,  justOne: true});
-committeeSchema.post(/^find/,function(){
-  console.log(this)
-})
+
 export const Committee = mongoose.model("Committee", committeeSchema);
