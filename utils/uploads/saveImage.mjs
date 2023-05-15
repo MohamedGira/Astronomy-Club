@@ -42,7 +42,10 @@ export const saveImage = async function (image,options={subfolder:'',compress:fa
 
   //uploaded file is not image
   if (image && !/^image/.test(image.mimetype))
-    throw new AppError("400","the provided file's extension is not a supported image type");
+    {
+      console.log(image)
+      throw new AppError("400","the provided file's extension is not a supported image type");
+    }
   let fdir=imgdir
   if(options.subfolder)
     fdir= path.join(imgdir,options.subfolder)
