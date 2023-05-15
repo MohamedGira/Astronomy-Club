@@ -6,7 +6,7 @@ import * as factory from "../CRUDFactory.mjs";
 export const  getAssignments= factory.getAll(Assignment)
 
 // POST assignments/
-export const  addAssignment= factory.CreateOne(Assignment)
+export const  addAssignment= factory.CreateOne(Assignment,['userID'])
 
 // GET assignments/:elementId 
 export const  getAssignment= factory.getOne(Assignment)

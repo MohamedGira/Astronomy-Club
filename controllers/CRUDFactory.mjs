@@ -16,13 +16,15 @@ import { AppError } from "../utils/AppError.mjs"
 */
 
 
-export const CreateOne=(Model)=>{
+export const CreateOne=(Model,populate=undefined)=>{
     return catchAsync( async (req,res,next)=>{
         var filteredBody=filterObj(jsonifyObj(req.body),Model.schema.paths) 
         var filteredFiles;
         if (req.files)
             filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
             var newModelObject=await Model.create({...filteredBody,...filteredFiles})
+        if (populate)
+            await newModelObject.populate(populate.join(' '))
         return res.status(201).json({
             message:`${Model.collection.collectionName} created`,
             newModelObject
