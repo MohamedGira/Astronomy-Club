@@ -56,7 +56,7 @@ export const loginMember = async (req, res, next) => {
     process.env.JWT_KEY,
     { expiresIn: consts.LOGIN_TIMEOUT_SECS }
     );
-    user._doc.role=user._doc.role.name
+
     return res
     .cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
     .status(200)
