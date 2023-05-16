@@ -1,0 +1,10 @@
+import express from "express";
+
+import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
+import { getfiles, removefile } from "../controllers/filesystem/fileOperations.mjs";
+
+export const FsRouter=express.Router({mergeParams:true})
+FsRouter.use(isAuthorizedMw('SystemAdmin'))
+FsRouter.route('/')
+.get(getfiles)
+.delete(removefile)

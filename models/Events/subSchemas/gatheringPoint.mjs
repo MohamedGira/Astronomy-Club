@@ -2,8 +2,13 @@ import mongoose from'mongoose'
 import { LocationSchema } from './Location.mjs';
 
 export const GatheringPointSchema = new mongoose.Schema({
-    from:Date,
-    to:Date,
+    from:{type:Date,required:true},
+    to:{type:Date,required:true},
+    event:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Event',
+        required:true
+    },
     location: {
     type: LocationSchema,
     required: true

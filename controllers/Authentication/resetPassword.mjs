@@ -11,6 +11,7 @@ import { appendFile, fstat, readFileSync } from "fs";
 import bcrypt from "bcrypt";
 import { promisify } from "util";
 import { catchAsync } from "../../utils/catchAsync.mjs";
+import { getToken } from "../../utils/getToken.mjs";
 
 dotenv.config();
 
@@ -36,16 +37,11 @@ export const resetPassword = async (req, res, next) => {
       { expiresIn: consts.PASSWORD_RESET_TIMEOUT_SECS }
     );
     
-   
-     await emailer.sendHTMLMail(
-    email,
-    "Reset Password",
-    getResetTemplate()
-        .replace("{myJWT}", resetToken)
-        .replace("{expiration_time}", consts.PASSWORD_RESET_TIMEOUT_MINS)
-        .replace("{targetUrl}",`${req.headers.referrer || req.headers.referer}/auth/new-password`)
-        .replace("{email}",encodeURIComponent(email)));
- 
+    await emailer.sendResetPassword(email,
+        'resetPasswordNew',
+        {url:`${req.headers.referrer || req.headers.referer}/auth/new-password?targetUrl=${resetToken}
+        &email=${encodeURIComponent(email)}`},'Astronomy Club')
+
     return res.status(200).json({
         message: "check your email to reset password",
     });
@@ -68,15 +64,16 @@ export const changePassword = async (req, res, next) => {
         const user = await User.findOne({email: decodedvalues.email}).select('+password');
 
         if (user.password === decodedvalues.password) {
-            user.password=newPassword
-            user.passwordConfirm=confirm_newPassword
-            try{
-                await user.save()
-            }catch(err){
-                //new password had some violations
-                return next(err)
-            }
-
+            
+            if (newPassword!= confirm_newPassword)
+                return next(new AppError(400, "passwords doesn't match"));
+            user.password =  bcrypt.hash(
+            newPassword,
+            parseInt(process.env.HASH_SALT)
+            )
+            
+            await user.save()
+          
             return res.status(200).json({
                 message: "password changed succesfully",
             });
@@ -95,29 +92,35 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
     const confirmPassword = req.body.confirmPassword;
-    var token = req.cookies.jwt;
+    var token = getToken(req);
     if(!token)
         return next(new AppError(401, "no signed in user"))
     const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)
-    const user=await User.findById(decodedValues.id).select('+password')
+    const user=await User.findById(decodedValues.id).select('+password').populate('role committee')
     if(!user)
-        next(new AppError('401','invalid user id'))
+        next(new AppError(401,'invalid user id'))
     if(! await bcrypt.compare(oldPassword, user.password))
-        next(new AppError('401','invalid old password'))
-    user.password=newPassword
-    user.passwordConfirm=confirmPassword
+        next(new AppError(400,'invalid old password'))
+    if (newPassword!= confirmPassword)
+        return next(new AppError(400, "passwords doesn't match"));
+
+    user.password =  await bcrypt.hash(
+    newPassword,
+    parseInt(process.env.HASH_SALT)
+    );
+    
     await user.save()
     
     token =  jwt.sign(
-        { id: user._id, role: user.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
+        { id: user._id, role: user.role.name, username: `${user.firstName} ${user.lastName}` ,email:user.email},
         process.env.JWT_KEY,
         { expiresIn: consts.LOGIN_TIMEOUT_SECS }
         );  
     return res
-    //.cookie("jwt", token, consts.LOGIN_TIMEOUT_MILLIS)
     .status(200)
     .json({
             message: "password changed successfully",
             user: user._id,
+            accessToken:token
     });
 })

@@ -10,12 +10,11 @@ import * as consts from "../../utils/consts.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
-import {saveImage} from '../../utils/image/saveImage.mjs'
+import { saveImage} from '../../utils/uploads/saveImage.mjs'
 
 dotenv.config();
 
-import { writeFile, writeFileSync } from "fs";
-import { bufferCompressor} from "../../utils/image/ImageCompression/compressor.mjs";
+
 import { filterObj } from "../../utils/objOp.mjs";
 
 const relativeUploadPath='/../../upload/images/'
@@ -23,24 +22,30 @@ const relativeUploadPath='/../../upload/images/'
 
 export const registerMember = async (req, res, next) => {
     const filtereduser=filterObj(req.body,User.schema.paths,['role'])
-    const user = new User(filtereduser);
     
-
+    
+    if (req.body.password != req.body.passwordConfirm)
+        return next(new AppError(400, "passwords doesn't match"));
+    filtereduser.password =  bcrypt.hash(
+        req.password.password,
+        parseInt(process.env.HASH_SALT)
+    );
+    const user = new User(filtereduser);
     //user uploaded profileImage     
     if (req.files)
     {
     const  image  = req.files.profileImage;
-    const img=await saveImage(image,__dirname+relativeUploadPath)
+    const img=await saveImage(image)
     user.profileImage=img 
     }
     await user.save();    //user is saved successfully
-
+    
     return res.status(200).json({
-        message: "user created successfully, wait for admin to verify your registration",
+        message: "user created successfuwlly, wait for admin to verify your registration",
     });
 };
 
-export const registerUser = async (req, res, next) => {
+/* export const registerUser = async (req, res, next) => {
     const filtereduser=filterObj(req.body,User.schema.paths,['role'])
     const user = new User(filtereduser);
     
@@ -54,7 +59,7 @@ export const registerUser = async (req, res, next) => {
     if (req.files)
     {
     const  image  = req.files.profileImage;
-    const img=await saveImage(image,__dirname+relativeUploadPath)
+    const img=await createImageObject(image)
     user.profileImage=img 
     }
     await user.save();    //user is saved successfully
@@ -79,7 +84,7 @@ export const registerUser = async (req, res, next) => {
     return res.status(200).json({
         message: "user created successfully",
     });
-};
+}; */
 
 export const confirmRegisteration = async (req, res, next) => {
     const reqtoken = req.query.token;

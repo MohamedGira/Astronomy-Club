@@ -30,7 +30,6 @@ export const LocationSchema = new mongoose.Schema({
     landmark: String,
     location: {
       type: PointSchema,
-      required: true
     }
 });
 export const Location=mongoose.model("Location",LocationSchema)

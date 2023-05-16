@@ -5,7 +5,7 @@ import { AppError } from '../../utils/AppError.mjs';
 import { catchAsync } from '../../utils/catchAsync.mjs';
 import { getToken } from '../../utils/getToken.mjs';
 
-export const isLoggedInMw = (req, res, next) => {
+export const alreadyLoggedIn = (req, res, next) => {
     var token =getToken(req);
     
     
@@ -30,7 +30,7 @@ export const protect =catchAsync(async (req, res, next) => {
     return next(new AppError(401, "signin to continue"));
   
   const decodedvalues=await promisify( jwt.verify)(token, process.env.JWT_KEY)
-  const user= await User.findById(decodedvalues.id)
+  const user= await User.findById(decodedvalues.id).populate('role committee')
   if(!user){
     return next(new AppError(401, "user with this token no longer exists"));
   }
