@@ -96,11 +96,11 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     if(!token)
         return next(new AppError(401, "no signed in user"))
     const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)
-    const user=await User.findById(decodedValues.id).select('+password')
+    const user=await User.findById(decodedValues.id).select('+password').populate('role committee')
     if(!user)
-        next(new AppError('401','invalid user id'))
+        next(new AppError(401,'invalid user id'))
     if(! await bcrypt.compare(oldPassword, user.password))
-        next(new AppError('401','invalid old password'))
+        next(new AppError(400,'invalid old password'))
     if (newPassword!= confirmPassword)
         return next(new AppError(400, "passwords doesn't match"));
 
@@ -112,7 +112,7 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     await user.save()
     
     token =  jwt.sign(
-        { id: user._id, role: user.role, username: `${user.firstName} ${user.lastName}` ,email:user.email},
+        { id: user._id, role: user.role.name, username: `${user.firstName} ${user.lastName}` ,email:user.email},
         process.env.JWT_KEY,
         { expiresIn: consts.LOGIN_TIMEOUT_SECS }
         );  

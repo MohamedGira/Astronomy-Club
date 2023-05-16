@@ -42,7 +42,7 @@ export const loginMember = async (req, res, next) => {
     if (!email||!password)
         return next(new AppError(400, "enter username and password"));
 
-    const user = await User.findOne({ email: email }).select('+password')
+    const user = await User.findOne({ email: email }).select('+password').populate('role committee')
     if (!user||! await bcrypt.compare(password, user.password)) 
         return next(new AppError(400, "invalid email or password"));
     user._doc.password=undefined
