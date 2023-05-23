@@ -20,15 +20,16 @@ export const  ResultsManager= class{
             const sortBy=this.queryString.sort.replaceAll(',',' ');
             this.query.sort(sortBy)
         }
-        else{
-            this.query.sort('_id') //unnecessary, replace with important default sorting
-        }
         return this
     }
     paginate(){
         const page=this.queryString.page*1 ||1;
-        const limit=this.queryString.limit *1||10;
-        this.query.skip((page-1)*limit).limit(limit)
+        const limit=this.queryString.limit *1;
+        if(limit>=1)
+            {
+            this.query.skip((page-1)*limit).limit(limit)
+            return this
+            }
         return this
     }
     select(){
