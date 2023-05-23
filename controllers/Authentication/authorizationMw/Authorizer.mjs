@@ -7,6 +7,7 @@ import { getToken } from '../../../utils/getToken.mjs';
 
 export const isAuthorizedMw = (...roles) => {
     return async (req, res, next) => {
+        console.log(req)
         const token = getToken(req);
 
         try {
@@ -42,3 +43,6 @@ export const isAuthorized = async(req,...roles) => {
         }
 }
 
+export const RBACAutorizerMw= async (req)=>{
+    
+}

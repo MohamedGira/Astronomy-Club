@@ -34,6 +34,8 @@ import { AssignmentRouter } from "./Routers/Assignments.mjs";
 import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
 import { CommitteeRouter } from "./Routers/Committees.mjs";
 import { userRolesRouter } from "./Routers/UserRoles.mjs";
+import listEndpoints from "express-list-endpoints";
+import slugify from "slugify";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -83,9 +85,7 @@ app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/userRoles/',userRolesRouter)
-
 app.use('/api/v1/committees/',CommitteeRouter)
-
 app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/comments/',CommentRouter)
@@ -97,8 +97,6 @@ app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/assignments/',AssignmentRouter)
 app.use('/api/v1/boardColumns/',BoardColumnRouter)
-
-
 app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
     return res.json({ok:'ok'})
@@ -127,7 +125,7 @@ app.all('*',(req,res,next)=>{
 })
 app.use(ErrorHandler)
 
-
+/*  
 // a trick to stay up on the deployed site
 let stayup=(await deploymentTrick.findOne())
 console.log(stayup)
@@ -144,7 +142,7 @@ setInterval(async () => {
         })
     }        
 },refreshEveryMins*60000) 
-
+  */
 
 try{
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
@@ -160,4 +158,8 @@ process.on("unhandledRejection", (err) => {
     process.exit(1);
   });
 });
+
+
+
+
 
