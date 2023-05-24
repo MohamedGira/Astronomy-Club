@@ -1,12 +1,12 @@
 import express from "express";
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
+import { RBACAutorizerMw, isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 export const EndpointRouter=express.Router()
-import * as EndpointControllerrmission from "../controllers/Endpoint/EndpointController.mjs"
-import { protect } from "../controllers/Authentication/AuthUtils.mjs";
+import * as EndpointController from "../controllers/Endpoint/EndpointController.mjs"
 
-EndpointRouter.use(protect)
+
+EndpointRouter.use(RBACAutorizerMw)
 EndpointRouter.route('/')
-.get(EndpointControllerrmission.getEndpoints)
+.get(EndpointController.getEndpoints)
 EndpointRouter.route('/:elementId')
-.get(EndpointControllerrmission.getEndpoint)
+.get(EndpointController.getEndpoint)
 
