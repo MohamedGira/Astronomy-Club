@@ -11,18 +11,24 @@ const permissionSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserRole",
         required:true},
-    endpoint: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref:'Endpoint',
-        required:true
+    url:{
+        type:String,
+        required:true,
+        unique:true
     },
     friendlyName:{
         type:String,
-    },   
+    },
+       
     allowed:{
         type:Boolean,
         default:true
     }
+    ,
+    errorMessage:{
+        type:String,
+        default:"You dont have permissions to do this action"
+    },
 },
 { timestamps: true });
 
@@ -31,7 +37,7 @@ permissionSchema.pre("save", async function (next) {
 
     if (!await UserRole.findById( this.role))
         return next(new AppError(400, "invalid role id"));
-    let endpoint=await Endpoint.findById(this.endpoint)
+    let endpoint=await Endpoint.findOne({url:this.url})
     if (!endpoint)
        {
         return next(new AppError(400, "invalid endpoint"));
@@ -42,7 +48,7 @@ permissionSchema.pre("save", async function (next) {
         this.friendlyName=urlParts.pop()
         while(this.friendlyName[0]==':')
             this.friendlyName=urlParts.pop()
-        this.friendlyName=endpoint.method.toLowerCase().replace('patch','update')+' '+this.friendlyName.replace(/-/g,' ')
+        this.friendlyName='Manage'+' '+this.friendlyName.replace(/-/g,' ')
     }
     next();
 });
