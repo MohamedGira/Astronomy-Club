@@ -1,5 +1,7 @@
 import mongoose from'mongoose'
 import dotenv from 'dotenv'
+import { Endpoint } from './Endpoints/Endpoint.mjs'
+import { Permission } from './Permissions/Permission.mjs'
 dotenv.config()
 
 /* const localDB=''
@@ -19,6 +21,9 @@ export class Database{
         //console.log(DB)
     }
     static dbinstance=null
+    static endpointInstance=null
+    static permissionInstance=null
+
     static DB
     static async getInstance(){
         
@@ -39,10 +44,45 @@ export class Database{
             console.log("Db connected")
             return  this.dbinstance
         }else{
-            console.log("Db connected")
             return this.dbinstance
         }
 
+    }
+
+    static async getEndpointsInstance(){
+        await Database.getInstance()
+        if(this.endpointInstance==null)
+        {
+            console.log('getting permissions')
+            this.endpointInstance=await Endpoint.find()
+            return this.endpointInstance
+        }
+        else{
+            return this.endpointInstance
+        }
+    }
+    static async getPermissionsInstance(){
+        await Database.getInstance()
+        if(this.permissionInstance==null)
+        {   
+            console.log('getting permissions')
+            this.permissionInstance=await Permission.find().populate('endpoint')
+            return this.permissionInstance
+        }
+        else{
+            return this.permissionInstance
+        }
+    }
+    static async updateEndpointsInstance(){
+        this.endpointInstance=await Endpoint.find()
+        console.log('updating endpoints')
+        return this.endpointInstance
+    }
+    static async updatePermissionsInstance(){
+        this.permissionInstance=await Permission.find().populate('endpoint')
+        console.log('updating permissions')
+        return this.permissionInstance
+        
     }
 }
 
