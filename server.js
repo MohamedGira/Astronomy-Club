@@ -10,7 +10,6 @@ import { RBACAutorizerMw, isAuthorizedMw } from "./controllers/Authentication/au
 import fileUpload from "express-fileupload";
 
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
-import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { Event } from "./models/Events/Event.mjs";
 import { addSpeaker } from "./controllers/Event/CRUDSpeaker.mjs";
 import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
@@ -36,7 +35,6 @@ import { CommitteeRouter } from "./Routers/Committees.mjs";
 import { userRolesRouter } from "./Routers/UserRoles.mjs";
 import listEndpoints from "express-list-endpoints";
 import slugify from "slugify";
-import { InitializeEndpoints } from "./controllers/Endpoint/EndpointController.mjs";
 import { PermissionRouter } from "./routers/Permissions.mjs";
 import { EndpointRouter } from "./routers/Endpoints.mjs";
 
@@ -52,7 +50,6 @@ const app = express()
 
 
 
-
 dotenv.config()
 //this webhook uses request body as raw format, not as a json, so it must be defiend before we user expressjson() middleware,, DONT MOVE IT
 app.post('/api/v1/events/payment/',express.raw({type: 'application/json'}),webhook)
@@ -60,7 +57,6 @@ app.use(express.json())
 
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
-
 
 app.use(
   cors({
@@ -87,6 +83,7 @@ app.use('/api/v1/users/',UserRouter)
 app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/userRoles/',userRolesRouter)
+
 app.use('/api/v1/committees/',CommitteeRouter)
 app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/tickets/',TicketRouter)
@@ -102,7 +99,7 @@ app.use('/api/v1/boardColumns/',BoardColumnRouter)
 app.use('/api/v1/permissions/',PermissionRouter)
 app.use('/api/v1/endpoints/',EndpointRouter)
 
-app.get('/delall',protect,RBACAutorizerMw,async(req,res,next)=>{
+app.get('/delall',RBACAutorizerMw,async(req,res,next)=>{
     await Event.deleteMany({})
     return res.json({ok:'ok'})
 }) 
@@ -143,8 +140,7 @@ setInterval(async () => {
 
 try{
 await Database.getInstance();
-const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
-//await InitializeEndpoints(app)
+const server=  await app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
 }catch(err){
     console.log(err)
 }
