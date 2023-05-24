@@ -75,8 +75,9 @@ export const InitializeEndpoints2=async (app)=>{
     }catch(err){
         console.log(err.message)
     }
-    
-    await InitaizeAdminPermissions('64239bae801a4599ad1a0335',baseurls)
+    let rols=['646e6377fbfb32c2a1b27760','64239bc1801a4599ad1a0336','645e60d39fc0792b7a356513','64239bae801a4599ad1a0335']
+    for (let i in rols)
+        await InitaizeAdminPermissions(rols[i],baseurls)
     return actualEndpoints
 }
 

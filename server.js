@@ -37,6 +37,7 @@ import listEndpoints from "express-list-endpoints";
 import slugify from "slugify";
 import { PermissionRouter } from "./routers/Permissions.mjs";
 import { EndpointRouter } from "./routers/Endpoints.mjs";
+import { InitializeEndpoints2 } from "./controllers/Endpoint/EndpointController.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
