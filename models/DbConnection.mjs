@@ -53,7 +53,7 @@ export class Database{
         await Database.getInstance()
         if(this.endpointInstance==null)
         {
-            console.log('getting permissions')
+            console.log('getting endpoints')
             this.endpointInstance=await Endpoint.find()
             return this.endpointInstance
         }
@@ -66,7 +66,7 @@ export class Database{
         if(this.permissionInstance==null)
         {   
             console.log('getting permissions')
-            this.permissionInstance=await Permission.find().populate('endpoint')
+            this.permissionInstance=await Permission.find()
             return this.permissionInstance
         }
         else{
@@ -79,9 +79,14 @@ export class Database{
         return this.endpointInstance
     }
     static async updatePermissionsInstance(){
-        this.permissionInstance=await Permission.find().populate('endpoint')
+        try{
+        this.permissionInstance=await Permission.find()
         console.log('updating permissions')
         return this.permissionInstance
+        }
+        catch(err){
+            console.log(err)
+        }
         
     }
 }
