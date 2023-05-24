@@ -14,7 +14,6 @@ const permissionSchema = mongoose.Schema({
     url:{
         type:String,
         required:true,
-        unique:true
     },
     friendlyName:{
         type:String,
@@ -34,7 +33,7 @@ const permissionSchema = mongoose.Schema({
 
 //check that  foriegn keys are valid
 permissionSchema.pre("save", async function (next) {
-
+    
     if (!await UserRole.findById( this.role))
         return next(new AppError(400, "invalid role id"));
     let endpoint=await Endpoint.findOne({url:this.url})

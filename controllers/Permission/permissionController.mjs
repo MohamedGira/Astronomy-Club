@@ -37,7 +37,8 @@ export const  updatePermission= factory.updateOne(Permission,{
             console.log(err)
         }
     },executePre:[(req,res,next)=>{
-        console.log(req.params)
+
+
     }]
 })
 
