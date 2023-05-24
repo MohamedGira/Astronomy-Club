@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
-import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw/Authorizer.mjs";
+import { RBACAutorizerMw, isAuthorizedMw } from "./controllers/Authentication/authorizationMw/Authorizer.mjs";
 import fileUpload from "express-fileupload";
 
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
@@ -36,6 +36,9 @@ import { CommitteeRouter } from "./Routers/Committees.mjs";
 import { userRolesRouter } from "./Routers/UserRoles.mjs";
 import listEndpoints from "express-list-endpoints";
 import slugify from "slugify";
+import { InitializeEndpoints } from "./controllers/Endpoint/EndpointController.mjs";
+import { PermissionRouter } from "./routers/Permissions.mjs";
+import { EndpointRouter } from "./routers/Endpoints.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -58,7 +61,6 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
 
-await Database.getInstance();
 
 app.use(
   cors({
@@ -97,25 +99,20 @@ app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/assignments/',AssignmentRouter)
 app.use('/api/v1/boardColumns/',BoardColumnRouter)
-app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
+app.use('/api/v1/permissions/',PermissionRouter)
+app.use('/api/v1/endpoints/',EndpointRouter)
+
+app.get('/delall',protect,RBACAutorizerMw,async(req,res,next)=>{
     await Event.deleteMany({})
     return res.json({ok:'ok'})
 }) 
 
 
-//testing authorizer functionality
-app.get('/vishome',(req,res,next)=>{
-    return res.status(200).json({home:'home'})
-})
-app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
-    return res.status(200).json({home:'home'})
-})
      
 /* app.post('/uploadImage',catchAsync ( async (req,res,next)=>{
    let name=await saveImage(req.files.image,{compress:true,subfolder:'a/a/'})
    return res.json(name)
 })) */
-app.post('/addSpeaker',isAuthorizedMw('admin'),addSpeaker)
 
 app.get('images/*',(req,res,next)=>{
     return next(new AppError(404,`requested image not found :${req.path},${req.method}`))
@@ -145,7 +142,9 @@ setInterval(async () => {
   */
 
 try{
+await Database.getInstance();
 const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
+//await InitializeEndpoints(app)
 }catch(err){
     console.log(err)
 }
