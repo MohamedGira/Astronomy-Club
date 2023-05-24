@@ -34,6 +34,7 @@ import { AssignmentRouter } from "./Routers/Assignments.mjs";
 import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
 import { CommitteeRouter } from "./Routers/Committees.mjs";
 import { userRolesRouter } from "./Routers/UserRoles.mjs";
+import { FrontendManagmentRouter } from "./Routers/frontendManagment.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -97,7 +98,7 @@ app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/assignments/',AssignmentRouter)
 app.use('/api/v1/boardColumns/',BoardColumnRouter)
-
+app.use('/api/v1/frontendManagment/',FrontendManagmentRouter)
 
 app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
     await Event.deleteMany({})
