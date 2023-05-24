@@ -2,6 +2,7 @@ import { json } from "express"
 import { filterObj, jsonifyObj } from "../utils/objOp.mjs"
 import { catchAsync } from "../utils/catchAsync.mjs"
 import { AppError } from "../utils/AppError.mjs"
+import { ResultsManager } from "../utils/ResultsManager.mjs"
 //crud factory for BASIC classes : no childReferencing Docs
 
 //!!!!!!! if used model has images, then images must be saved on model file not controller
@@ -16,15 +17,26 @@ import { AppError } from "../utils/AppError.mjs"
 */
 
 
-export const CreateOne=(Model,populate=undefined)=>{
+export const CreateOne=(Model,populate=undefined,options={executePost:()=>{},
+executePre:[()=>{}]})=>{
     return catchAsync( async (req,res,next)=>{
         var filteredBody=filterObj(jsonifyObj(req.body),Model.schema.paths) 
+        if(options.executePre)
+            for (let i in options.executePre)
+                try{
+                    await options.executePre[i](req,res,next) }
+                catch(err){
+                    return next(err)
+                }
+
         var filteredFiles;
         if (req.files)
             filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
             var newModelObject=await Model.create({...filteredBody,...filteredFiles})
         if (populate)
             await newModelObject.populate(populate.join(' '))
+        if(options.executePost)
+            options.executePost()
         return res.status(201).json({
             message:`${Model.collection.collectionName} created`,
             newModelObject
@@ -33,7 +45,8 @@ export const CreateOne=(Model,populate=undefined)=>{
 )}
 
 /** params req.params: elementId -> referes to the requested document */
-export const getOne=(Model,populate=[])=>{
+export const getOne=(Model,populate=[],options={executePost:()=>{},
+executePre:[()=>{}]})=>{
     return catchAsync(  async (req,res,next)=>{
         const elementId=req.params.elementId
         var modelObject=Model.findOne({_id:elementId})
@@ -50,13 +63,16 @@ export const getOne=(Model,populate=[])=>{
 })}
 
 /** params req.params: elementId -> referes to the  document to be updated */
-export const updateOne=(Model)=>{
+export const updateOne=(Model,filterout=[],options={executePost:()=>{},
+executePre:[()=>{}]})=>{
     return catchAsync( async (req,res,next)=>{
         jsonifyObj(req.body)
-        
+        if(options.executePre)
+            for (let i in options.executePre)
+                await options.executePre[i](req,res,next)
         var filteredFiles;
         if (req.files)
-            filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths) 
+            filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths,filterout) 
         var update={...filterObj(req.body,Model.schema.paths),...filteredFiles}
         const elementId=req.params.elementId
         let newModelObject= await Model.findByIdAndUpdate(elementId,update,{
@@ -68,6 +84,8 @@ export const updateOne=(Model)=>{
     if(!newModelObject){
         return next( new AppError(400,`requested ${Model.collection.collectionName} of id ${elementId} doesn\'t exitst`))
     }
+    if(options.executePost)
+            options.executePost()
     return res.status(200).json({
         message:'updated succesfully',
         newModelObject
@@ -86,15 +104,17 @@ export const deleteOne=(Model)=>{
             doc
         })
     }
-    )}
+)}
 
 /** params None, filter: filteres the resources for requested id */
 
-export const getAll=(Model,populate=[])=>{
+export const getAll=(Model,populate=[],options={executePost:()=>{},
+executePre:[()=>{}]})=>{
     return catchAsync( async (req,res,next)=>{
+        
         const elementId=req.params.elementId
         var results;
-            results = Model.find()
+            results = new ResultsManager(Model.find(),req.query).filter().select().paginate().query
         if (populate)
             results.populate(populate.join(' '))
         results=await results
@@ -105,3 +125,17 @@ export const getAll=(Model,populate=[])=>{
             results
         })
 })}
+
+/** params req.params: elementId -> referes to the  document to be deleted */
+export const no_Really__DeleteIt=(Model)=>{
+    return catchAsync( async (req,res,next)=>{
+        const id=req.params.elementId
+        const doc = await Model.findByIdAndDelete(id)
+        if(!doc)
+        return next(new AppError(404,`requested document ${id} doesn't exitst`))
+        return res.status(204).json({
+            message:'deleted succesfully',
+            doc
+        })
+    }
+)}

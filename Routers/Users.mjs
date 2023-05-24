@@ -1,6 +1,6 @@
 import express from "express";
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
-import { protect } from "../controllers/Authentication/AuthUtils.mjs";
+import { RBACAutorizerMw, isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
+
 
 import { getUser } from "../controllers/User/getUser.mjs";
 import { getusers } from "../controllers/User/getUsers.mjs";
@@ -16,23 +16,24 @@ import { editUser } from "../controllers/User/Admin/editUser.mjs";
 export const UserRouter = express.Router();
 
 export const myProfileRouter = express.Router();
-myProfileRouter.get('/',protect,myProfile)
-myProfileRouter.patch("/", protect,editProfile);
-myProfileRouter.get('/myTasks', protect,myTasks)
 
+UserRouter.use(RBACAutorizerMw,RBACAutorizerMw)
+myProfileRouter.use(RBACAutorizerMw)
+
+myProfileRouter.route('/')
+.get(myProfile)
+.patch(editProfile)
+myProfileRouter.route('/myTasks')
+.get(myTasks)
 
 UserRouter.use('/myProfile',myProfileRouter)
 
+UserRouter.route('/')
+.get(getusers)
 
+UserRouter.route('/:id')
+.delete(deleteUser)
+.patch(editUser)
+.get(getUser);
 
-
-
-UserRouter.get('/',isAuthorizedMw('admin'),getusers)
-UserRouter.get("/getUsers", isAuthorizedMw("admin"), getusers);
-UserRouter.get("/getPendingUsers", isAuthorizedMw("admin"), getPendingUsers);
-UserRouter.delete("/deleteUser", isAuthorizedMw("admin"), deleteUser);
-UserRouter.post("/declineUser", isAuthorizedMw("admin"), declineUser);
-UserRouter.post("/confirmUser", isAuthorizedMw("admin"), confirmUser);
-UserRouter.get("/:id", isAuthorizedMw("admin"), getUser);
-UserRouter.patch("/:id", isAuthorizedMw("admin"), editUser);
 

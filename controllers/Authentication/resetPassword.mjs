@@ -98,9 +98,9 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)
     const user=await User.findById(decodedValues.id).select('+password').populate('role committee')
     if(!user)
-        next(new AppError(401,'invalid user id'))
+        return next(new AppError(401,'invalid user id'))
     if(! await bcrypt.compare(oldPassword, user.password))
-        next(new AppError(400,'invalid old password'))
+        return next(new AppError(400,'invalid old password'))
     if (newPassword!= confirmPassword)
         return next(new AppError(400, "passwords doesn't match"));
 

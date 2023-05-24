@@ -1,9 +1,11 @@
 export const getToken=(req)=>{
     if(!req.headers.authorization)
-        if(!req.cookies)  
-            return null
-        else
-            return req.cookies.jwt
+        return undefined
+        
+    let t=req.headers.authorization.split(' ')[1]
+    if(['null','undefined','0'].includes(t))
+        return undefined
     else
-        return req.headers.authorization.split(' ')[1]
+        return t
+
 }
