@@ -45,24 +45,37 @@ export const isAuthorized = async(req,...roles) => {
 }
 
 //utilizes Singleton design pattern
-export const RBACAutorizerMw= catchAsync( async (req, res, next) => {
+export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
+    try{
     const token = getToken(req);
     if(!token)
-        return next(new AppError(401, "unauthorized access to this endpoint, signin to continue"));
-    let permissions=await Database.getPermissionsInstance()
-    const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)
+        return next(new AppError(401, "Signin to continue"));
+
+    let decodedValues =  promisify(jwt.verify)(token, process.env.JWT_KEY)
+    try{    
+        decodedValues=await decodedValues
+    }catch(err){
+        return next(new AppError(401, "Signin to continue"));
+    }
+
     let user= await User.findById(decodedValues.id)
     if(!user)
-        return next(new AppError(401, "no user exists with this id"));
+        return next(new AppError(401, "Can't sign in with this user,contact adminstatration if you think this is a mistake"));
+    req.user=user
 
-        permissions=permissions.filter(el=>
-        { 
-         return   el.role.equals(user.role._id) && el.allowed && req.baseUrl.includes(el._doc.endpoint.url) && el._doc.endpoint.method==req.method
-        })
-    
+    let permissions=await Database.getPermissionsInstance()
+    permissions=permissions.filter(el=>{ 
+        return   el.role.equals(user.role._id) && req.baseUrl==el.url
+    })
     if (permissions.length==0)
-        return next(new AppError(403, "0unauthorized access to this endpoint"));
-        
-    next()
+        return next(new AppError(403, "unauthorized access to this endpoint"));
     
-})
+    if(!permissions[0].allowed)
+        return next(new AppError(403, permissions[0].errorMessage||"unauthorized access to this endpoint"));
+    console.log(permissions)
+    return next()
+}catch(err){
+    return next(new AppError(500, err.message));
+}
+}
+
