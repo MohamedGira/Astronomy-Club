@@ -36,8 +36,8 @@ import { userRolesRouter } from "./Routers/UserRoles.mjs";
 import { FrontendManagmentRouter } from "./Routers/frontendManagment.mjs";
 import listEndpoints from "express-list-endpoints";
 import slugify from "slugify";
-import { PermissionRouter } from "./routers/Permissions.mjs";
-import { EndpointRouter } from "./routers/Endpoints.mjs";
+import { PermissionRouter } from "./Routers/Permissions.mjs";
+import { EndpointRouter } from "./Routers/Endpoints.mjs";
 import { InitializeEndpoints2 } from "./controllers/Endpoint/EndpointController.mjs";
 
 process.on('uncaughtException',err=>{
