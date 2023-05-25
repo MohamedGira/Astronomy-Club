@@ -58,7 +58,7 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
         return next(new AppError(401, "Signin to continue"));
     }
 
-    let user= await User.findById(decodedValues.id)
+    let user= await User.findById(decodedValues.id).populate('role committe')
     if(!user)
         return next(new AppError(401, "Can't sign in with this user,contact adminstatration if you think this is a mistake"));
     req.user=user
@@ -72,7 +72,6 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     
     if(!permissions[0].allowed)
         return next(new AppError(403, permissions[0].errorMessage||"unauthorized access to this endpoint"));
-    console.log(permissions)
     return next()
 }catch(err){
     return next(new AppError(500, err.message));
