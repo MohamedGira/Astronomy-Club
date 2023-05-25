@@ -64,21 +64,24 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     if(!user)
         return next(new AppError(401, "Can't sign in with this user,contact adminstatration if you think this is a mistake"));
     req.user=user
-    console.log(req)
-    let permission= await Permission.findOne({url:{$in:[req.baseUrl,req.baseUrl]},role:user.role._id})
+    let regex=/^[a-f\d]{24}$/i
+    let url=req.originalUrl.split('?')[0].split('/').filter((el)=>{return el!=''&&!regex.test(el)}).join('/')
+    console.log(url)
+    let permission= await Permission.findOne({url:{$in:[`/${url}`,`/${url}/`]},role:user.role._id})
     if (!permission)
         return next(new AppError(401, "protected endpoint with no permission for this role"));
-    console.log(permission._doc.allowed,permission.allowed)
-    if(!permission._doc.allowed)
+    if(!permission.allowed)
         {   
             console.log(permission)
             return next(new AppError(403, permission.errorMessage+`${req.baseUrl}`||"unauthorized access to this endpoint"+`${req.baseUrl}`));
         }
-    console.log(permission)
+    console.log(permission.friendlyName)
     
     return next()
 }catch(err){
     return next(new AppError(500, err.message));
 }
 }
+
+
 
