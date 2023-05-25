@@ -72,7 +72,7 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     if(!permission._doc.allowed)
         {   
             console.log(permission)
-            return next(new AppError(403, permission.errorMessage||"unauthorized access to this endpoint"));
+            return next(new AppError(403, permission.errorMessage+`${req.baseUrl}`||"unauthorized access to this endpoint"+`${req.baseUrl}`));
         }
     console.log(permission)
     
