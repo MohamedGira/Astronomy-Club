@@ -64,7 +64,7 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     if(!user)
         return next(new AppError(401, "Can't sign in with this user,contact adminstatration if you think this is a mistake"));
     req.user=user
-    console.log(req.baseUrl,user.role._id)
+    console.log(req)
     let permission= await Permission.findOne({url:{$in:[req.baseUrl,req.baseUrl]},role:user.role._id})
     if (!permission)
         return next(new AppError(401, "protected endpoint with no permission for this role"));
