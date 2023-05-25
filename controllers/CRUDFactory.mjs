@@ -69,7 +69,9 @@ executePre:[()=>{}]})=>{
         jsonifyObj(req.body)
         if(options.executePre)
             for (let i in options.executePre)
-                await options.executePre[i](req,res,next)
+                {   
+                    await options.executePre[i](req,res,next)
+                }
         var filteredFiles;
         if (req.files)
             filteredFiles=filterObj(jsonifyObj(req.files),Model.schema.paths,filterout) 
@@ -85,7 +87,9 @@ executePre:[()=>{}]})=>{
         return next( new AppError(400,`requested ${Model.collection.collectionName} of id ${elementId} doesn\'t exitst`))
     }
     if(options.executePost)
-            options.executePost()
+        
+        options.executePost()
+        
     return res.status(200).json({
         message:'updated succesfully',
         newModelObject
@@ -111,6 +115,10 @@ export const deleteOne=(Model)=>{
 export const getAll=(Model,populate=[],options={executePost:()=>{},
 executePre:[()=>{}]})=>{
     return catchAsync( async (req,res,next)=>{
+        if(options.executePre)
+            for (let i in options.executePre)    
+                await options.executePre[i](req,res,next)
+                
         
         const elementId=req.params.elementId
         var results;
