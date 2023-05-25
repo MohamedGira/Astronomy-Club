@@ -9,7 +9,7 @@ export const  ResultsManager= class{
     }
     filter(){
         const queryObj={...this.queryString}//shallow copy
-        const escape=['sort','page','limit','select'];
+        const escape=['sort','page','limit','select','refreshDBInstance'];
         escape.forEach(el=>delete queryObj[el])
         const newquery= JSON.parse(JSON.stringify(queryObj).replace(/\b(gte|gt|lt|lte)\b/g,elem=>`$${elem}`))
         this.query.find(newquery)

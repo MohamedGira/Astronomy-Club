@@ -17,7 +17,7 @@ export const UserRouter = express.Router();
 
 export const myProfileRouter = express.Router();
 
-UserRouter.use(RBACAutorizerMw,RBACAutorizerMw)
+UserRouter.use(RBACAutorizerMw)
 myProfileRouter.use(RBACAutorizerMw)
 
 myProfileRouter.route('/')
