@@ -43,21 +43,19 @@ export const isAuthorized = async(req,...roles) => {
             return false
         }
 }
-
 //utilizes Singleton design pattern
 export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     try{
     const token = getToken(req);
     if(!token)
-        return next(new AppError(401, "Signin to continue"));
+        return next(new AppError(401, "No token provided, Signin to continue"));
 
     let decodedValues =  promisify(jwt.verify)(token, process.env.JWT_KEY)
     try{    
         decodedValues=await decodedValues
     }catch(err){
-        return next(new AppError(401, "Signin to continue"));
+        return next(new AppError(401, err.message));
     }
-
     let user= await User.findById(decodedValues.id).populate('role committee')
     if(!user)
         return next(new AppError(401, "Can't sign in with this user,contact adminstatration if you think this is a mistake"));
@@ -69,9 +67,9 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     })
     if (permissions.length==0)
         return next(new AppError(403, "unauthorized access to this endpoint"));
-    
     if(!permissions[0].allowed)
         return next(new AppError(403, permissions[0].errorMessage||"unauthorized access to this endpoint"));
+    console.log(permissions)
     return next()
 }catch(err){
     return next(new AppError(500, err.message));
