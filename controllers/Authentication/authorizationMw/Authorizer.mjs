@@ -5,6 +5,7 @@ import { AppError } from '../../../utils/AppError.mjs';
 import { getToken } from '../../../utils/getToken.mjs';
 import { Database } from '../../../models/DbConnection.mjs';
 import { catchAsync } from '../../../utils/catchAsync.mjs';
+import { Permission } from '../../../models/Permissions/Permission.mjs';
 
 
 export const isAuthorizedMw = (...roles) => {
@@ -63,22 +64,18 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     if(!user)
         return next(new AppError(401, "Can't sign in with this user,contact adminstatration if you think this is a mistake"));
     req.user=user
-
-    let permissions=await Database.getPermissionsInstance()
-    permissions=permissions.filter(el=>{ 
-        return   el.role.equals(user.role._id) && req.baseUrl==el.url
-    })
-    if (permissions.length==0)
-        return next(new AppError(403, "unauthorized access to this endpoint"));
-    
-    if(!permissions[0].allowed)
-        {
-            console.log('the found permission',permissions[0],permissions[0].allowed)
-            console.log('the found allowed',permissions[0]._doc.allowed)
-            
-            return next(new AppError(403, permissions[0].errorMessage||"unauthorized access to this endpoint"));
+    console.log(req.baseUrl,user.role._id)
+    let permission= await Permission.findOne({url:{$in:[req.baseUrl,req.baseUrl]},role:user.role._id})
+    if (!permission)
+        return next(new AppError(401, "protected endpoint with no permission for this role"));
+    console.log(permission._doc.allowed,permission.allowed)
+    if(!permission._doc.allowed)
+        {   
+            console.log(permission)
+            return next(new AppError(403, permission.errorMessage||"unauthorized access to this endpoint"));
         }
-    console.log(permissions.allowed)
+    console.log(permission)
+    
     return next()
 }catch(err){
     return next(new AppError(500, err.message));
