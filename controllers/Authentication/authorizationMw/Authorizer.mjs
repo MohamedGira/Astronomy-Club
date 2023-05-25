@@ -48,7 +48,10 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     try{
     const token = getToken(req);
     if(!token)
-        return next(new AppError(401, "No token provided, Signin to continue"));
+        {
+            console.log(req)
+            return next(new AppError(401, "No token provided, Signin to continue"));
+        }
 
     let decodedValues =  promisify(jwt.verify)(token, process.env.JWT_KEY)
     try{    
@@ -67,9 +70,15 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     })
     if (permissions.length==0)
         return next(new AppError(403, "unauthorized access to this endpoint"));
+    
     if(!permissions[0].allowed)
-        return next(new AppError(403, permissions[0].errorMessage||"unauthorized access to this endpoint"));
-    console.log(permissions)
+        {
+            console.log('the found permission',permissions[0],permissions[0].allowed)
+            console.log('the found allowed',permissions[0]._doc.allowed)
+            
+            return next(new AppError(403, permissions[0].errorMessage||"unauthorized access to this endpoint"));
+        }
+    console.log(permissions.allowed)
     return next()
 }catch(err){
     return next(new AppError(500, err.message));
