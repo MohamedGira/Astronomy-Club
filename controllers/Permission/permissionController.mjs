@@ -10,7 +10,12 @@ import { catchAsync } from "../../utils/catchAsync.mjs";
 
 
 // GET permissions/
-export const  getPermissions= factory.getAll(Permission)
+export const  getPermissions= factory.getAll(Permission,undefined,{
+    executePre:[async(req,res,next)=>{
+        if(req.query.refreshDBInstance)
+            await Database.updatePermissionsInstance()
+    }]
+})
 // POST permissions/
 export const  addPermission= factory.CreateOne(Permission,undefined,{
     executePre:[
@@ -33,6 +38,7 @@ export const  updatePermission= factory.updateOne(Permission,{
     executePost:async()=>{
         try{
             await Database.updatePermissionsInstance()
+            console.log('reached here0')
         }catch(err){
             console.log(err)
         }
