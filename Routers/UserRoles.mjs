@@ -1,14 +1,14 @@
 import express from "express";
 import * as userRolesController from "../controllers/User/UserRole.mjs";
 export const userRolesRouter=express.Router({mergeParams:true})
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
+import { RBACAutorizerMw, isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 
 
 userRolesRouter.route('/')
 .get(userRolesController.getUserRoles)
-.post(isAuthorizedMw('admin'),userRolesController.addUserRole)
+.post(RBACAutorizerMw,userRolesController.addUserRole)
 
 userRolesRouter.route('/:elementId')
 .get(userRolesController.getUserRole)
-.patch(isAuthorizedMw('admin'),userRolesController.updateUserRole)
-.delete(isAuthorizedMw('admin'),userRolesController.deleteUserRole)
+.patch(RBACAutorizerMw,userRolesController.updateUserRole)
+.delete(RBACAutorizerMw,userRolesController.deleteUserRole)

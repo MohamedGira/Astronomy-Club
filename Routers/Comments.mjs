@@ -2,16 +2,24 @@ import express from "express";
 import * as CommentsController from "../controllers/Comment/CRUDComment.mjs"
 export const CommentRouter=express.Router()
 
-import { protect } from "../controllers/Authentication/AuthUtils.mjs";
 
-CommentRouter.use(protect)
+import { RBACAutorizerMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
+// middlewares are added in sequence
+
+
+CommentRouter.route('/to/:elementId').get(CommentsController.getCommentsFor)
+
+
+CommentRouter.use(RBACAutorizerMw)
 CommentRouter.route('/')
 .post(CommentsController.addComment)
 
-CommentRouter.route('/delete/:elementId')
-.delete(CommentsController.isAuthorizedtoChangeMw,CommentsController.DELETEIT)
 
-CommentRouter.route('/to/:elementId').get(CommentsController.getCommentsFor)
+//perminently delete a comment
+CommentRouter.route('/delete/:elementId')
+.delete(RBACAutorizerMw,CommentsController.isAuthorizedtoChangeMw,CommentsController.DELETEIT)
+
+
 
 CommentRouter.route('/:elementId')
 .patch(CommentsController.isAuthorizedtoChangeMw, CommentsController.updateComment)

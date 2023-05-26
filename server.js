@@ -6,11 +6,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { AppError } from "./utils/AppError.mjs";
 import { AuthRouter } from "./Routers/Auth.mjs";
-import { isAuthorizedMw } from "./controllers/Authentication/authorizationMw/Authorizer.mjs";
+import { RBACAutorizerMw, isAuthorizedMw } from "./controllers/Authentication/authorizationMw/Authorizer.mjs";
 import fileUpload from "express-fileupload";
 
 import { updatePassword } from "./controllers/Authentication/resetPassword.mjs";
-import {  protect } from "./controllers/Authentication/AuthUtils.mjs";
 import { Event } from "./models/Events/Event.mjs";
 import { addSpeaker } from "./controllers/Event/CRUDSpeaker.mjs";
 import { webhook } from "./controllers/Booking/stripeWebhook.mjs";
@@ -34,6 +33,12 @@ import { AssignmentRouter } from "./Routers/Assignments.mjs";
 import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
 import { CommitteeRouter } from "./Routers/Committees.mjs";
 import { userRolesRouter } from "./Routers/UserRoles.mjs";
+import { FrontendManagmentRouter } from "./Routers/frontendManagment.mjs";
+import listEndpoints from "express-list-endpoints";
+import slugify from "slugify";
+import { PermissionRouter } from "./Routers/Permissions.mjs";
+import { EndpointRouter } from "./Routers/Endpoints.mjs";
+import { InitializeEndpoints2 } from "./controllers/Endpoint/EndpointController.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -47,7 +52,6 @@ const app = express()
 
 
 
-
 dotenv.config()
 //this webhook uses request body as raw format, not as a json, so it must be defiend before we user expressjson() middleware,, DONT MOVE IT
 app.post('/api/v1/events/payment/',express.raw({type: 'application/json'}),webhook)
@@ -55,8 +59,6 @@ app.use(express.json())
 
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser());
-
-await Database.getInstance();
 
 app.use(
   cors({
@@ -85,7 +87,6 @@ app.use('/api/v1/events/',EventRouter)
 app.use('/api/v1/userRoles/',userRolesRouter)
 
 app.use('/api/v1/committees/',CommitteeRouter)
-
 app.use('/api/v1/book/',BookingRouter)
 app.use('/api/v1/tickets/',TicketRouter)
 app.use('/api/v1/comments/',CommentRouter)
@@ -97,27 +98,20 @@ app.use('/api/v1/checkpoints/',CheckpointsRouter)
 app.use('/api/v1/tasks/',TaskRouter)
 app.use('/api/v1/assignments/',AssignmentRouter)
 app.use('/api/v1/boardColumns/',BoardColumnRouter)
-
-
-app.get('/delall',isAuthorizedMw('admin'),async(req,res,next)=>{
+app.use('/api/v1/frontendManagment/',FrontendManagmentRouter)
+app.use('/api/v1/permissions/',PermissionRouter)
+app.use('/api/v1/endpoints/',EndpointRouter)
+app.get('/delall',RBACAutorizerMw,async(req,res,next)=>{
     await Event.deleteMany({})
     return res.json({ok:'ok'})
 }) 
 
 
-//testing authorizer functionality
-app.get('/vishome',(req,res,next)=>{
-    return res.status(200).json({home:'home'})
-})
-app.get('/adhome',isAuthorizedMw('admin'),(req,res,next)=>{
-    return res.status(200).json({home:'home'})
-})
      
 /* app.post('/uploadImage',catchAsync ( async (req,res,next)=>{
    let name=await saveImage(req.files.image,{compress:true,subfolder:'a/a/'})
    return res.json(name)
 })) */
-app.post('/addSpeaker',isAuthorizedMw('admin'),addSpeaker)
 
 app.get('images/*',(req,res,next)=>{
     return next(new AppError(404,`requested image not found :${req.path},${req.method}`))
@@ -127,7 +121,7 @@ app.all('*',(req,res,next)=>{
 })
 app.use(ErrorHandler)
 
-
+/*  
 // a trick to stay up on the deployed site
 let stayup=(await deploymentTrick.findOne())
 console.log(stayup)
@@ -144,10 +138,11 @@ setInterval(async () => {
         })
     }        
 },refreshEveryMins*60000) 
-
+  */
 
 try{
-const server=  app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
+await Database.getInstance();
+const server=  await app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
 }catch(err){
     console.log(err)
 }
@@ -160,4 +155,8 @@ process.on("unhandledRejection", (err) => {
     process.exit(1);
   });
 });
+
+
+
+
 

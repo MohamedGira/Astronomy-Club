@@ -1,18 +1,18 @@
 import express from "express";
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
+import { RBACAutorizerMw, isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 
 
 export const PaymentRouter=express.Router()
 
 import * as PaymentsController from "../controllers/Booking/CRUDPayment.mjs"
-import { protect } from "../controllers/Authentication/AuthUtils.mjs";
 
-PaymentRouter.use(protect)
+
+PaymentRouter.use(RBACAutorizerMw)
 PaymentRouter.route('/')
 .get(PaymentsController.getPayments)
-.post(isAuthorizedMw('admin'),PaymentsController.addPayment)
+.post(RBACAutorizerMw,PaymentsController.addPayment)
 
 PaymentRouter.route('/:elementId')
 .get(PaymentsController.getPayment)
-.patch(isAuthorizedMw('admin'),PaymentsController.updatePayment)
-.delete(isAuthorizedMw('admin'),PaymentsController.deletePayment)
+.patch(RBACAutorizerMw,PaymentsController.updatePayment)
+.delete(RBACAutorizerMw,PaymentsController.deletePayment)

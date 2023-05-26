@@ -9,7 +9,7 @@ export const  ResultsManager= class{
     }
     filter(){
         const queryObj={...this.queryString}//shallow copy
-        const escape=['sort','page','limit','fields'];
+        const escape=['sort','page','limit','select','refreshDBInstance'];
         escape.forEach(el=>delete queryObj[el])
         const newquery= JSON.parse(JSON.stringify(queryObj).replace(/\b(gte|gt|lt|lte)\b/g,elem=>`$${elem}`))
         this.query.find(newquery)
@@ -20,31 +20,32 @@ export const  ResultsManager= class{
             const sortBy=this.queryString.sort.replaceAll(',',' ');
             this.query.sort(sortBy)
         }
-        else{
-            this.query.sort('_id') //unnecessary, replace with important default sorting
-        }
         return this
     }
     paginate(){
         const page=this.queryString.page*1 ||1;
-        const limit=this.queryString.limit *1||10;
-        this.query.skip((page-1)*limit).limit(limit)
+        const limit=this.queryString.limit *1;
+        if(limit>=1)
+            {
+            this.query.skip((page-1)*limit).limit(limit)
+            return this
+            }
         return this
     }
     select(){
-        if(this.queryString.fields)
+        if(this.queryString.select)
         {
-            const fields=this.queryString.fields.replaceAll(',',' ');
-            this.query.select(fields);
+            const select=this.queryString.select.replaceAll(',',' ');
+            this.query.select(select);
         }
         if(this.sensitiveFields)
         {
-            const ommitted_fields=this.sensitiveFields.map(el=>{
+            const ommitted_select=this.sensitiveFields.map(el=>{
                 if(el[0]!=='-')
                     return '-'+el
                 return el
             })
-            this.query.select(ommitted_fields.join(' '));   
+            this.query.select(ommitted_select.join(' '));   
         }
         return this;
     }

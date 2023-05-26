@@ -7,8 +7,7 @@ import { getToken } from '../../utils/getToken.mjs';
 
 export const alreadyLoggedIn = (req, res, next) => {
     var token =getToken(req);
-    
-    
+    console.log(token)
     //const token = req.cookies.jwt;
     if (!token) return next();
     return jwt.verify(token, process.env.JWT_KEY, (err, decodedvalues) => {
@@ -27,12 +26,12 @@ export const protect =catchAsync(async (req, res, next) => {
   var token=getToken(req);  
   
   if (!token)
-    return next(new AppError(401, "signin to continue"));
+    return next(new AppError(401, "Signin to continue"));
   
   const decodedvalues=await promisify( jwt.verify)(token, process.env.JWT_KEY)
   const user= await User.findById(decodedvalues.id).populate('role committee')
   if(!user){
-    return next(new AppError(401, "user with this token no longer exists"));
+    return next(new AppError(401, "Invalid token, contact adminstration if you think this is a mistake"));
   }
   req.user=user
   next()

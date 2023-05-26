@@ -11,6 +11,7 @@ import { AppError } from "../../utils/AppError.mjs";
 import { emailer } from "../../utils/mailSender.mjs";
 import { confirmfrontStr } from"../../utils/templates/templatesCombined.mjs"
 import { saveImage} from '../../utils/uploads/saveImage.mjs'
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -26,8 +27,8 @@ export const registerMember = async (req, res, next) => {
     
     if (req.body.password != req.body.passwordConfirm)
         return next(new AppError(400, "passwords doesn't match"));
-    filtereduser.password =  bcrypt.hash(
-        req.password.password,
+    filtereduser.password = await  bcrypt.hash(
+        req.body.password,
         parseInt(process.env.HASH_SALT)
     );
     const user = new User(filtereduser);

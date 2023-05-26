@@ -4,7 +4,7 @@ import { createEvent } from "../controllers/Event/CRUDEvent/createEvent.mjs";
 import { getEvent } from "../controllers/Event/CRUDEvent/getEvent.mjs";
 import { getEvents } from "../controllers/Event/CRUDEvent/getEvents.mjs";
 import { updateEvent } from "../controllers/Event/CRUDEvent/updateEvent.mjs";
-import { isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
+import { RBACAutorizerMw, isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 import { deleteEvent } from "../controllers/Event/CRUDEvent/deleteEvent.mjs";
 
 import { CheckpointsRouter } from "./Checkpoints.mjs";
@@ -24,14 +24,14 @@ function populateId(req,res,next){
 
 EventRouter.route('/')
 .get(getEvents)
-.post(isAuthorizedMw('admin'),createEvent)
+.post(RBACAutorizerMw,createEvent)
 
 
 
 EventRouter.route('/:id')
 .get(getEvent)
-.patch(isAuthorizedMw('admin'),updateEvent)
-.delete(isAuthorizedMw('admin'),deleteEvent)
+.patch(RBACAutorizerMw,updateEvent)
+.delete(RBACAutorizerMw,deleteEvent)
 
 
 
