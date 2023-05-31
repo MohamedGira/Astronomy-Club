@@ -1,16 +1,35 @@
 import { AppError, Errorlist } from "../utils/AppError.mjs";
-const sendErrorDev = (err, res) => {
+import { logger } from "../utils/logger.mjs";
+
+
+
+const sendErrorDev = (err,req, res) => {
     if ( String(err.statusCode).match(/^5/))
-       console.error("Error: ", err);
+       {
+        let id=req.user?req.user.id:'annoymous'
+        logger.log({
+          level: 'error',
+          message: `${req.method} ${req.originalUrl} ${req.ip} ${id}. Error: ${err}`
+        });  
+
+        console.error("Error: ", err);
+       }
   return res.status(err.statusCode).json({
     status: Errorlist[err.statusCode]|| err.status,
     message: err.message,
   });
 };
 
-const sendErrorProd = (err, res) => {
-  if (!err.isOperational) console.error("Error: ", err);
+const sendErrorProd = (err,req, res) => {
+  if (!err.isOperational){
+    let id=req.user?req.user.id:'annoymous'
+        logger.log({
+          level: 'error',
+          message: `${req.method} ${req.originalUrl} ${req.ip} ${id}. Error: ${err}`
+        });  
 
+        console.error("Error: ", err);
+  }
   return res.status(err.statusCode).json({
     status: err.status,
     statusCode: err.statusCode,
@@ -43,20 +62,21 @@ export const ErrorHandler = (err, req, res, next) => {
   err.message = err.message || "sorry somthing went wrong :(";
   
   if (process.env.NODE_ENV === "development") {
-    sendErrorDev(err, res);
+    sendErrorDev(err,req, res);
   } else {
   
     //handling DB errors in production
     var error = { ...err };
     if (err.name === "CastError") {
       error = handleCastErrorDb(error);
-      sendErrorProd(error, res);
+      sendErrorProd(error,req, res);
     } else if (err.code === 11000) {
       error = handleDublicateFieldDb(error);
-      sendErrorProd(error, res);
+      sendErrorProd(error,req, res);
     } else if (err.name === "ValidationError") {
       error = handleValidationErrorDb(error);
-      sendErrorProd(error, res);
-    } else sendErrorProd(err, res);
+      sendErrorProd(error,req, res);
+    } else sendErrorProd(err,req, res);
   }
 };
+
