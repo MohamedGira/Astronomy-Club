@@ -6,7 +6,7 @@ import { createCheckpoint } from "../CRUDCheckpoint.mjs";
 import { createGatheringPoint } from "../CRUDGatheringPoints.mjs";
 import { deleteFile } from "../../../utils/uploads/cleanDir.mjs";
 import { saveImage} from '../../../utils/uploads/saveImage.mjs'
-
+import * as factory from "../../CRUDFactory.mjs";
 export const createEvent=catchAsync( async (req,res,next)=>{
     
     const body=jsonifyObj(req.body)
@@ -43,25 +43,32 @@ export const createEvent=catchAsync( async (req,res,next)=>{
     }
 
     if (req.files){
+        req.files=filterObj(req.files,Event.schema.paths)
         const imgslist=[] 
         try{
-        if (req.files.banner){
-             event.banner= await saveImage(req.files.banner)
-             imgslist.push(req.files.banner)
-        }
-        if(req.files.images){
-            if(!Array.isArray(req.files.images))
-                req.files.images=[req.files.images]
-            event.images=await Promise.all(req.files.images.map(async (el)=> { return await saveImage(el)}))
-            
-            imgslist.push(...req.files.images)
-            await event.save()
-        }
+            for (let key in req.files){
+                console.log(key)
+                console.log()
+                if(Event.schema.paths[key].instance=='Array'){
+                    if(!Array.isArray(req.files[key]))
+                        req.files[key]=[req.files[key]]
+                    let imgs=[]
+                    for (let img in req.files[key])
+                        {
+                        let imgname=await saveImage(req.files[key][img])
+                        event[key].push(imgname)
+                        imgslist.push(imgname)
+                        }
+                }else if(Event.schema.paths[key].instance=='String'){
+                    event[key]= await saveImage(req.files[key])
+                    imgslist.push(event[key])
+                }
+                await event.save()                    
+            }
         }catch(err){
             await Event.findByIdAndDelete(event._id)
             console.log(`couldn\'t create event, imgs issue`)
-            imgslist.forEach(el=>deleteFile(el,'images'))
-            return next(new AppError(500,'image saving issue'+err.message))
+            return next(new AppError(500,'image saving issue: '+err.message))
         }   
     }
  
@@ -73,5 +80,6 @@ export const createEvent=catchAsync( async (req,res,next)=>{
     });
 
 })
+export const createEvent2=factory.CreateOne(Event,['checkpoints','gatheringPoints'])
 
 

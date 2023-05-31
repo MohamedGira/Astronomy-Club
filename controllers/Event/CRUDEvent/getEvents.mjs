@@ -1,6 +1,7 @@
 import { Event } from "../../../models/Events/Event.mjs";
 import { catchAsync } from "../../../utils/catchAsync.mjs";
 import { isAuthorized } from "../../Authentication/authorizationMw/Authorizer.mjs";
+import { getAll, getOne } from "../../CRUDFactory.mjs";
 
 export const getEventsQuery=async (fullaccess)=>{
     if (fullaccess)
@@ -11,7 +12,8 @@ export const getEventsQuery=async (fullaccess)=>{
 }
 
 export const getEvents= catchAsync( async (req,res,next)=>{
-    let events= await getEventsQuery(await isAuthorized(req,'admin'))
+    //old, static, will be replaced with public/private apis
+    let events= await getEventsQuery(req.user)
 
     if(!events)
         return res.status(404).json({
@@ -25,5 +27,6 @@ export const getEvents= catchAsync( async (req,res,next)=>{
     });
 
 }
-
 )
+
+export const getAllEvents= getAll(Event,['checkpoints','gatheringPoints'],{},'events')
