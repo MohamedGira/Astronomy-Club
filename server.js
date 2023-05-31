@@ -42,6 +42,7 @@ import { InitializeEndpoints2 } from "./controllers/Endpoint/EndpointController.
 import { gatheringPointsRouter } from "./routers/GatheringPoints.mjs";
 import { KanbanRouter } from "./routers/Kanbans.mjs";
 import { extraFieldsRouter, extraFieldsValuesRouter, supportedDataTypesRouter } from "./routers/ExtraFields.mjs";
+import { loggingMiddleware } from "./utils/logger.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -81,7 +82,8 @@ app.use(
 
 app.use(express.static('upload'))
 app.use(compression())
-
+app.set('trust proxy', true)
+app.use(loggingMiddleware)
 app.use('/api/v1/files/',FsRouter)
 app.use('/api/v1/auth/',AuthRouter)
 app.use('/api/v1/users/',UserRouter)
