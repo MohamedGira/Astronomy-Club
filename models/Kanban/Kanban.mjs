@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { boardColumnSchema } from "../BoardColumns/BoardColumn.mjs";
 
 dotenv.config()
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 const kanbanSchema = mongoose.Schema({
     committee: {
@@ -11,6 +12,7 @@ const kanbanSchema = mongoose.Schema({
         required:true,
         unique:true
     },
+    elementStatus: {type:elementStatusSchema,default:{}},
 }, { 
     timestamps: true,
     toJSON: { virtuals: true },
@@ -20,7 +22,7 @@ const kanbanSchema = mongoose.Schema({
 kanbanSchema.pre(/^find/,function(){
     this.populate('boardColumns')
 })
-kanbanSchema.virtual('boardColumns', { ref: 'BoardColumn', foreignField: 'kanban', localField: '_id' });
+kanbanSchema.virtual('boardColumns', { ref: 'BoardColumn', foreignField: 'kanban', localField: '_id' ,match:{'elementStatus.isDeleted':{$ne:true}}});
 
 
 export const Kanban = mongoose.model("Kanban", kanbanSchema);

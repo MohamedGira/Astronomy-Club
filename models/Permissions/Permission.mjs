@@ -5,6 +5,7 @@ import { AppError } from "../../utils/AppError.mjs";
 import { UserRole } from "../Users/UserRole.mjs";
 import { endpointSchema } from "../Endpoints/Endpoint.mjs";
 dotenv.config()
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 const permissionSchema = mongoose.Schema({
     role: {
@@ -28,6 +29,7 @@ const permissionSchema = mongoose.Schema({
         type:String,
         default:"You dont have permissions to do this action"
     },
+    elementStatus: {type:elementStatusSchema,default:{}},
 },
 { timestamps: true });
 

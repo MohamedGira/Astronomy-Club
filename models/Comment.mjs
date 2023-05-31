@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { elementStatusSchema } from "./elementsStatus.mjs";
 
 dotenv.config()
 
@@ -30,14 +31,11 @@ const commentSchema = mongoose.Schema({
     deleted:{
         type:Boolean,
         default:false
-    }
+    },
+    elementStatus: {type:elementStatusSchema,default:{}},
 }, { timestamps: true });
 
-commentSchema.pre(/find/, function() {
-    this.where({deleted: {$ne:true}});
-    this.select('-deleted')
-});
-  
+
 
 
 export const Comment = mongoose.model("Comment", commentSchema);

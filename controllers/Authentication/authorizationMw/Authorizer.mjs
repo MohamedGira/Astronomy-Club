@@ -60,7 +60,7 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     }catch(err){
         return next(new AppError(401, err.message));
     }
-    let user= await User.findById(decodedValues.id).populate('role committee')
+    let user= await User.findById(decodedValues.id)
     if(!user)
         return next(new AppError(401, "Can't sign in with this user,contact adminstatration if you think this is a mistake"));
     req.user=user

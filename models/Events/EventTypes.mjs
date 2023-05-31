@@ -1,12 +1,14 @@
 import mongoose from'mongoose'
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 const EventTypeSchema=mongoose.Schema(
     {
-       type:{
+       name:{
         type:String,
         required:true,
         unique:[true,'this Type already exists']
        },
+       elementStatus: {type:elementStatusSchema,default:{}},
     }
 )
 

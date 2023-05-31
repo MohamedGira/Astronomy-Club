@@ -1,9 +1,9 @@
 import express from "express";
 
-import { createEvent } from "../controllers/Event/CRUDEvent/createEvent.mjs";
+import { createEvent, createEvent2 } from "../controllers/Event/CRUDEvent/createEvent.mjs";
 import { getEvent } from "../controllers/Event/CRUDEvent/getEvent.mjs";
-import { getEvents } from "../controllers/Event/CRUDEvent/getEvents.mjs";
-import { updateEvent } from "../controllers/Event/CRUDEvent/updateEvent.mjs";
+import { getAllEvents } from "../controllers/Event/CRUDEvent/getEvents.mjs";
+import {  updateEvent2 } from "../controllers/Event/CRUDEvent/updateEvent.mjs";
 import { RBACAutorizerMw, isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 import { deleteEvent } from "../controllers/Event/CRUDEvent/deleteEvent.mjs";
 
@@ -23,14 +23,13 @@ function populateId(req,res,next){
 }
 
 EventRouter.route('/')
-.get(getEvents)
-.post(RBACAutorizerMw,createEvent)
+.get(getAllEvents)
+.post(RBACAutorizerMw,createEvent2)
 
 
-
-EventRouter.route('/:id')
+EventRouter.route('/:elementId')
 .get(getEvent)
-.patch(RBACAutorizerMw,updateEvent)
+.patch(RBACAutorizerMw,updateEvent2)
 .delete(RBACAutorizerMw,deleteEvent)
 
 

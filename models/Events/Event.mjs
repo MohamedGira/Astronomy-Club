@@ -9,6 +9,7 @@ import { saveImage } from '../../utils/uploads/saveImage.mjs';
 import { maxImagesPerEvent } from '../../utils/consts.mjs';
 import { EventType } from './EventTypes.mjs';
 import { AppError } from '../../utils/AppError.mjs';
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 export const EventSchema = new mongoose.Schema({
     title:{
@@ -17,16 +18,11 @@ export const EventSchema = new mongoose.Schema({
         required:true
     },
     type:{
-        type:String,
-        required:true,
-        validate:{
-            validator: async function(type){
-                if(!await EventType.findOne({type:type}))
-                    return false
-                return true
-            },
-            message:`invalid event Type provided`
-        }    
+    
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'EventType',
+        required:true
+    
     },
     description:{
         type:String,
@@ -59,13 +55,15 @@ export const EventSchema = new mongoose.Schema({
         type:LocationSchema,
         required:true
     },
+    elementStatus: {type:elementStatusSchema,default:{}},
 },{
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
 });
 
-EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id'})
-EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id'})
+EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id',match:{'elementStatus.isDeleted':{$ne:true}}})
+EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id',match:{'elementStatus.isDeleted':{$ne:true}}})
+EventSchema.virtual('extraFields',{ref:'OptionValue',foreignField:'element',localField:'_id',match:{'elementStatus.isDeleted':{$ne:true}}})
 
 
 EventSchema.pre(/delete|remove/i,async function(next){

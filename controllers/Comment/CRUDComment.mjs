@@ -5,10 +5,17 @@ import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
 import * as factory from "../CRUDFactory.mjs";
 
 
-export const  getCommentsTreeFor= async (id)=>{
-let comments=await Comment.find({to:id}).populate('by','_id firstName lastName profileImage')
+const  getCommentsTreeFor= async (id,options={showDeleted:false})=>{
+//getting the comments for any commentable
+let comments=Comment.find({to:id}).populate('by','_id firstName lastName profileImage')
+//checking if must show deleted ones
+if(!options.showDeleted)
+    comments=comments.where({'elementStatus.isDeleted': {$ne:true}})
+comments=await comments
+//getting the subcomments for each comment recursively
 for (let commentid  in comments){
-    comments[commentid]._doc.replies= await getCommentsTreeFor(comments[commentid]._id)
+    comments[commentid]._doc.replies=
+     await getCommentsTreeFor(comments[commentid]._id,{showDeleted:options.showDeleted})
 } 
 return comments
 }
@@ -24,9 +31,10 @@ export const isAuthorizedtoChangeMw= catchAsync( async (req,res,next)=>{
     next()
 })
 
+
+
 // GET comments/for/:elementId 
 export const  getCommentsFor= catchAsync(async (req,res,next)=>{
-    console.log(req.params.elementId)
     var comments=await getCommentsTreeFor(req.params.elementId)
     return res.status(201).json({
         message:`${comments.length} ${Comment.collection.collectionName} found`,
@@ -62,13 +70,6 @@ export const  updateComment= catchAsync( async (req,res,next)=>{
 )
 
 // DELETE comments/:elementId
-export const  deleteComment= catchAsync( async (req,res,next)=>{
-    req.comment.deleted=true
-    await req.comment.save()
-    return res.status(204).json({
-        message:'deleted succesfully',
-        "comment":req.comment
-    })
-}
-)
-export const DELETEIT=factory.deleteOne(Comment)
+export const  deleteComment= factory.deleteOne(Comment)
+
+export const DELETEIT=factory.no_Really__DeleteIt(Comment)

@@ -29,7 +29,7 @@ export const protect =catchAsync(async (req, res, next) => {
     return next(new AppError(401, "Signin to continue"));
   
   const decodedvalues=await promisify( jwt.verify)(token, process.env.JWT_KEY)
-  const user= await User.findById(decodedvalues.id).populate('role committee')
+  const user= await User.findById(decodedvalues.id)
   if(!user){
     return next(new AppError(401, "Invalid token, contact adminstration if you think this is a mistake"));
   }

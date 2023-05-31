@@ -1,5 +1,5 @@
 import mongoose from'mongoose'
-
+import { elementStatusSchema } from '../elementsStatus.mjs'
 const userRoleScema=mongoose.Schema(
     {
        name:{
@@ -7,6 +7,7 @@ const userRoleScema=mongoose.Schema(
         required:true,
         unique:[true,'this user Role already exists']
        },
+       elementStatus: {type:elementStatusSchema,default:{}},
     }
 )
 

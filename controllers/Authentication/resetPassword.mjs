@@ -96,7 +96,7 @@ export const updatePassword =catchAsync (async (req, res, next) => {
     if(!token)
         return next(new AppError(401, "no signed in user"))
     const decodedValues = await promisify(jwt.verify)(token, process.env.JWT_KEY)
-    const user=await User.findById(decodedValues.id).select('+password').populate('role committee')
+    const user=await User.findById(decodedValues.id).select('+password')
     if(!user)
         return next(new AppError(401,'invalid user id'))
     if(! await bcrypt.compare(oldPassword, user.password))

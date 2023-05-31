@@ -1,5 +1,6 @@
 import mongoose from'mongoose'
 import { LocationSchema } from './Location.mjs';
+import { elementStatusSchema } from '../../elementsStatus.mjs';
 
 export const GatheringPointSchema = new mongoose.Schema({
     from:{type:Date,required:true},
@@ -12,6 +13,7 @@ export const GatheringPointSchema = new mongoose.Schema({
     location: {
     type: LocationSchema,
     required: true
-    }
+    },
+    elementStatus: {type:elementStatusSchema,default:{}},
 });
 export const GatheringPoint= mongoose.model('GatheringPoint',GatheringPointSchema)

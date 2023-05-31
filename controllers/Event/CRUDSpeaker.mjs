@@ -1,16 +1,9 @@
 import { Speaker } from "../../models/Events/subSchemas/Speaker.mjs";
+import { AppError } from "../../utils/AppError.mjs";
+import { deleteFile } from "../../utils/uploads/cleanDir.mjs";
+import { saveImage, saveImageOld } from "../../utils/uploads/saveImage.mjs";
 import * as factory from "../CRUDFactory.mjs";
 
-
-
-export const  createSpeaker=async (unfilteredBody,reqfiles=undefined)=>{
-  unfilteredBody=jsonifyObj(unfilteredBody)  
-  const speaker=filterObj(unfilteredBody,Speaker.schema.paths)
-  if(!reqfiles||!reqfiles[speaker.image])
-      throw new AppError(400,'Speaker must have an image')
-speaker.image=reqfiles[speaker.image]
-return  Speaker.create(speaker)
-}
 
 // GET Speakers/
 export const  getSpeakers= factory.getAll(Speaker)
@@ -22,7 +15,17 @@ export const  addSpeaker= factory.CreateOne(Speaker)
 export const  getSpeaker= factory.getOne(Speaker)
 
 // PATCH Speakers/:elementId 
-export const  updateSpeaker= factory.updateOne(Speaker)
+export const  updateSpeaker= factory.updateOne(Speaker,['image'],{executePre:[async (req,res,next)=>{
+  let speaker=await Speaker.findById(req.params.elementId)
+  if(!speaker)
+    return next(new AppError(400,`No speaker found with that ID`))
+  if(req.files&&req.files.image){
+    let oldImage=speaker.image
+    speaker.image=await saveImage(req.files.image)
+    deleteFile(oldImage,'images')
+    await speaker.save()
+  }
+}]})
 
 // DELETE Speakers/:elementId
 export const  deleteSpeaker= factory.deleteOne(Speaker)
