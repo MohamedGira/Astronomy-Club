@@ -1,5 +1,6 @@
 import { Speaker } from "../../models/Events/subSchemas/Speaker.mjs";
 import { AppError } from "../../utils/AppError.mjs";
+import { deleteFile } from "../../utils/uploads/cleanDir.mjs";
 import { saveImage, saveImageOld } from "../../utils/uploads/saveImage.mjs";
 import * as factory from "../CRUDFactory.mjs";
 
@@ -19,8 +20,10 @@ export const  updateSpeaker= factory.updateOne(Speaker,['image'],{executePre:[as
   if(!speaker)
     return next(new AppError(400,`No speaker found with that ID`))
   if(req.files&&req.files.image){
+    let oldImage=speaker.image
     speaker.image=await saveImage(req.files.image)
-    speaker.save()
+    deleteFile(oldImage,'images')
+    await speaker.save()
   }
 }]})
 
