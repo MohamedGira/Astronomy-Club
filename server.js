@@ -5,7 +5,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { AppError } from "./utils/AppError.mjs";
-import { AuthRouter } from "./Routers/Auth.mjs";
+import { AuthRouter } from "./routers/Auth.mjs";
 import { RBACAutorizerMw, isAuthorizedMw } from "./controllers/Authentication/authorizationMw/Authorizer.mjs";
 import fileUpload from "express-fileupload";
 
@@ -17,27 +17,27 @@ import compression from "compression"
 import { deploymentTrick } from "./models/deploymentTrick.mjs";
 
 //routes
-import { FsRouter } from "./Routers/FsRouter.mjs";
-import { UserRouter } from "./Routers/Users.mjs";
-import { EventRouter } from "./Routers/Events.mjs";
-import { TicketRouter } from "./Routers/Tickets.mjs";
-import { SpeakerRouter } from "./Routers/Speakers.mjs";
-import { PaymentRouter } from "./Routers/Payments.mjs";
-import { BookingRouter } from "./Routers/Booking.mjs";
-import { eventTypesRouter } from "./Routers/EventTypes.mjs";
-import { CheckpointsRouter } from "./Routers/Checkpoints.mjs";
-import { CommentRouter } from "./Routers/Comments.mjs";
+import { FsRouter } from "./routers/FsRouter.mjs";
+import { UserRouter } from "./routers/Users.mjs";
+import { EventRouter } from "./routers/Events.mjs";
+import { TicketRouter } from "./routers/Tickets.mjs";
+import { SpeakerRouter } from "./routers/Speakers.mjs";
+import { PaymentRouter } from "./routers/Payments.mjs";
+import { BookingRouter } from "./routers/Booking.mjs";
+import { eventTypesRouter } from "./routers/EventTypes.mjs";
+import { CheckpointsRouter } from "./routers/Checkpoints.mjs";
+import { CommentRouter } from "./routers/Comments.mjs";
 
-import { TaskRouter } from "./Routers/Tasks.mjs";
-import { AssignmentRouter } from "./Routers/Assignments.mjs";
-import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
-import { CommitteeRouter } from "./Routers/Committees.mjs";
-import { userRolesRouter } from "./Routers/UserRoles.mjs";
-import { FrontendManagmentRouter } from "./Routers/frontendManagment.mjs";
+import { TaskRouter } from "./routers/Tasks.mjs";
+import { AssignmentRouter } from "./routers/Assignments.mjs";
+import { BoardColumnRouter } from "./routers/BoardColumns.mjs";
+import { CommitteeRouter } from "./routers/Committees.mjs";
+import { userRolesRouter } from "./routers/UserRoles.mjs";
+import { FrontendManagmentRouter } from "./routers/frontendManagment.mjs";
 import listEndpoints from "express-list-endpoints";
 import slugify from "slugify";
-import { PermissionRouter } from "./Routers/Permissions.mjs";
-import { EndpointRouter } from "./Routers/Endpoints.mjs";
+import { PermissionRouter } from "./routers/Permissions.mjs";
+import { EndpointRouter } from "./routers/Endpoints.mjs";
 import { InitializeEndpoints2 } from "./controllers/Endpoint/EndpointController.mjs";
 import { gatheringPointsRouter } from "./routers/GatheringPoints.mjs";
 import { KanbanRouter } from "./routers/Kanbans.mjs";
