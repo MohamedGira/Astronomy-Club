@@ -41,6 +41,7 @@ import { EndpointRouter } from "./routers/Endpoints.mjs";
 import { InitializeEndpoints2 } from "./controllers/Endpoint/EndpointController.mjs";
 import { gatheringPointsRouter } from "./routers/GatheringPoints.mjs";
 import { KanbanRouter } from "./routers/Kanbans.mjs";
+import { extraFieldsRouter, extraFieldsValuesRouter, supportedDataTypesRouter } from "./routers/ExtraFields.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -105,6 +106,10 @@ app.use('/api/v1/frontendManagment/',FrontendManagmentRouter)
 app.use('/api/v1/permissions/',PermissionRouter)
 app.use('/api/v1/endpoints/',EndpointRouter)
 app.use('/api/v1/kanbans',KanbanRouter)
+
+app.use('/api/v1/extraFieldsOptions',extraFieldsRouter)
+app.use('/api/v1/extraFieldsValues',extraFieldsValuesRouter)
+app.use('/api/v1/supportedDataTypes',supportedDataTypesRouter)
 
 
      
