@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { Task } from "../Tasks/Task.mjs";
 
 dotenv.config()
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 export const boardColumnSchema = mongoose.Schema({
     name: {
@@ -13,14 +14,16 @@ export const boardColumnSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Kanban",
         required:true
-    }
+    },
+    elementStatus: {type:elementStatusSchema,default:{}},
+
 }, { 
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true } 
 });
 
-boardColumnSchema.virtual('tasks', { ref: 'Task', foreignField: 'boardColumn', localField: '_id' });
+boardColumnSchema.virtual('tasks', { ref: 'Task', foreignField: 'boardColumn', localField: '_id',match:{'elementStatus.isDeleted':{$ne:true}} });
 boardColumnSchema.pre(/^find/,function(){
     this.populate('tasks')
 })
@@ -31,6 +34,7 @@ boardColumnSchema.pre(/delete|remove/i,async function(next){
         
     next()
 }}
+
 )
 
 export const BoardColumn = mongoose.model("BoardColumn", boardColumnSchema);

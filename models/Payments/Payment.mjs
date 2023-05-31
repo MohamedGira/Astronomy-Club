@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 dotenv.config()
 
 import evalidator from "validator";
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 
 const paymentSchema = mongoose.Schema({
@@ -29,7 +30,8 @@ const paymentSchema = mongoose.Schema({
   paid: {
     type:Boolean,
     default:false
-  }
+  },
+  elementStatus: {type:elementStatusSchema,default:{}},
 }, { timestamps: true });
 
 

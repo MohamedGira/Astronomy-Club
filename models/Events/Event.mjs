@@ -9,6 +9,7 @@ import { saveImage } from '../../utils/uploads/saveImage.mjs';
 import { maxImagesPerEvent } from '../../utils/consts.mjs';
 import { EventType } from './EventTypes.mjs';
 import { AppError } from '../../utils/AppError.mjs';
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 export const EventSchema = new mongoose.Schema({
     title:{
@@ -59,13 +60,14 @@ export const EventSchema = new mongoose.Schema({
         type:LocationSchema,
         required:true
     },
+    elementStatus: {type:elementStatusSchema,default:{}},
 },{
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
 });
 
-EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id'})
-EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id'})
+EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id',match:{'elementStatus.isDeleted':{$ne:true}}})
+EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id',match:{'elementStatus.isDeleted':{$ne:true}}})
 
 
 EventSchema.pre(/delete|remove/i,async function(next){

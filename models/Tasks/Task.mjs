@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { BoardColumn } from "../BoardColumns/BoardColumn.mjs";
 
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 const taskSchema = mongoose.Schema({
     name: {
@@ -30,14 +31,15 @@ const taskSchema = mongoose.Schema({
         ref: "BoardColumn",
         required: [true, "Board column is required"],
     },
+    elementStatus: {type:elementStatusSchema,default:()=>({})},
 
 
 }, { timestamps: true ,
     toJSON: { virtuals: true },
     toObject: { virtuals: true } });
 
-taskSchema.virtual('comments', { ref: 'Comment', foreignField: 'to', localField: '_id'});
-taskSchema.virtual('assignee', { ref: 'Assignment', foreignField: 'taskID', localField: '_id'});
+taskSchema.virtual('comments', { ref: 'Comment', foreignField: 'to', localField: '_id',match:{'elementStatus.isDeleted':{$ne:true}}});
+taskSchema.virtual('assignee', { ref: 'Assignment', foreignField: 'taskID', localField: '_id',match:{'elementStatus.isDeleted':{$ne:true}}});
 taskSchema.pre(/^find/,function(){
     this.populate('comments assignee')
 })

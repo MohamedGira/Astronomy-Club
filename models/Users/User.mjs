@@ -8,6 +8,7 @@ import { AppError } from "../../utils/AppError.mjs";
 import { Committee } from "../Committees/Committee.mjs";
 dotenv.config();
 
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 const phoneUtil = phoneUtils.PhoneNumberUtil.getInstance();
 
@@ -91,11 +92,12 @@ const userScema = mongoose.Schema({
   confirmationToken: {
     type: String,
   },
+  elementStatus: {type:elementStatusSchema,default:{}},
 });
 
 
 userScema.pre(/^find/, function (next) {
-  this.populate("role committee");
+  this.populate("role committee", "-__v -elementStatus");
   next();
 });
 

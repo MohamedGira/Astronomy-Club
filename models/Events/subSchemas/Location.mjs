@@ -1,5 +1,6 @@
 import mongoose from'mongoose'
 import { AppError } from '../../../utils/AppError.mjs';
+import { elementStatusSchema } from '../../elementsStatus.mjs';
 
 
 export const PointSchema = new mongoose.Schema({
@@ -15,6 +16,7 @@ export const PointSchema = new mongoose.Schema({
       required: true,
       default:undefined
     },
+    elementStatus: {type:elementStatusSchema,default:{}},
     _id:false
   });
 

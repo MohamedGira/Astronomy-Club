@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { AppError } from "../../utils/AppError.mjs";
 
 dotenv.config()
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 
 export const endpointSchema = mongoose.Schema({

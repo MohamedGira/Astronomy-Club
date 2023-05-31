@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { elementStatusSchema } from "../elementsStatus.mjs";
 
 dotenv.config()
 
@@ -14,6 +15,8 @@ const assignmentSchema = mongoose.Schema({
         ref: "User",
         required: [true, "User ID is required"],
     },
+    elementStatus: {type:elementStatusSchema,default:{}},
+
 }, { timestamps: true });
 
 assignmentSchema.pre(/^find/,function(){

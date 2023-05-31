@@ -3,6 +3,8 @@ import { AppError } from '../../../utils/AppError.mjs';
 import { LocationSchema } from './Location.mjs';
 import {Speaker, SpeakerSchema} from './Speaker.mjs'
 import { Event } from '../Event.mjs';
+import { elementStatusSchema } from '../../elementsStatus.mjs';
+
 
 export const CheckpointSchema = new mongoose.Schema({
     name:{type:String,required:true},
@@ -29,6 +31,7 @@ export const CheckpointSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Speaker',
     },
+    elementStatus: {type:elementStatusSchema,default:{}},
     location:LocationSchema
 });
 
@@ -50,12 +53,6 @@ CheckpointSchema.pre('save',async function(next){
     if(this.type!='speaker'&&this.speaker!=undefined)
         return next(new AppError('400','check point is not of type speaker however,there\'s speaker was provided'))
 
-    if(! await Event.findById(this.event)){
-        return next(new AppError('400',`this event doesn't exist`))
-    }
-    if(this.type=='speaker'&&!await Speaker.findById(this.speaker)){
-        return next(new AppError('400',`this speaker doesn't exist`))
-    }
     next()
 })
 export const Checkpoint= mongoose.model('Checkpoint',CheckpointSchema)

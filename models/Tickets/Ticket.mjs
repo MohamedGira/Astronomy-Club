@@ -6,6 +6,7 @@ import { AppError } from "../../utils/AppError.mjs";
 import { Event } from "../Events/Event.mjs";
 import { User } from "../Users/User.mjs";
 dotenv.config()
+import { elementStatusSchema } from '../elementsStatus.mjs'
 
 import evalidator from "validator";
 
@@ -35,6 +36,7 @@ const ticketSchema = mongoose.Schema({
     type:Boolean,
     default:false
   },
+  elementStatus: {type:elementStatusSchema,default:{}},
 }, { timestamps: true });
 
 
