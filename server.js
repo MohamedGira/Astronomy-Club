@@ -101,10 +101,7 @@ app.use('/api/v1/boardColumns/',BoardColumnRouter)
 app.use('/api/v1/frontendManagment/',FrontendManagmentRouter)
 app.use('/api/v1/permissions/',PermissionRouter)
 app.use('/api/v1/endpoints/',EndpointRouter)
-app.get('/delall',RBACAutorizerMw,async(req,res,next)=>{
-    await Event.deleteMany({})
-    return res.json({ok:'ok'})
-}) 
+
 
 
      
@@ -121,7 +118,7 @@ app.all('*',(req,res,next)=>{
 })
 app.use(ErrorHandler)
 
-/*  
+ 
 // a trick to stay up on the deployed site
 let stayup=(await deploymentTrick.findOne())
 console.log(stayup)
@@ -138,7 +135,7 @@ setInterval(async () => {
         })
     }        
 },refreshEveryMins*60000) 
-  */
+ 
 
 try{
 await Database.getInstance();

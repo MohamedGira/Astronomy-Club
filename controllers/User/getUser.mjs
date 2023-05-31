@@ -4,7 +4,7 @@ import { catchAsync } from "../../utils/catchAsync.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 
 async function getUserbyId(id) {
-  const user = await User.findById(id).populate('role committee');
+  const user = await User.findById(id);
   if (!user) return null;
   user._doc["tickets"] = await Ticket.find({ user: id })
     .select(["_id", "user", "event", "link"])

@@ -94,7 +94,10 @@ const userScema = mongoose.Schema({
 });
 
 
-
+userScema.pre(/^find/, function (next) {
+  this.populate("role committee");
+  next();
+});
 
 //check that  foriegn keys are valid
 userScema.pre("save", async function (next) {

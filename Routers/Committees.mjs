@@ -17,5 +17,5 @@ CommitteeRouter.route('/:elementId')
 .patch(RBACAutorizerMw,CommitteesController.updateCommittee)
 .delete(RBACAutorizerMw,CommitteesController.deleteCommittee)
 CommitteeRouter.route('/:elementId/kanban').get(
-    getCommiteeKanban
+    RBACAutorizerMw, getCommiteeKanban
 )
