@@ -53,7 +53,6 @@ executePre:[async()=>{}]})=>{
                      imgslist.push(imgname)
                  }
             }
-            await newModelObject.save()
          }catch(err){
              try{
                 await Model.findByIdAndDelete(newModelObject._id)
@@ -62,9 +61,10 @@ executePre:[async()=>{}]})=>{
              console.log(`couldn\'t create ${Model.collection.collectionName}, imgs issue`)
              return next(new AppError(400,'image saving issue: '+err.message))
          }
-        
+        await newModelObject.save()
+
         //populating the model
-        if (populate)
+        if (populate.length>0)
             await newModelObject.populate(populate.join(' '))
         if(options.executePost)
             options.executePost()
