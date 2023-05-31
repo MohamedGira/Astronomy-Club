@@ -17,7 +17,7 @@ CommentRouter.route('/')
 
 //perminently delete a comment
 CommentRouter.route('/delete/:elementId')
-.delete(RBACAutorizerMw,CommentsController.isAuthorizedtoChangeMw,CommentsController.DELETEIT)
+.delete(CommentsController.isAuthorizedtoChangeMw,CommentsController.DELETEIT)
 
 
 
