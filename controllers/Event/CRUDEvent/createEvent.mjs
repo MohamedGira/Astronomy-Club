@@ -80,6 +80,6 @@ export const createEvent=catchAsync( async (req,res,next)=>{
     });
 
 })
-export const createEvent2=factory.CreateOne(Event,['checkpoints','gatheringPoints'])
+export const createEvent2=factory.CreateOne(Event,['checkpoints','gatheringPoints','type','extraFields'])
 
 

@@ -8,9 +8,9 @@ import * as factory from "../../CRUDFactory.mjs";
 export const getEventById= async(id,fullaccess)=>{
     // the population is the new part
     if (fullaccess)
-        return Event.findById(id).populate('checkpoints gatheringPoints')
+        return Event.findById(id).populate('checkpoints gatheringPoints extraFields type')
     else
-        return Event.findOne({_id:id,isVisible:{$ne:false}}).populate('checkpoints gatheringPoints')
+        return Event.findOne({_id:id,isVisible:{$ne:false}}).populate('checkpoints gatheringPoints extraFields type')
 }
 
-export const getEvent= factory.getOne(Event,['checkpoints','gatheringPoints'],{showDeleted:true})
+export const getEvent= factory.getOne(Event,['checkpoints','gatheringPoints','type','extraFields'],{showDeleted:true})

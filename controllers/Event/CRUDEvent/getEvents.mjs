@@ -29,4 +29,4 @@ export const getEvents= catchAsync( async (req,res,next)=>{
 }
 )
 
-export const getAllEvents= getAll(Event,['checkpoints','gatheringPoints'],{},'events')
+export const getAllEvents= getAll(Event,['checkpoints','gatheringPoints','type','extraFields'],{},'events')
