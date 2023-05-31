@@ -5,6 +5,7 @@ import { AppError } from "../utils/AppError.mjs"
 import { ResultsManager } from "../utils/ResultsManager.mjs"
 import { saveImage } from "../utils/uploads/saveImage.mjs"
 import { deleteFile } from "../utils/uploads/cleanDir.mjs"
+import { logger } from "../utils/logger.mjs"
 //crud factory for BASIC classes : no childReferencing Docs
 
 
@@ -68,6 +69,11 @@ executePre:[async()=>{}]})=>{
             await newModelObject.populate(populate.join(' '))
         if(options.executePost)
             options.executePost()
+
+        logger.log({
+            level: 'info',
+            message: `${Model.collection.collectionName} created  ${req.ip} ${id}`
+        });
         return res.status(201).json({
             message:`${Model.collection.collectionName} created`,
             newModelObject
@@ -130,7 +136,11 @@ executePre:[async()=>{}]})=>{
     }
     if(options.executePost)
         options.executePost()
-        
+    
+    logger.log({
+        level: 'info',
+        message: `${Model.collection.collectionName} updated succesfully ${req.ip} ${id}`
+    });
     return res.status(200).json({
         message:'updated succesfully',
         newModelObject
@@ -148,6 +158,10 @@ export const deleteOne=(Model)=>{
         doc.elementStatus.isDeleted=true
         doc.elementStatus.deletedBy=req.user._id
         await doc.save()
+        logger.log({
+            level: 'info',
+            message: `${Model.collection.collectionName} of id ${id} is deleted.  ${req.ip} ${id}`
+        });
         return res.status(204).json({
             message:'deleted succesfully',
             doc
@@ -196,6 +210,10 @@ export const no_Really__DeleteIt=(Model)=>{
         const doc = await Model.findByIdAndDelete(id)
         if(!doc)
         return next(new AppError(404,`requested document ${id} doesn't exitst`))
+        logger.log({
+            level: 'info',
+            message: `${Model.collection.collectionName} of id ${id} has been permanently deleted.  ${req.ip} ${id}`
+        });
         return res.status(204).json({
             message:'deleted succesfully',
             doc
