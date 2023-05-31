@@ -83,7 +83,7 @@ executePre:[()=>{}],showDeleted:false},name=undefined)=>{
         //fetching the element
         
         const elementId=req.params.elementId
-        var modelObject=Model.findOne({_id:elementId})
+        var modelObject=Model.findOne({_id:elementId}).select('-__v -elementStatus')
         //populating the element
         if (populate)
             modelObject.populate(populate.join(' '))
@@ -156,7 +156,7 @@ export const deleteOne=(Model)=>{
 )}
 
 /** params None, filter: filteres the resources for requested id */
-export const getAll=(Model,populate=[],
+export const getAll=(Model,populate=[], 
     options={executePost:()=>{},executePre:[()=>{}],showDeleted:false,onlyOne:false},name=undefined)=>{
     return catchAsync( async (req,res,next)=>{
         if(options.executePre)
@@ -166,7 +166,7 @@ export const getAll=(Model,populate=[],
         
         const elementId=req.params.elementId
         var results;
-            results = new ResultsManager(Model.find(),req.query).filter().select().paginate().query
+            results = new ResultsManager(Model.find().select('-__v -elementStatus'),req.query).filter().select().paginate().query
         //checking if must show deleted
         if(options.showDeleted)
             results.where({'elementStatus.isDeleted':true})
