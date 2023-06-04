@@ -17,9 +17,9 @@ AuthRouter.route('/logout').post(logout)
 
 
 AuthRouter.route('/resetPassword').post(alreadyLoggedIn,catchAsync(resetPasswordController.resetPassword))
-AuthRouter.route('/changePassword').post(catchAsync(resetPasswordController.changePassword))
+AuthRouter.route('/changePassword').post(resetPasswordController.changePassword)
 
-AuthRouter.route('/updatePassword').patch(RBACAutorizerMw,resetPasswordController.updatePassword)
+AuthRouter.route('/updatePassword').patch(resetPasswordController.updatePassword)
 
 AuthRouter.route('/login').post(alreadyLoggedIn,catchAsync(loginMember))
 //AuthRouter.route('/api/v1/auth/login').post(alreadyLoggedIn,catchAsync(login))
