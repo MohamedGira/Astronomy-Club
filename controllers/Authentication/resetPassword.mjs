@@ -53,13 +53,13 @@ export const changePassword = async (req, res, next) => {
     const newPassword = req.body.password;
     const confirm_newPassword = req.body.confirm_password;
     const confirmationToken = req.body.token;
-
+    console.log(confirmationToken)
     jwt.verify(
         confirmationToken,
         process.env.RESET_JWT_KEY,
         async (err, decodedvalues) => {
         if (err) 
-            return next(new AppError(401, "token Expired"));
+            return next(new AppError(401, err.message));
 
         const user = await User.findOne({email: decodedvalues.email}).select('+password');
 
