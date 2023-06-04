@@ -69,10 +69,10 @@ executePre:[async()=>{}]})=>{
             await newModelObject.populate(populate.join(' '))
         if(options.executePost)
             options.executePost()
-
+        let doer=req.user?req.user.id:'annoymous'
         logger.log({
             level: 'info',
-            message: `${Model.collection.collectionName} created  ${req.ip} ${id}`
+            message: `${Model.collection.collectionName} created  ${req.ip} ${doer}`
         });
         return res.status(201).json({
             message:`${Model.collection.collectionName} created`,
@@ -134,10 +134,10 @@ executePre:[async()=>{}]})=>{
     }
     if(options.executePost)
         options.executePost()
-    
+    let doer=req.user?req.user.id:'annoymous'
     logger.log({
         level: 'info',
-        message: `${Model.collection.collectionName} updated succesfully ${req.ip} ${id}`
+        message: `${Model.collection.collectionName} updated succesfully ${req.ip} ${doer}`
     });
     return res.status(200).json({
         message:'updated succesfully',
@@ -156,9 +156,10 @@ export const deleteOne=(Model)=>{
         doc.elementStatus.isDeleted=true
         doc.elementStatus.deletedBy=req.user._id
         await doc.save()
+        let doer=req.user?req.user.id:'annoymous'
         logger.log({
             level: 'info',
-            message: `${Model.collection.collectionName} of id ${id} is deleted.  ${req.ip} ${id}`
+            message: `${Model.collection.collectionName} of id ${id} is deleted.  ${req.ip} ${doer}`
         });
         return res.status(204).json({
             message:'deleted succesfully',
@@ -205,10 +206,12 @@ export const no_Really__DeleteIt=(Model)=>{
         const id=req.params.elementId
         const doc = await Model.findByIdAndDelete(id)
         if(!doc)
-        return next(new AppError(404,`requested document ${id} doesn't exitst`))
+            return next(new AppError(404,`requested document ${doer} doesn't exitst`))
+        
+        let doer=req.user?req.user.id:'annoymous'
         logger.log({
             level: 'info',
-            message: `${Model.collection.collectionName} of id ${id} has been permanently deleted.  ${req.ip} ${id}`
+            message: `${Model.collection.collectionName} of id ${id} has been permanently deleted.  ${req.ip} ${doer}`
         });
         return res.status(204).json({
             message:'deleted succesfully',
