@@ -32,15 +32,13 @@ export const resetPassword = async (req, res, next) => {
     
 
     const resetToken = jwt.sign(
-      { email: email, password: user.password },
+      { email:email, password: user.password },
       process.env.RESET_JWT_KEY,
       { expiresIn: consts.PASSWORD_RESET_TIMEOUT_SECS }
     );
-    
     await emailer.sendResetPassword(email,
         'resetPasswordNew',
-        {url:`${req.headers.referrer || req.headers.referer}/auth/new-password?targetUrl=${resetToken}
-        &email=${encodeURIComponent(email)}`},'Astronomy Club')
+        {url:`${req.headers.referrer || req.headers.referer}/auth/new-password?targetUrl=${encodeURIComponent(resetToken)}&email=${encodeURIComponent(email)}`},'Astronomy Club')
 
     return res.status(200).json({
         message: "check your email to reset password",
@@ -49,29 +47,28 @@ export const resetPassword = async (req, res, next) => {
   };
 
 //called from the email
-export const changePassword = async (req, res, next) => {
+export const changePassword = catchAsync( async (req, res, next) => {
     const newPassword = req.body.password;
     const confirm_newPassword = req.body.confirm_password;
-    const confirmationToken = req.body.token;
+    const confirmationToken = decodeURIComponent(req.body.token);
     jwt.verify(
         confirmationToken,
         process.env.RESET_JWT_KEY,
         async (err, decodedvalues) => {
-        try{console.log(decodedvalues)
-        }
-        catch(err){
-            console.log(err)
-        }
+    
         if (err) 
             return next(new AppError(401, err.message));
-
+        
         const user = await User.findOne({email: decodedvalues.email}).select('+password');
 
         if (user.password === decodedvalues.password) {
             
-            if (newPassword!= confirm_newPassword)
+            if (newPassword!=confirm_newPassword)
                 return next(new AppError(400, "passwords doesn't match"));
-            user.password =  bcrypt.hash(
+            if (!newPassword)
+                return next(new AppError(400, "passwords are required"));                
+
+            user.password =  await bcrypt.hash(
             newPassword,
             parseInt(process.env.HASH_SALT)
             )
@@ -88,7 +85,7 @@ export const changePassword = async (req, res, next) => {
         }
         }
     );
-};
+});
 
 //called from within
 export const updatePassword =catchAsync (async (req, res, next) => {
