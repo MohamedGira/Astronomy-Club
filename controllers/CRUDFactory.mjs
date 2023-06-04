@@ -94,9 +94,7 @@ executePre:[()=>{}],showDeleted:false},name=undefined)=>{
         if (populate)
             modelObject.populate(populate.join(' '))
         //checking if must show deleted
-        if(options.showDeleted)
-            modelObject.where({'elementStatus.isDeleted':true})
-        else
+        if(!options.showDeleted)
             modelObject.where({'elementStatus.isDeleted':{$ne:true}})
 
         //executing the query
@@ -182,9 +180,7 @@ export const getAll=(Model,populate=[],
         var results;
             results = new ResultsManager(Model.find().select('-__v -elementStatus'),req.query).filter().select().paginate().query
         //checking if must show deleted
-        if(options.showDeleted)
-            results.where({'elementStatus.isDeleted':true})
-        else
+        if(!options.showDeleted)
             results.where({'elementStatus.isDeleted':{$ne:true}})
         //populating requested fields
         if (populate)
