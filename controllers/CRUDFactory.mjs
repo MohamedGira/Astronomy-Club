@@ -65,7 +65,7 @@ executePre:[async()=>{}]})=>{
         await newModelObject.save()
 
         //populating the model
-        if (populate.length>0)
+        if (populate)
             await newModelObject.populate(populate.join(' '))
         if(options.executePost)
             options.executePost()
