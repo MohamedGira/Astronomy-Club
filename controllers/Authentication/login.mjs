@@ -46,7 +46,6 @@ export const loginMember = async (req, res, next) => {
     if (!user||! await bcrypt.compare(password, user.password)) 
         return next(new AppError(400, "invalid email or password"));
     user._doc.password=undefined
-    console.log(user)
     
     if (!user.confirmed) 
         return next(new AppError(401, "This account hasn't been confirmed yet, contact adminstration if you thing something went wrong"));

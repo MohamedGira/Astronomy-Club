@@ -7,7 +7,6 @@ import { getToken } from '../../utils/getToken.mjs';
 
 export const alreadyLoggedIn = (req, res, next) => {
     var token =getToken(req);
-    console.log(token)
     //const token = req.cookies.jwt;
     if (!token) return next();
     return jwt.verify(token, process.env.JWT_KEY, (err, decodedvalues) => {

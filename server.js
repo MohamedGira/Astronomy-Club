@@ -134,14 +134,14 @@ try{
       stayup=(await deploymentTrick.findOne())
       if(stayup)
           stayup=stayup._doc
-      console.log(stayup.stayup)
+      console.log(stayup)
       if(stayup.stayup){ 
-          refreshEveryMins=stayup.refreshEvery||12
           await fetch(`${stayup.siteUrl}/`).catch(err=>{
               console.log(`couldn't send to ${stayup.siteUrl}/  ,  ${err.message}`)
           })
       }        
   },refreshEveryMins*60000) 
+  
   //InitializeEndpoints2(app)
 
   }catch(err){

@@ -66,7 +66,7 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     req.user=user
     let regex=/^[a-f\d]{24}$/i
     let url=req.originalUrl.split('?')[0].split('/').filter((el)=>{return el!=''&&!regex.test(el)}).join('/')
-    console.log(url)
+    //console.log(url)
     let permission= await Permission.findOne({url:{$in:[`/${url}`,`/${url}/`]},role:user.role._id})
     if (!permission)
         return next(new AppError(401, "protected endpoint with no permission for this role"));
@@ -75,7 +75,7 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
             console.log(permission)
             return next(new AppError(403, permission.errorMessage||"unauthorized access to this endpoint"+`${req.baseUrl}`));
         }
-    console.log(permission.friendlyName)
+    //console.log(permission.friendlyName)
     
     return next()
 }catch(err){
