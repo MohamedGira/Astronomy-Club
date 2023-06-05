@@ -129,10 +129,11 @@ try{
   await Database.getInstance();
   const server=  await app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
   let stayup=await deploymentTrick.findOne()
+  console.log('found stayup',stayup)
+  console.log('found stayupdoc',stayup._doc)
   var refreshEveryMins=stayup.refreshEvery||12
   setInterval(async () => {
       stayup=await deploymentTrick.findOne()
-      console.log(stayup)
       if(stayup)
           console.log('stayup',stayup.stayup)
           stayup=stayup._doc

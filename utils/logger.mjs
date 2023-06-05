@@ -26,7 +26,7 @@ if (process.env.NODE_ENV !== 'prod') {
 export const loggingMiddleware=catchAsync(async(req,res,next)=>{
   const token = getToken(req);
   let id='annoymous'
-  console.log(token)
+  
     if(token)
     {
       let decodedValues =  promisify(jwt.verify)(token, process.env.JWT_KEY)
