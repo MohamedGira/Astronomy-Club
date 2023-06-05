@@ -153,6 +153,8 @@ export const deleteOne=(Model)=>{
         
         if(!doc)
             return next(new AppError(404,`requested document ${id} doesn't exitst`))
+        if(!doc.elementStatus)
+            doc.elementStatus={}
         doc.elementStatus.isDeleted=true
         doc.elementStatus.deletedBy=req.user._id
         await doc.save()
@@ -169,7 +171,7 @@ export const deleteOne=(Model)=>{
 
 /** params None, filter: filteres the resources for requested id */
 export const getAll=(Model,populate=[], 
-    options={executePost:()=>{},executePre:[()=>{}],showDeleted:false,onlyOne:false},name=undefined)=>{
+    options={executePost:()=>{},executePre:[()=>{}],showDeleted:false,onlyOne:false,sensitiveFields:[]},name=undefined)=>{
     return catchAsync( async (req,res,next)=>{
         if(options.executePre)
             for (let i in options.executePre)    
@@ -178,7 +180,7 @@ export const getAll=(Model,populate=[],
         
         const elementId=req.params.elementId
         var results;
-            results = new ResultsManager(Model.find().select('-__v -elementStatus'),req.query).filter().select().paginate().query
+            results = new ResultsManager(Model.find().select('-__v -elementStatus'),req.query,options.sensitiveFields).filter().select().paginate().query
         //checking if must show deleted
         if(!options.showDeleted)
             results.where({'elementStatus.isDeleted':{$ne:true}})
