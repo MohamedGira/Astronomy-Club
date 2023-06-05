@@ -9,13 +9,13 @@ export const editUser = catchAsync( async (req, res, next) => {
     let body=filterObj(req.body,User.schema.paths, ['password','profileImage'])
     if(body.committee=='N/A')
         body.committee=null
-    let user=await User.findByIdAndUpdate(req.params.id,body,{new:true})
+    let user=await User.findById(req.params.elementId)
+    
     if(!user)
         return next(new AppError(404,'user not found'))
-    
+    user=Object.assign(user,body)
     
     if (req.files){
-        console.log(user)
         if (req.files.profileImage)
           user.profileImage=await saveImage(req.files.profileImage)
       }

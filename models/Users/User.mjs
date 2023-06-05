@@ -104,6 +104,9 @@ userScema.pre(/^find/, function (next) {
 //check that  foriegn keys are valid
 userScema.pre("save", async function (next) {
   
+  if(await User.find({firstName:this.firstName,lastName:this.lastName,
+    _id:{$ne:this._id},'elementStatus.isDeleted':{$ne:true}}).countDocuments()>0)
+    return next(new AppError(400, "This username is already in use"));
   if(this.role)
   {
     const data = await UserRole.findById( this.role);
