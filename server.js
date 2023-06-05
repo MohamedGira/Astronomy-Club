@@ -128,12 +128,16 @@ app.use(ErrorHandler)
 try{
   await Database.getInstance();
   const server=  await app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
-  let stayup=(await deploymentTrick.findOne())
+  let stayup=await deploymentTrick.findOne()
   var refreshEveryMins=stayup.refreshEvery||12
   setInterval(async () => {
-      stayup=(await deploymentTrick.findOne())
+      stayup=await deploymentTrick.findOne()
+      console.log(stayup)
       if(stayup)
+          console.log('stayup',stayup.stayup)
           stayup=stayup._doc
+          console.log('stayup.doc.stayup',stayup.stayup)
+
       console.log(stayup)
       if(stayup.stayup){ 
           await fetch(`${stayup.siteUrl}/`).catch(err=>{
