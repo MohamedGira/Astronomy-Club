@@ -12,7 +12,7 @@ async function getUserbyId(id) {
   return user;
 }
 export const getUser = catchAsync(async (req, res, next) => {
-  const id = req.params.id;
+  const id = req.params.elementId;
   const user = await getUserbyId(id);
   if (!user) return next(new AppError(404, `no user with this id ${id}`));
 
