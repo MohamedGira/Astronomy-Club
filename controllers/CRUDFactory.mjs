@@ -172,7 +172,7 @@ export const deleteOne=(Model)=>{
 
 /** params None, filter: filteres the resources for requested id */
 export const getAll=(Model,populate=[], 
-    options={executePost:()=>{},executePre:[()=>{}],showDeleted:false,onlyOne:false,sensitiveFields:[]},name=undefined)=>{
+    options={executePost:()=>{},executePre:[()=>{}],showDeleted:false,onlyOne:false,sensitiveFields:[],resultsName:undefined},name=undefined)=>{
     return catchAsync( async (req,res,next)=>{
         if(options.executePre)
             for (let i in options.executePre)    
@@ -197,7 +197,7 @@ export const getAll=(Model,populate=[],
             return next(new AppError(404,`requested ${name} of id ${elementId} doesn\'t exitst`))
         if(options.onlyOne && results.length==1)
             results=results[0]
-        let outname=name||'results'
+        let outname=options.resultsName||'results'
         return res.status(200).json({
             "message":`${results.length} ${name} found`,
             [outname]:results

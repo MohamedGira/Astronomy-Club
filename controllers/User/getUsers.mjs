@@ -16,4 +16,4 @@ export const getusersold= catchAsync( async (req,res,next)=>{
 }
 )
 
-export const getusers= getAll(User,[],{sensitiveFields:['password']},"users")
+export const getusers= getAll(User,[],{sensitiveFields:['password'],resultsName:'users'})
