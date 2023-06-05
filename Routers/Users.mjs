@@ -7,7 +7,7 @@ import { getusers } from "../controllers/User/getUsers.mjs";
 import { myProfile } from "../controllers/User/myProfile.mjs";
 import { getPendingUsers } from "../controllers/User/Admin/getPendingUsers.mjs";
 import { confirmUser } from "../controllers/User/Admin/confirmMember.mjs";
-import { deleteUser } from "../controllers/User/Admin/deleteUser.mjs";
+import { deleteUser, deleteUser2 } from "../controllers/User/Admin/deleteUser.mjs";
 import { declineUser } from "../controllers/User/Admin/declineUser.mjs";
 import { editProfile } from "../controllers/User/editProfile.mjs";
 import { myTasks } from "../controllers/User/myTasks.mjs";
@@ -31,8 +31,8 @@ UserRouter.use('/myProfile',myProfileRouter)
 UserRouter.route('/')
 .get(getusers)
 
-UserRouter.route('/:id')
-.delete(deleteUser)
+UserRouter.route('/:elementId')
+.delete(deleteUser2)
 .patch(editUser)
 .get(getUser);
 
