@@ -192,13 +192,15 @@ export const getAll=(Model,populate=[],
         results=await results
         if(!name)
             name=Model.collection.collectionName
+        
         if(!results)
             return next(new AppError(404,`requested ${name} of id ${elementId} doesn\'t exitst`))
         if(options.onlyOne && results.length==1)
             results=results[0]
+        let outname=name||'results'
         return res.status(200).json({
-            message:`${results.length} ${name} found`,
-            results
+            "message":`${results.length} ${name} found`,
+            [outname]:results
         })
 })}
 
