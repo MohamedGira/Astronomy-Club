@@ -28,6 +28,7 @@ export const CheckpointSchema = new mongoose.Schema({
         default:'speaker'
     },
     speaker:{
+        // must be changed to EAV
         type:mongoose.Schema.Types.ObjectId,
         ref:'Speaker',
     },

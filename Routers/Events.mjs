@@ -1,6 +1,6 @@
 import express from "express";
 
-import { createEvent, createEvent2 } from "../controllers/Event/CRUDEvent/createEvent.mjs";
+import {  createEvent } from "../controllers/Event/CRUDEvent/createEvent.mjs";
 import { getEvent } from "../controllers/Event/CRUDEvent/getEvent.mjs";
 import { getAllEvents } from "../controllers/Event/CRUDEvent/getEvents.mjs";
 import {  updateEvent2 } from "../controllers/Event/CRUDEvent/updateEvent.mjs";
@@ -24,7 +24,7 @@ function populateId(req,res,next){
 
 EventRouter.route('/')
 .get(getAllEvents)
-.post(RBACAutorizerMw,createEvent2)
+.post(RBACAutorizerMw,createEvent)
 
 
 EventRouter.route('/:elementId')
