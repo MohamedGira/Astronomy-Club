@@ -1,5 +1,5 @@
 import express from "express";
-import * as extraFieldsController from "../controllers/Event/CRUDEvent/ExtraFields.mjs";
+import * as extraFieldsController from "../controllers/EAV/EAVController.mjs";
 import {  RBACAutorizerMw, isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 
 
