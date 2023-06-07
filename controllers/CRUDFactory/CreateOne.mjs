@@ -1,7 +1,6 @@
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
 
-import { HandleImages } from "../../utils/uploads/HandleImages.mjs";
 
 
 export const createOne = (Model,populate = undefined,options = { executePost: () => {}, executePre: [async () => {}] }) => {
@@ -17,8 +16,8 @@ export const createOne = (Model,populate = undefined,options = { executePost: ()
 
     //creating the model
     var newModelObject = await Model(filteredBody);
-    if(req.files)
-      HandleImages(req,res,next,Model,newModelObject);
+    /* if(req.files)
+    HandleImages(req,res,next,Model,newModelObject); */
     await newModelObject.save();
 
     //populating the model

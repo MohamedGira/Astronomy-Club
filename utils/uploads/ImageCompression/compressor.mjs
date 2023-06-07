@@ -6,36 +6,7 @@ import exp from 'constants';
 import sharp from 'sharp';
 
 
-/* 
 
-class BufferCompressor{
-    constructor(){
-    }
-    getbufferSize(imgbuffer){
-        return Buffer.byteLength(imgbuffer)/1024;
-    }
-        
-    async compressImageBuffer(buffer){
-    var inputImgSize=this.getbufferSize(buffer)
-    if(inputImgSize==0){
-        throw Error('0 file size!')
-    }
-    if(inputImgSize<=this.MaximumSize){
-        return buffer
-    }
-    var ratio=1;
-    
-    ratio=this.MaximumSize/inputImgSize
-    const file = await imagemin.buffer(buffer, {
-        plugins: [
-            imageminMozjpeg(),
-            imageminPngquant()
-        ]
-    });
-    return file;
-    }
-}
- */
 class ImageHandler  {
     constructor(){
         

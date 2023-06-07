@@ -3,8 +3,8 @@ import express from "express";
 import {  createEvent } from "../controllers/Event/CRUDEvent/createEvent.mjs";
 import { getEvent } from "../controllers/Event/CRUDEvent/getEvent.mjs";
 import { getAllEvents } from "../controllers/Event/CRUDEvent/getEvents.mjs";
-import {  updateEvent2 } from "../controllers/Event/CRUDEvent/updateEvent.mjs";
-import { RBACAutorizerMw, isAuthorizedMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
+import {  updateEvent } from "../controllers/Event/CRUDEvent/updateEvent.mjs";
+import { RBACAutorizerMw } from "../controllers/Authentication/authorizationMw/Authorizer.mjs";
 import { deleteEvent } from "../controllers/Event/CRUDEvent/deleteEvent.mjs";
 
 import { CheckpointsRouter } from "./Checkpoints.mjs";
@@ -29,7 +29,7 @@ EventRouter.route('/')
 
 EventRouter.route('/:elementId')
 .get(getEvent)
-.patch(RBACAutorizerMw,updateEvent2)
+.patch(RBACAutorizerMw,updateEvent)
 .delete(RBACAutorizerMw,deleteEvent)
 
 

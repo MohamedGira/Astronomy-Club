@@ -1,7 +1,6 @@
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { AppError } from "../../utils/AppError.mjs";
-import { logger } from "../../utils/logger.mjs";
 
 
 
@@ -29,11 +28,7 @@ export const updateOne = (Model,filterout = [],options = { executePost: () => {}
     if (options.executePost) 
         options.executePost();
     
-    let doer = req.user ? req.user.id : "annoymous";
-    logger.log({
-      level: "info",
-      message: `${Model.collection.collectionName} updated succesfully ${req.ip} ${doer}`,
-    });
+
 
     return res.status(200).json({
       message: "updated succesfully",
