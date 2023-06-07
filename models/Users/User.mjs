@@ -50,9 +50,6 @@ const userScema = mongoose.Schema({
     },
   },
 
-  profileImage: {
-    type: String,
-  },
 
   phoneNumber: {
     type: String,
@@ -93,11 +90,17 @@ const userScema = mongoose.Schema({
     type: String,
   },
   elementStatus: {type:elementStatusSchema,default:{}},
+},{
+  toJSON:{virtuals:true},
+  toObject:{virtuals:true},
+  timestamps:true
 });
 
 
+userScema.virtual('images',{ref:'Image',foreignField:'for',localField:'_id'})
+
 userScema.pre(/^find/, function (next) {
-  this.populate("role committee", "-__v -elementStatus");
+  this.populate("role committee", "-__v -elementStatus").populate('images');
   next();
 });
 

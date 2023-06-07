@@ -1,8 +1,5 @@
 import mongoose from'mongoose'
-
 import { deleteFile } from '../../../utils/uploads/cleanDir.mjs';
-import { saveImage } from '../../../utils/uploads/saveImage.mjs';
-import { AppError } from '../../../utils/AppError.mjs';
 import { elementStatusSchema } from '../../elementsStatus.mjs';
 
 export const SpeakerSchema=mongoose.Schema(
@@ -19,16 +16,12 @@ export const SpeakerSchema=mongoose.Schema(
         type:String,
         required:true,
        },
-       
       elementStatus: {type:elementStatusSchema,default:{}},
-      image:{type:String,
-             required:true
-            },
     }
 )
 
 
-
+SpeakerSchema.virtual('images',{ref:'Image',foreignField:'for',localField:'_id'})
 
 
 SpeakerSchema.pre(/delete/i,async function(next){
