@@ -1,22 +1,13 @@
 import { GatheringPoint } from "../../models/Events/subSchemas/gatheringPoint.mjs";
-import {filterObj,jsonifyObj} from "../../utils/objOp.mjs"
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
-
-export const createGatheringPoint= async(unfilteredBody,eventid)=>{
-    
-    unfilteredBody=jsonifyObj(unfilteredBody)
-    var gatheringPointBody=filterObj(unfilteredBody,GatheringPoint.schema.paths) 
-    var newGatheringPoint=await GatheringPoint.create({...gatheringPointBody,event:eventid})
-    return newGatheringPoint
-}
 
 
 // GET gatheringPoints/
 export const  getGatheringPoints= factory.getAll(GatheringPoint)
 
 // POST gatheringPoints/
-export const  addGatheringPoint= factory.CreateOne(GatheringPoint)
+export const  addGatheringPoint= factory.createOne(GatheringPoint)
 
 // GET gatheringPoints/:elementId 
 export const  getGatheringPoint= factory.getOne(GatheringPoint)

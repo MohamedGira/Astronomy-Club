@@ -1,11 +1,11 @@
 import { Payment } from "../../models/Payments/Payment.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
 
 export const  getPayments= factory.getAll(Payment)
 
 // POST payments/
-export const  addPayment= factory.CreateOne(Payment)
+export const  addPayment= factory.createOne(Payment)
 
 // GET Payments/:elementId 
 export const  getPayment= factory.getOne(Payment)

@@ -1,15 +1,16 @@
 import { Speaker } from "../../models/Events/subSchemas/Speaker.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { deleteFile } from "../../utils/uploads/cleanDir.mjs";
-import { saveImage, saveImageOld } from "../../utils/uploads/saveImage.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import { saveImage } from "../../utils/uploads/saveImage.mjs";
+import { factory } from "../CRUDFactory/package.mjs";
+
 
 
 // GET Speakers/
 export const  getSpeakers= factory.getAll(Speaker)
 
 // POST Speakers/
-export const  addSpeaker= factory.CreateOne(Speaker)
+export const  addSpeaker= factory.createOne(Speaker)
 
 // GET Speakers/:elementId 
 export const  getSpeaker= factory.getOne(Speaker)

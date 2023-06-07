@@ -1,7 +1,6 @@
 import { Event } from "../../../models/Events/Event.mjs";
 import { catchAsync } from "../../../utils/catchAsync.mjs";
-import { isAuthorized } from "../../Authentication/authorizationMw/Authorizer.mjs";
-import { getAll, getOne } from "../../CRUDFactory.mjs";
+import { getAll } from "../../CRUDFactory/GetAll.mjs";
 
 export const getEventsQuery=async (fullaccess)=>{
     if (fullaccess)

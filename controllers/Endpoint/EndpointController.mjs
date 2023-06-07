@@ -1,12 +1,9 @@
 import listEndpoints from "express-list-endpoints";
 
 import { Endpoint } from "../../models/Endpoints/Endpoint.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 import { Database } from "../../models/DbConnection.mjs";
-import { catchAsync } from "../../utils/catchAsync.mjs";
 import { Permission } from "../../models/Permissions/Permission.mjs";
-import { Router } from "express";
-import { User } from "../../models/Users/User.mjs";
 import { UserRole } from "../../models/Users/UserRole.mjs";
 
 

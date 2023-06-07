@@ -1,11 +1,11 @@
 import { Task } from "../../models/Tasks/Task.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
 // GET tasks/
 export const  getTasks= factory.getAll(Task)
 
 // POST tasks/
-export const  addTask= factory.CreateOne(Task)
+export const  addTask= factory.createOne(Task)
 
 // GET tasks/:elementId 
 export const  getTask= factory.getOne(Task)

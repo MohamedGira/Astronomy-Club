@@ -2,7 +2,7 @@ import { Comment } from "../../models/Comment.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
 
 const  getCommentsTreeFor= async (id,options={showDeleted:false})=>{
@@ -72,4 +72,4 @@ export const  updateComment= catchAsync( async (req,res,next)=>{
 // DELETE comments/:elementId
 export const  deleteComment= factory.deleteOne(Comment)
 
-export const DELETEIT=factory.no_Really__DeleteIt(Comment)
+export const DELETEIT=factory.no_really__deleteIt(Comment)

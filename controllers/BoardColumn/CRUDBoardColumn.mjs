@@ -1,6 +1,6 @@
 import { BoardColumn } from "../../models/BoardColumns/BoardColumn.mjs";
 import { catchAsync } from "../../utils/catchAsync.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
 // GET BoardColumns/
 export const  getBoardColumns= catchAsync( async (req,res,next)=>{
@@ -18,7 +18,7 @@ export const  getBoardColumns= catchAsync( async (req,res,next)=>{
 })
 
 // POST BoardColumns/
-export const  addBoardColumn= factory.CreateOne(BoardColumn)
+export const  addBoardColumn= factory.createOne(BoardColumn)
 
 // GET BoardColumns/:elementId 
 export const getBoardColumn = catchAsync(  async (req,res,next)=>{

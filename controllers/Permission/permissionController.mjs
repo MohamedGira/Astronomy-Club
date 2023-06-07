@@ -1,7 +1,7 @@
 import listEndpoints from "express-list-endpoints";
 
 import { Permission } from "../../models/Permissions/Permission.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 import { Database } from "../../models/DbConnection.mjs";
 import { AppError } from "../../utils/AppError.mjs";
 import { filterObj, jsonifyObj } from "../../utils/objOp.mjs";
@@ -17,10 +17,13 @@ export const  getPermissions= factory.getAll(Permission,undefined,{
     }]
 })
 // POST permissions/
-export const  addPermission= factory.CreateOne(Permission,undefined,{
+export const  addPermission= factory.createOne(Permission,undefined,{
     executePre:[
         async(req,res,next)=>{
         let filteredBody=filterObj(jsonifyObj(req.body),Permission.schema.paths,['allowed']) 
+        if(!filteredBody.url || ! filteredBody.role)
+            throw new AppError(400, `url and role are required`);
+
         if(await Permission.findOne(filteredBody))
             throw new AppError(400, `This permission already exists, update it instead`);
         }

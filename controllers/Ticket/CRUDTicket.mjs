@@ -1,11 +1,11 @@
 import { Ticket } from "../../models/Tickets/Ticket.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
 
 export const  getTickets= factory.getAll(Ticket)
 
 // POST Speakers/
-export const  addTicket= factory.CreateOne(Ticket)
+export const  addTicket= factory.createOne(Ticket)
 
 // GET Tickets/:elementId 
 export const  getTicket= factory.getOne(Ticket)

@@ -1,5 +1,5 @@
 import { Kanban } from "../../models/Kanban/Kanban.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
 
 //YAGNI
@@ -15,7 +15,7 @@ export const  getKanbans= factory.getAll(Kanban,[],
     )
 
 // POST kanbans/
-export const  addKanban= factory.CreateOne(Kanban)
+export const  addKanban= factory.createOne(Kanban)
 
 // GET kanbans/:elementId 
 export const  getKanban= factory.getOne(Kanban)
