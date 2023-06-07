@@ -8,12 +8,12 @@ import { updateImage } from "../controllers/Image/UpdateImage.mjs";
 export const ImagesRouter=express.Router()
 
 
-ImagesRouter.use(RBACAutorizerMw)
+
 ImagesRouter.route('/')
 .get(getImages)
-.post(createImage)
+.post(RBACAutorizerMw,createImage)
 
 ImagesRouter.route('/:elementId')
 .get(getImage)
-.patch(updateImage)
-.delete(no_really__deleteImage)
+.patch(RBACAutorizerMw,updateImage)
+.delete(RBACAutorizerMw,no_really__deleteImage)
