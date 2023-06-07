@@ -1,6 +1,6 @@
 
 import { UserRole } from "../../models/Users/UserRole.mjs";
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
 
 
@@ -8,7 +8,7 @@ import * as factory from "../CRUDFactory.mjs";
 export const  getUserRoles= factory.getAll(UserRole)
 
 // POST userRoles
-export const  addUserRole= factory.CreateOne(UserRole)
+export const  addUserRole= factory.createOne(UserRole)
 
 // GET userRoles:elementId 
 export const  getUserRole= factory.getOne(UserRole)
