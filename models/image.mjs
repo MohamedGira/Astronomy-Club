@@ -1,13 +1,26 @@
 
 import mongoose from "mongoose";
-export const  imageSchema = new mongoose.Schema({
-    name: String,
-    desc: String,
-    img:
-    {
-        data: Buffer,
-        contentType: String
-    }
+import { deleteFile } from "../utils/uploads/cleanDir.mjs";
+
+const imageSchema =  mongoose.Schema({
+    for: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    filename: {
+        type: String,
+    },
 });
- 
-export const Image= mongoose.model('Image', imageSchema);
+
+imageSchema.pre(/delete|remove/, function (next) {
+    deleteFile(this.filename, "images");
+});
+
+export const Image = mongoose.model('Image', imageSchema);
+
+
+
