@@ -50,7 +50,6 @@ export const RBACAutorizerMw=  async function RBACAutorizerMw (req, res, next) {
     const token = getToken(req);
     if(!token)
         {
-            console.log(req)
             return next(new AppError(401, "No token provided, Signin to continue"));
         }
 

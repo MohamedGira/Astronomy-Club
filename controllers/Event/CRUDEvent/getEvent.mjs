@@ -1,7 +1,8 @@
 import { Event } from "../../../models/Events/Event.mjs";
-import { catchAsync } from "../../../utils/catchAsync.mjs";
-import { isAuthorized } from "../../Authentication/authorizationMw/Authorizer.mjs";
-import * as factory from "../../CRUDFactory.mjs";
+import {factory} from "../../CRUDFactory/package.mjs";
+
+
+
 
 
 //deprecated

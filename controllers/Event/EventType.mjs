@@ -1,22 +1,13 @@
 import { EventType } from "../../models/Events/EventTypes.mjs";
-import {filterObj,jsonifyObj} from "../../utils/objOp.mjs"
-import * as factory from "../CRUDFactory.mjs";
+import {factory} from "../CRUDFactory/package.mjs";
 
-
-export const createEventType= async(unfilteredBody,eventid)=>{
-    
-    unfilteredBody=jsonifyObj(unfilteredBody)
-    var EventTypeBody=filterObj(unfilteredBody,EventType.schema.paths) 
-    var newEventType=await EventType.create({...EventTypeBody,event:eventid})
-    return newEventType
-}
 
 
 // GET eventTypes
 export const  getEventTypes= factory.getAll(EventType)
 
 // POST eventTypes
-export const  addEventType= factory.CreateOne(EventType)
+export const  addEventType= factory.createOne(EventType)
 
 // GET eventTypes:elementId 
 export const  getEventType= factory.getOne(EventType)
