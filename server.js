@@ -34,8 +34,7 @@ import { BoardColumnRouter } from "./Routers/BoardColumns.mjs";
 import { CommitteeRouter } from "./Routers/Committees.mjs";
 import { userRolesRouter } from "./Routers/UserRoles.mjs";
 import { FrontendManagmentRouter } from "./Routers/frontendManagment.mjs";
-import listEndpoints from "express-list-endpoints";
-import slugify from "slugify";
+
 import { PermissionRouter } from "./Routers/Permissions.mjs";
 import { EndpointRouter } from "./Routers/Endpoints.mjs";
 import { InitializeEndpoints2 } from "./controllers/Endpoint/EndpointController.mjs";
@@ -43,6 +42,7 @@ import { gatheringPointsRouter } from "./Routers/GatheringPoints.mjs";
 import { KanbanRouter } from "./Routers/Kanbans.mjs";
 import { extraFieldsRouter, extraFieldsValuesRouter, supportedDataTypesRouter } from "./Routers/ExtraFields.mjs";
 import { loggingMiddleware } from "./utils/logger.mjs";
+import { ImagesRouter } from "./routers/Images.mjs";
 
 process.on('uncaughtException',err=>{
     console.trace(`Error: ${err}`)
@@ -112,6 +112,7 @@ app.use('/api/v1/kanbans',KanbanRouter)
 app.use('/api/v1/extraFieldsOptions',extraFieldsRouter)
 app.use('/api/v1/extraFieldsValues',extraFieldsValuesRouter)
 app.use('/api/v1/supportedDataTypes',supportedDataTypesRouter)
+app.use('/api/v1/images',ImagesRouter)
 
 
      
@@ -128,24 +129,22 @@ app.use(ErrorHandler)
 try{
   await Database.getInstance();
   const server=  await app.listen(process.env.PORT, () =>{ console.log(`connected on port ${process.env.PORT}`)})
-  let stayup=await deploymentTrick.findOne()
-  console.log('found stayup',stayup)
-  console.log('found stayupdoc',stayup._doc)
-  var refreshEveryMins=stayup.refreshEvery||12
-  setInterval(async () => {
-      stayup=await deploymentTrick.findOne()
-      if(stayup)
-          console.log('stayup',stayup.stayup)
-          stayup=stayup._doc
-          console.log('stayup.doc.stayup',stayup.stayup)
-
-      console.log(stayup)
-      if(stayup.stayup){ 
-          await fetch(`${stayup.siteUrl}/`).catch(err=>{
-              console.log(`couldn't send to ${stayup.siteUrl}/  ,  ${err.message}`)
-          })
-      }        
-  },refreshEveryMins*60000) 
+  if (process.env.NODE_ENV === "prod") {
+    let stayup=await deploymentTrick.findOne()
+    var refreshEveryMins=stayup.refreshEvery||12
+    setInterval(async () => {
+        stayup=await deploymentTrick.findOne()
+        if(stayup)
+            stayup=stayup._doc
+  
+        console.log(stayup)
+        if(stayup.stayup){ 
+            await fetch(`${stayup.siteUrl}/`).catch(err=>{
+                console.log(`couldn't send to ${stayup.siteUrl}/  ,  ${err.message}`)
+            })
+        }        
+    },refreshEveryMins*60000) 
+  }
   
   //InitializeEndpoints2(app)
 
