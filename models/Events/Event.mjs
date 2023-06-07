@@ -1,14 +1,10 @@
 import mongoose from'mongoose'
-import { Location, LocationSchema } from './subSchemas/Location.mjs';
-import { imageSchema } from '../image.mjs';
-import { Checkpoint, CheckpointSchema } from './subSchemas/checkpoint.mjs';
+import {  LocationSchema } from './subSchemas/Location.mjs';
+import { Checkpoint } from './subSchemas/checkpoint.mjs';
 
-import { GatheringPoint, GatheringPointSchema } from './subSchemas/gatheringPoint.mjs';
+import { GatheringPoint } from './subSchemas/gatheringPoint.mjs';
 import { deleteFile } from '../../utils/uploads/cleanDir.mjs';
-import { saveImage } from '../../utils/uploads/saveImage.mjs';
-import { maxImagesPerEvent } from '../../utils/consts.mjs';
-import { EventType } from './EventTypes.mjs';
-import { AppError } from '../../utils/AppError.mjs';
+
 import { elementStatusSchema } from '../elementsStatus.mjs'
 
 export const EventSchema = new mongoose.Schema({
@@ -27,16 +23,6 @@ export const EventSchema = new mongoose.Schema({
     description:{
         type:String,
         required:true,
-    },
-    banner:String,
-    images:{
-        type:[String],
-        default:[],
-        validate: {validator: function(images){
-            if(images.length>maxImagesPerEvent)
-                return false
-            return true
-        },message:`maximum of ${maxImagesPerEvent} images allowed`}
     },
     capacity:{
         type:Number,
@@ -58,34 +44,28 @@ export const EventSchema = new mongoose.Schema({
     elementStatus: {type:elementStatusSchema,default:{}},
 },{
     toJSON:{virtuals:true},
-    toObject:{virtuals:true}
+    toObject:{virtuals:true},
+    timestamps:true
 });
 
 EventSchema.virtual('checkpoints',{ref:'Checkpoint',foreignField:'event',localField:'_id',match:{'elementStatus.isDeleted':{$ne:true}}})
 EventSchema.virtual('gatheringPoints',{ref:'GatheringPoint',foreignField:'event',localField:'_id',match:{'elementStatus.isDeleted':{$ne:true}}})
+EventSchema.virtual('images',{ref:'Image',foreignField:'for',localField:'_id'})
 EventSchema.virtual('extraFields',{ref:'OptionValue',foreignField:'element',localField:'_id',match:{'elementStatus.isDeleted':{$ne:true}}})
 
 
 EventSchema.pre(/delete|remove/i,async function(next){
-    const doc = await this.model.findOne(this.getFilter()).populate('checkpoints').populate('gatheringPoints');
+    const doc = await this.model.findOne(this.getFilter()).populate('checkpoints gatheringPoints images');
     if (doc){
-        //console.log(doc)
-        
-    if(doc.checkpoints){
+    if(doc.checkpoints)
         doc.checkpoints.forEach(async el=>await Checkpoint.findByIdAndDelete(el._id))
-        // console.log(`deleted ${doc.checkpoints.length} checkpoints from db`)
-    }
-
-    if(doc.gatheringPoints){
-        doc.gatheringPoints.forEach(async el=>await GatheringPoint.findByIdAndDelete(el._id))
-        //  console.log(`deleted ${doc.gatheringPoints.length} gathering points from db`)
-    }
-            
-    if(doc.banner){
-        deleteFile(doc.banner,'images')
-    }
+    if(doc.gatheringPoints)
+        doc.gatheringPoints.forEach(async el=>await GatheringPoint.findByIdAndDelete(el._id))         
     if(doc.images)
-        doc.images.forEach(el=>deleteFile(el,'images'))    
+        doc.images.forEach(el=>{
+            Image.findByIdAndDelete(el._id)
+            deleteFile(el.filename,'images')
+        })    
     }
     next()
 })
