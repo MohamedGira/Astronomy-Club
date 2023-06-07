@@ -7,7 +7,7 @@ import {unlink}from 'fs'
 export const  uploadsdir=(__dirname+'/../../upload/').replace(/\\/g, "/")
 
 export const deleteFile=(fileName,subfolder='')=>{
-    var imgdir=uploadsdir;
+    try{var imgdir=uploadsdir;
     if(subfolder)
         imgdir+=`${subfolder.replace(/^\\|^\/|\/$|\\$/g,'')}/`
     
@@ -17,5 +17,8 @@ export const deleteFile=(fileName,subfolder='')=>{
           console.log(err.message)
         
     })
+}catch(e){
+    console.log(e.message)
+}
 }
 
