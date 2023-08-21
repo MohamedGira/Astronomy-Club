@@ -121,7 +121,8 @@ executePre:[async()=>{}]})=>{
         
         console.log(jsonifyObj(req.body))
 
-        var update={...filterObj(jsonifyObj(req.body),Model.schema.paths,...filterout)}
+        var update={...filterObj(jsonifyObj(req.body),Model.schema.paths,filterout)}
+        console.log("update:",update)
         const elementId=req.params.elementId
         let newModelObject= await Model.findByIdAndUpdate(elementId,update,{
             new:true,

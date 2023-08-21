@@ -23,10 +23,10 @@ export const updateEvent2=factory.updateOne(Event,['images','banner','checkpoint
         //adding new images
         let delcount=0
         let addcount=0
-        if(body.delete)
-            delcount=body.delete.length
-        if (req.files)
-            addcount=req.files.images.length
+        body.delete&&!Array.isArray(body.delete)?
+            delcount=1:body.delete&&(delcount=body.delete.length)
+        
+        addcount=req.files?.images?.length||0;
         if(event.images.length+addcount-delcount>maxImagesPerEvent)
              return next( new AppError(400,`maximum limit of ${maxImagesPerEvent} exceeded`))
     
